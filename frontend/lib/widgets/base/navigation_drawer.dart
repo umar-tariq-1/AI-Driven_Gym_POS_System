@@ -76,7 +76,7 @@ Widget buildHeader(BuildContext context) => Column(
               style: TextStyle(
                 fontFamily: 'BeautifulPeople',
                 color: Theme.of(context).colorScheme.secondary,
-                fontSize: 23.5,
+                fontSize: 23.25,
                 letterSpacing: 1.8,
                 wordSpacing: 1,
               ),

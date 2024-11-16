@@ -104,11 +104,11 @@ class MyAppState extends State<MyApp> {
                     },
                   ),
                   title: const Text(
-                    "Quiz App",
+                    " Gym Partner",
                     style: TextStyle(
                       fontFamily: 'BeautifulPeople',
-                      fontSize: 25.25,
-                      letterSpacing: 0.6,
+                      fontSize: 25,
+                      letterSpacing: 0.9,
                       wordSpacing: 0.6,
                     ),
                   ),
