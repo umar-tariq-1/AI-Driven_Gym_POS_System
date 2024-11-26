@@ -9,6 +9,7 @@ const register = express.Router();
 
 register.post("/", async (req, res) => {
   const db = req.db;
+  console.log("received");
   try {
     var userData = {
       firstName: req.body?.firstName.trim(),
