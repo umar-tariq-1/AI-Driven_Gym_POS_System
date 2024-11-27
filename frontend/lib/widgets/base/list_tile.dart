@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/theme.dart';
 
 class CustomListTile extends StatelessWidget {
   final bool active;
@@ -21,7 +22,7 @@ class CustomListTile extends StatelessWidget {
       margin: const EdgeInsets.only(top: 6),
       decoration: active
           ? BoxDecoration(
-              color: Theme.of(context).primaryColor,
+              color: colorScheme.shadow,
               borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(9999),
                 bottomRight: Radius.circular(9999),
@@ -39,9 +40,7 @@ class CustomListTile extends StatelessWidget {
       child: ListTile(
         leading: Icon(
           iconData,
-          color: active
-              ? Theme.of(context).colorScheme.secondary
-              : Theme.of(context).primaryColor,
+          color: active ? colorScheme.onPrimary : colorScheme.shadow,
           size: iconSize,
         ),
         title: Padding(
@@ -52,9 +51,7 @@ class CustomListTile extends StatelessWidget {
                 fontFamily: 'RalewayLight',
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
-                color: active
-                    ? Theme.of(context).colorScheme.secondary
-                    : Theme.of(context).primaryColor,
+                color: active ? colorScheme.onPrimary : colorScheme.shadow,
               ),
             )),
         onTap: onTap,

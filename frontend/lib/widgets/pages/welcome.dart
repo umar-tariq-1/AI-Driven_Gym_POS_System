@@ -84,7 +84,7 @@ class WelcomeScreen extends StatelessWidget {
                       buttonText: 'Register',
                       onTapRoute: RegisterPage.routePath,
                       color: Colors.white,
-                      textColor: lightColorScheme.primary,
+                      textColor: colorScheme.primary,
                     ),
                   ),
                 ],

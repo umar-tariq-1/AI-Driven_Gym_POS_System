@@ -4,6 +4,7 @@ import 'package:frontend/widgets/pages/sign/signin_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:icons_plus/icons_plus.dart';
 import 'dart:convert';
+import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 
 import '../../../theme/theme.dart';
 
@@ -25,6 +26,13 @@ class _RegisterState extends State<Register> {
   bool _agreePersonalData = true;
   bool _obscureText = true;
   String IP = '10.7.241.101';
+  CountryCode selectedCountryCode =
+      const CountryCode(name: "Pakistan", code: "PK", dialCode: "+92");
+  final countryPicker = FlCountryCodePicker(
+      showSearchBar: true,
+      title: Container(
+        height: 10,
+      ));
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -49,7 +57,7 @@ class _RegisterState extends State<Register> {
                 style: TextStyle(
                   fontSize: 30.0,
                   fontWeight: FontWeight.w900,
-                  color: lightColorScheme.primary,
+                  color: colorScheme.primary,
                 ),
               ),
               const SizedBox(height: 40.0),
@@ -58,6 +66,7 @@ class _RegisterState extends State<Register> {
                   Expanded(
                     flex: 1,
                     child: TextFormField(
+                      keyboardType: TextInputType.name,
                       controller: controllers['firstName'],
                       decoration: InputDecoration(
                         label: const Text('First Name'),
@@ -96,6 +105,7 @@ class _RegisterState extends State<Register> {
                   Expanded(
                     flex: 1,
                     child: TextFormField(
+                      keyboardType: TextInputType.name,
                       controller: controllers['lastName'],
                       decoration: InputDecoration(
                         label: const Text('Last Name'),
@@ -134,6 +144,7 @@ class _RegisterState extends State<Register> {
               ),
               const SizedBox(height: 16.0),
               TextFormField(
+                keyboardType: TextInputType.phone,
                 controller: controllers['phone'],
                 decoration: InputDecoration(
                   label: const Text('Phone'),
@@ -153,10 +164,40 @@ class _RegisterState extends State<Register> {
                     ),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  prefixIcon: const Icon(
-                    Icons.phone,
-                    color: Colors.black54,
-                  ),
+                  prefixIcon: GestureDetector(
+                      onTap: () async {
+                        // Show the country code picker when tapped.
+                        final picked =
+                            await countryPicker.showPicker(context: context);
+                        // Update the state with the selected country code.
+                        if (picked != null) {
+                          setState(() {
+                            selectedCountryCode = picked;
+                          });
+                        }
+                      },
+                      child: IntrinsicWidth(
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 13),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.phone,
+                                color: Colors.black54,
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(left: 12),
+                                child: Text(
+                                  // ignore: prefer_interpolation_to_compose_strings
+                                  (selectedCountryCode.dialCode) + " | ",
+                                  style: const TextStyle(
+                                      color: Colors.black54, fontSize: 18),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty || value.trim() == "") {
@@ -164,7 +205,8 @@ class _RegisterState extends State<Register> {
                   }
                   // Regex to validate phone number with country code
                   final phoneRegex = RegExp(r'^\+(\d{1,3})\s?\d{10,15}$');
-                  if (!phoneRegex.hasMatch(value)) {
+                  if (!phoneRegex
+                      .hasMatch(selectedCountryCode.dialCode + value)) {
                     return 'Enter valid phone number with country code';
                   }
                   return null;
@@ -172,6 +214,7 @@ class _RegisterState extends State<Register> {
               ),
               const SizedBox(height: 16.0),
               TextFormField(
+                keyboardType: TextInputType.visiblePassword,
                 controller: controllers['password'],
                 obscureText: _obscureText,
                 decoration: InputDecoration(
@@ -272,7 +315,7 @@ class _RegisterState extends State<Register> {
                         _agreePersonalData = value!;
                       });
                     },
-                    activeColor: lightColorScheme.primary,
+                    activeColor: colorScheme.primary,
                   ),
                   const Text(
                     'I agree to the processing of ',
@@ -284,7 +327,7 @@ class _RegisterState extends State<Register> {
                     'Personal data',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: lightColorScheme.primary,
+                      color: colorScheme.primary,
                     ),
                   ),
                 ],
@@ -397,7 +440,7 @@ class _RegisterState extends State<Register> {
                       'Sign in',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: lightColorScheme.primary,
+                        color: colorScheme.primary,
                       ),
                     ),
                   ),

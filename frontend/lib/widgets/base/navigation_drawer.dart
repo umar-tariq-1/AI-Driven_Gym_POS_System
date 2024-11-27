@@ -3,18 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/main.dart';
 import 'package:frontend/widgets/base/list_tile.dart';
-import 'package:frontend/widgets/pages/attempt_quiz.dart';
-import 'package:frontend/widgets/pages/edit_quiz.dart';
-import 'package:frontend/widgets/pages/new_quiz.dart';
 import 'package:frontend/widgets/pages/welcome.dart';
+import '../../theme/theme.dart';
 
 class CustomNavigationDrawer extends StatelessWidget {
   final String active;
-  final void Function(String) changePage;
-  const CustomNavigationDrawer(
-      {super.key, this.active = "", this.changePage = _defaultChangePage});
-
-  static void _defaultChangePage(String page) {}
+  const CustomNavigationDrawer({super.key, this.active = ""});
 
   @override
   Widget build(BuildContext context) => SizedBox(
@@ -25,7 +19,7 @@ class CustomNavigationDrawer extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 buildHeader(context),
-                buildMenuItems(context, active, changePage)
+                buildMenuItems(context, active)
               ]),
         ),
       ));
@@ -35,25 +29,25 @@ Widget buildHeader(BuildContext context) => Column(
       children: [
         Container(
           height: MediaQuery.of(context).padding.top,
-          color: const Color.fromARGB(255, 13, 13, 13),
+          color: const Color.fromARGB(255, 17, 17, 17),
         ),
         Container(
           alignment: Alignment.center,
           margin: const EdgeInsets.only(bottom: 20),
           height: 68,
           decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
+            color: const Color.fromARGB(255, 38, 38, 38),
             border: Border(
               bottom: BorderSide(
-                color: Theme.of(context).colorScheme.secondary,
+                color: colorScheme.onPrimary,
                 width: 1,
               ),
               top: BorderSide(
-                color: Theme.of(context).colorScheme.secondary,
+                color: colorScheme.onPrimary,
                 width: 1,
               ),
               right: BorderSide(
-                color: Theme.of(context).colorScheme.secondary,
+                color: colorScheme.onPrimary,
                 width: 1,
               ),
             ),
@@ -75,7 +69,7 @@ Widget buildHeader(BuildContext context) => Column(
               "Menu",
               style: TextStyle(
                 fontFamily: 'BeautifulPeople',
-                color: Theme.of(context).colorScheme.secondary,
+                color: colorScheme.onPrimary,
                 fontSize: 23.25,
                 letterSpacing: 1.8,
                 wordSpacing: 1,
@@ -86,7 +80,7 @@ Widget buildHeader(BuildContext context) => Column(
       ],
     );
 
-Widget buildMenuItems(BuildContext context, active, changePage) => Column(
+Widget buildMenuItems(BuildContext context, active) => Column(
       children: [
         CustomListTile(
             active: active == "Welcome",
@@ -101,40 +95,12 @@ Widget buildMenuItems(BuildContext context, active, changePage) => Column(
                 Navigator.of(context).popAndPushNamed(WelcomeScreen.routePath);
               }
             }),
-        CustomListTile(
-            active: active == "New Quiz",
-            text: "New Quiz",
-            iconData: Icons.add_comment_outlined,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name != NewQuiz.routePath) {
-                if (ModalRoute.of(context)?.settings.name != MyApp.routePath) {
-                  Navigator.of(context).pop();
-                }
-                Navigator.of(context).popAndPushNamed(NewQuiz.routePath);
-              }
-            }),
-        CustomListTile(
-            active: active == "Attempt Quiz",
-            text: "Attempt Quiz",
-            iconData: Icons.content_paste_go_sharp,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  AttemptQuiz.routePath) {
-                Navigator.of(context).popAndPushNamed(AttemptQuiz.routePath);
-              }
-            }),
-        CustomListTile(
-            active: active == "Edit Quiz",
-            text: "Edit Quiz",
-            iconData: Icons.edit_calendar_outlined,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name != EditQuiz.routePath) {
-                if (ModalRoute.of(context)?.settings.name != MyApp.routePath) {
-                  Navigator.of(context).pop();
-                }
-                Navigator.of(context).popAndPushNamed(EditQuiz.routePath);
-              }
-            }),
+        // if (ModalRoute.of(context)?.settings.name != EditQuiz.routePath) {
+        //         if (ModalRoute.of(context)?.settings.name != MyApp.routePath) {
+        //           Navigator.of(context).pop();
+        //         }
+        //         Navigator.of(context).popAndPushNamed(EditQuiz.routePath);
+        //       }
         const Divider(
           color: Color.fromARGB(255, 10, 10, 10),
         ),
@@ -142,7 +108,7 @@ Widget buildMenuItems(BuildContext context, active, changePage) => Column(
             active: active == "Home Page",
             text: "Home Page",
             iconData: Icons.home_outlined,
-            iconSize: 28,
+            iconSize: 27.5,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name != MyApp.routePath) {
                 Navigator.of(context).pop();

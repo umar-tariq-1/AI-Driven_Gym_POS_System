@@ -1,3 +1,4 @@
+import 'package:frontend/widgets/base/custom_outlined_button.dart';
 import 'package:frontend/widgets/pages/sign/register_page.dart';
 import 'package:frontend/widgets/pages/sign/signin_page.dart';
 import 'package:frontend/widgets/pages/welcome.dart';
@@ -5,18 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/widgets/base/custom_elevated_button.dart';
 import 'package:frontend/widgets/base/navigation_drawer.dart';
-import 'package:frontend/widgets/pages/attempt_quiz.dart';
-import 'package:frontend/widgets/pages/edit_quiz.dart';
-import 'package:frontend/widgets/pages/new_quiz.dart';
+import './theme/theme.dart';
 
 Color statusBarColor = /* Colors.black26 */ Colors.transparent;
-Color appBarColor = const Color.fromARGB(255, 38, 38, 38);
-Color appBarTextColor = const Color.fromARGB(255, 255, 255, 255);
-Color backgroundColor = const Color.fromARGB(255, 255, 255, 255);
-Color primaryColor = const Color.fromARGB(255, 38, 38, 38);
-Color secondaryColor = const Color.fromARGB(255, 255, 255, 255);
-Color tertiaryColor = const Color.fromARGB(255, 255, 0, 0);
-Color tertiaryDarkColor = const Color.fromARGB(255, 191, 0, 0);
+Color appBarColor = colorScheme.shadow;
+Color appBarTextColor = colorScheme.onPrimary;
+Color backgroundColor = colorScheme.surface;
 
 void main() {
   runApp(const MyApp());
@@ -34,14 +29,6 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  String currentPage = "Home Page";
-
-  void _changePage(String page) {
-    setState(() {
-      currentPage = page;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -53,10 +40,6 @@ class MyAppState extends State<MyApp> {
     return MaterialApp(
       initialRoute: MyApp.routePath,
       routes: {
-        NewQuiz.routePath: (context) => const NewQuiz(),
-        AttemptQuiz.routePath: (context) =>
-            AttemptQuiz(mainContext: context, changePage: _changePage),
-        EditQuiz.routePath: (context) => const EditQuiz(),
         WelcomeScreen.routePath: (context) => const WelcomeScreen(),
         RegisterPage.routePath: (context) => const RegisterPage(),
         SigninPage.routePath: (context) => const SigninPage(),
@@ -64,9 +47,19 @@ class MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'RalewayMedium',
-        primaryColor: primaryColor,
+        primaryColor: colorScheme.primary,
         colorScheme: ColorScheme.fromSwatch().copyWith(
-          secondary: secondaryColor,
+          primary: colorScheme.primary,
+          onPrimary: colorScheme.onPrimary,
+          secondary: colorScheme.primary,
+          onSecondary: colorScheme.onSecondary,
+          tertiary: colorScheme.tertiary,
+          onTertiary: colorScheme.onTertiary,
+          error: colorScheme.tertiary,
+          onError: colorScheme.onError,
+          onSurface: colorScheme.onSurface,
+          onSurfaceVariant: colorScheme.onSurfaceVariant,
+          outlineVariant: colorScheme.outlineVariant,
         ),
         appBarTheme: AppBarTheme(
           systemOverlayStyle: SystemUiOverlayStyle(
@@ -115,13 +108,21 @@ class MyAppState extends State<MyApp> {
                   backgroundColor: appBarColor,
                   foregroundColor: appBarTextColor,
                 ))),
-        drawer: CustomNavigationDrawer(
+        drawer: const CustomNavigationDrawer(
           active: 'Home Page',
-          changePage: _changePage,
         ),
         backgroundColor: backgroundColor,
         body: Container(
-          child: CustomElevatedButton(buttonText: 'Submit', onClick: (_) {}),
+          child: Row(
+            children: [
+              CustomElevatedButton(
+                  buttonText: 'Submit', onClick: () {}, active: false),
+              CustomOutlinedButton(
+                buttonText: 'Submit',
+                onClick: () {},
+              ),
+            ],
+          ),
         ),
       ),
     );

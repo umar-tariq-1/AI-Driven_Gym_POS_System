@@ -40,7 +40,7 @@ class _SigninState extends State<Signin> {
               style: TextStyle(
                 fontSize: 30.0,
                 fontWeight: FontWeight.w900,
-                color: lightColorScheme.primary,
+                color: colorScheme.primary,
               ),
             ),
             const SizedBox(
@@ -129,7 +129,7 @@ class _SigninState extends State<Signin> {
                           rememberPassword = value!;
                         });
                       },
-                      activeColor: lightColorScheme.primary,
+                      activeColor: colorScheme.primary,
                     ),
                     const Text(
                       'Remember me',
@@ -144,7 +144,7 @@ class _SigninState extends State<Signin> {
                     'Forget password?',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: lightColorScheme.primary,
+                      color: colorScheme.primary,
                     ),
                   ),
                   onTap: () {},
@@ -255,7 +255,7 @@ class _SigninState extends State<Signin> {
                     'Sign up',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: lightColorScheme.primary,
+                      color: colorScheme.primary,
                     ),
                   ),
                 ),

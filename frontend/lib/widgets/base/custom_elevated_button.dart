@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import '../../theme/theme.dart';
 
 class CustomElevatedButton extends StatelessWidget {
   final String buttonText;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
   final double fontSize;
   final double height;
   final double minWidth;
@@ -10,28 +13,28 @@ class CustomElevatedButton extends StatelessWidget {
   final bool disabled;
   final bool active;
   final Icon? leadingIcon;
-  final EdgeInsets margin;
-  final void Function(dynamic) onClick;
+  final void Function() onClick;
 
   const CustomElevatedButton(
       {super.key,
       required this.buttonText,
       required this.onClick,
       this.fontSize = 18.125,
-      this.height = 12.75,
+      this.height = 11.75,
       this.minWidth = 140,
       this.maxWidthScreenFactor = 0.95,
       this.active = false,
       this.disabled = false,
-      this.margin = const EdgeInsets.all(0),
       this.leadingIcon,
-      this.borderRadius = 15});
+      this.borderRadius = 10,
+      this.backgroundColor,
+      this.foregroundColor});
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return Container(
-      margin: margin,
+      padding: const EdgeInsets.all(1.8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius + 2),
         border: Border.all(
@@ -39,7 +42,6 @@ class CustomElevatedButton extends StatelessWidget {
           width: 2,
         ),
       ),
-      padding: const EdgeInsets.all(1.8),
       child: ConstrainedBox(
         constraints: BoxConstraints(
           minWidth: minWidth,
@@ -47,24 +49,23 @@ class CustomElevatedButton extends StatelessWidget {
         ),
         child: ElevatedButton(
           style: TextButton.styleFrom(
-            backgroundColor: Theme.of(context).primaryColor,
-            foregroundColor: Theme.of(context).colorScheme.secondary,
+            backgroundColor: backgroundColor ?? colorScheme.primary,
+            foregroundColor: foregroundColor ?? colorScheme.onPrimary,
             padding: EdgeInsets.symmetric(horizontal: 25, vertical: height),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(borderRadius),
             ),
-            overlayColor:
-                Theme.of(context).colorScheme.secondary.withOpacity(0.12),
           ),
-          onPressed: disabled ? null : () => onClick(buttonText),
+          onPressed: disabled ? null : () => onClick(),
           child: leadingIcon == null
               ? Text(
                   buttonText,
                   textAlign: TextAlign.center,
                   style: TextStyle(
+                    fontFamily: "RalewayMedium",
                     fontSize: fontSize,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.1,
+                    // fontWeight: FontWeight.bold,
+                    letterSpacing: 0.25,
                   ),
                   softWrap: true, // This ensures text wraps within maxWidth
                 )
@@ -79,9 +80,10 @@ class CustomElevatedButton extends StatelessWidget {
                       buttonText,
                       textAlign: TextAlign.center,
                       style: TextStyle(
+                        fontFamily: "RalewayMedium",
                         fontSize: fontSize,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.1,
+                        // fontWeight: FontWeight.bold,
+                        letterSpacing: 0.25,
                       ),
                       softWrap: true,
                     ),
