@@ -100,8 +100,8 @@ class CustomOutlinedButton extends StatelessWidget {
                 if (states.contains(WidgetState.focused) ||
                     states.contains(WidgetState.pressed)) {
                   return color != null
-                      ? color!.withOpacity(0.15)
-                      : colorScheme.primary.withOpacity(0.15);
+                      ? color!.withOpacity(0.1)
+                      : colorScheme.primary.withOpacity(0.1);
                 }
                 return color ?? colorScheme.primary;
               },

@@ -37,8 +37,7 @@ class WelcomeScreen extends StatelessWidget {
                             style: TextStyle(
                                 fontFamily: "RalewaySemiBold",
                                 fontSize: 49.0,
-                                color:
-                                    Theme.of(context).colorScheme.secondary)),
+                                color: colorScheme.onPrimary)),
                       ),
                       const SizedBox(
                         height: 25,
@@ -47,8 +46,7 @@ class WelcomeScreen extends StatelessWidget {
                         'Simplify your fitness journey,',
                         initialDelay: const Duration(milliseconds: 1000),
                         style: TextStyle(
-                            fontSize: 20.0,
-                            color: Theme.of(context).colorScheme.secondary),
+                            fontSize: 20.0, color: colorScheme.onPrimary),
                         incomingEffect:
                             WidgetTransitionEffects.incomingSlideInFromRight(
                                 duration: const Duration(milliseconds: 300)),
@@ -57,8 +55,7 @@ class WelcomeScreen extends StatelessWidget {
                         'One click, one platform.',
                         initialDelay: const Duration(milliseconds: 1000),
                         style: TextStyle(
-                            fontSize: 20.0,
-                            color: Theme.of(context).colorScheme.secondary),
+                            fontSize: 20.0, color: colorScheme.onPrimary),
                         incomingEffect:
                             WidgetTransitionEffects.incomingSlideInFromRight(
                                 duration: const Duration(milliseconds: 300)),
@@ -71,12 +68,12 @@ class WelcomeScreen extends StatelessWidget {
               alignment: Alignment.bottomRight,
               child: Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: WelcomeButton(
                       buttonText: 'Sign in',
                       onTapRoute: SigninPage.routePath,
                       color: Colors.transparent,
-                      textColor: Colors.white,
+                      textColor: colorScheme.onPrimary,
                     ),
                   ),
                   Expanded(
