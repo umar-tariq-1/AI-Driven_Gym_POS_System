@@ -1,4 +1,12 @@
-function validate(Fname, Lname, Phone, Password, Confirmpassword, Acctype) {
+function validate(
+  Fname,
+  Lname,
+  Phone,
+  Password,
+  Confirmpassword,
+  Acctype,
+  Gender
+) {
   if (/\s/.test(Fname)) {
     return "Name must not contain blank space";
   } else if (/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(Fname)) {
@@ -22,9 +30,11 @@ function validate(Fname, Lname, Phone, Password, Confirmpassword, Acctype) {
   } else if (Password !== Confirmpassword) {
     return "Passwords donot match";
   } else if (
-    !["admin", "owner", "manager", "trainer", "client"].includes(Acctype)
+    !["Admin", "Owner", "Manager", "Trainer", "Client"].includes(Acctype)
   ) {
     return "Invalid account type";
+  } else if (!["Male", "Female", "Other"].includes(Gender)) {
+    return "Invalid gender";
   } else {
     return undefined;
   }

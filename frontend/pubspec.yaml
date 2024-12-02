@@ -43,6 +43,8 @@ dependencies:
   shared_preferences: ^2.3.2
   fl_country_code_picker: ^0.1.9+1
   flutter_localization: ^0.2.2
+  awesome_snackbar_content: ^0.1.4
+  google_sign_in: ^6.2.2
 
 dev_dependencies:
   flutter_test:

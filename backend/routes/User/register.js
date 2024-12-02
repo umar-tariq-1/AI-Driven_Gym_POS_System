@@ -17,6 +17,7 @@ register.post("/", async (req, res) => {
       password: req.body?.password,
       confirmPassword: req.body?.confirmPassword,
       accType: req.body?.accType.trim(),
+      gender: req.body?.gender.trim(),
     };
   } catch {
     return res.status(403).send({ message: "Information is not complete" });
@@ -39,7 +40,8 @@ register.post("/", async (req, res) => {
     userData.phone,
     userData.password,
     userData.confirmPassword,
-    userData.accType
+    userData.accType,
+    userData.gender
   );
 
   if (validationError) {
@@ -69,13 +71,14 @@ register.post("/", async (req, res) => {
   // Insert user into MySQL database
   try {
     const insertQuery = `
-      INSERT INTO gym_pos_system.Users (firstName, lastName, phone, password, accType)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO gym_pos_system.Users (firstName, lastName, gender, phone, password, accType)
+      VALUES (?, ?, ?, ?, ?, ?)
     `;
 
     const [result] = await db.query(insertQuery, [
       capitalize(userData.firstName),
       capitalize(userData.lastName),
+      userData.gender,
       userData.phone,
       userData.password,
       userData.accType,
@@ -93,6 +96,7 @@ register.post("/", async (req, res) => {
       data: {
         firstName: capitalize(userData.firstName),
         lastName: capitalize(userData.lastName),
+        gender: userData.gender,
         phone: userData.phone,
         accType: userData.accType,
       },

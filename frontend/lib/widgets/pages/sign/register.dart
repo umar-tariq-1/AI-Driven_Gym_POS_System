@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:icons_plus/icons_plus.dart';
 import 'dart:convert';
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../theme/theme.dart';
 
@@ -25,9 +26,11 @@ class _RegisterState extends State<Register> {
     'confirmPassword': TextEditingController()
   };
   bool _agreePersonalData = true;
+  String? _gender = '';
+  String? _accType = '';
   bool _obscureText = true;
-  String IP = '10.7.241.101';
-  CountryCode selectedCountryCode =
+  String IP = '10.7.240.83';
+  CountryCode _countryCode =
       const CountryCode(name: "Pakistan", code: "PK", dialCode: "+92");
   final countryPicker = FlCountryCodePicker(
       showSearchBar: true,
@@ -152,6 +155,108 @@ class _RegisterState extends State<Register> {
                   ],
                 ),
                 const SizedBox(height: 16.0),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: DropdownButtonFormField<String>(
+                        dropdownColor: Colors.white,
+                        // value: 'Not selected', // Default value
+                        items: ['Male', 'Female', 'Other']
+                            .map((gender) => DropdownMenuItem(
+                                  value: gender,
+                                  child: Text(gender),
+                                ))
+                            .toList(),
+                        onChanged: (value) {
+                          _gender = value;
+                        },
+                        hint: const Text(
+                          'Gender',
+                          style:
+                              TextStyle(color: Color.fromARGB(255, 88, 88, 88)),
+                        ),
+                        decoration: InputDecoration(
+                          label: const Text('Gender'),
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          prefixIcon: const Icon(
+                            Icons.person,
+                            color: Colors.black54,
+                          ),
+                          contentPadding: const EdgeInsets.only(
+                              top: 16, bottom: 16, left: 16, right: 8),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Gender is required';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Expanded(
+                      flex: 4,
+                      child: DropdownButtonFormField<String>(
+                        dropdownColor: Colors.white,
+                        // value: 'Not selected', // Default value
+                        items: ['Client', 'Trainer', 'Manager', 'Owner']
+                            .map((account) => DropdownMenuItem(
+                                  value: account,
+                                  child: Text('Gym $account'),
+                                ))
+                            .toList(),
+                        onChanged: (value) {
+                          _accType = value;
+                        },
+                        hint: const Text(
+                          'Account',
+                          style:
+                              TextStyle(color: Color.fromARGB(255, 88, 88, 88)),
+                        ),
+                        decoration: InputDecoration(
+                          label: const Text('Account'),
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          prefixIcon: const Icon(
+                            Icons.person,
+                            color: Colors.black54,
+                          ),
+                          contentPadding: const EdgeInsets.only(
+                              top: 16, bottom: 16, left: 16, right: 8),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Account is required';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16.0),
                 TextFormField(
                   keyboardType: TextInputType.phone,
                   controller: controllers['phone'],
@@ -177,13 +282,11 @@ class _RegisterState extends State<Register> {
                         vertical: 16, horizontal: 16),
                     prefixIcon: GestureDetector(
                         onTap: () async {
-                          // Show the country code picker when tapped.
                           final picked =
                               await countryPicker.showPicker(context: context);
-                          // Update the state with the selected country code.
                           if (picked != null) {
                             setState(() {
-                              selectedCountryCode = picked;
+                              _countryCode = picked;
                             });
                           }
                         },
@@ -200,7 +303,7 @@ class _RegisterState extends State<Register> {
                                   margin: const EdgeInsets.only(left: 12),
                                   child: Text(
                                     // ignore: prefer_interpolation_to_compose_strings
-                                    (selectedCountryCode.dialCode) + " | ",
+                                    (_countryCode.dialCode) + " | ",
                                     style: const TextStyle(
                                         color: Colors.black54, fontSize: 18),
                                   ),
@@ -216,8 +319,7 @@ class _RegisterState extends State<Register> {
                     }
                     // Regex to validate phone number with country code
                     final phoneRegex = RegExp(r'^\+(\d{1,3})\s?\d{10,15}$');
-                    if (!phoneRegex
-                        .hasMatch(selectedCountryCode.dialCode + value)) {
+                    if (!phoneRegex.hasMatch(_countryCode.dialCode + value)) {
                       return 'Enter valid phone number with country code';
                     }
                     return null;
@@ -319,7 +421,58 @@ class _RegisterState extends State<Register> {
                     );
                   },
                 ),
-                const SizedBox(height: 25.0),
+                const SizedBox(height: 16.0),
+                TextFormField(
+                  keyboardType: TextInputType.visiblePassword,
+                  controller: controllers['confirmPassword'],
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    label: const Text('Confirm Password'),
+                    hintText: 'Enter Password',
+                    hintStyle: const TextStyle(
+                      color: Colors.black26,
+                    ),
+                    border: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Colors.black12,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Colors.black12,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.lock,
+                      color: Colors.black54,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 16),
+                    // suffixIcon: IconButton(
+                    //   icon: Icon(
+                    //     _obscureText ? Icons.visibility : Icons.visibility_off,
+                    //     color: Colors.black45,
+                    //   ),
+                    //   onPressed: () {
+                    //     setState(() {
+                    //       _obscureText = !_obscureText;
+                    //     });
+                    //   },
+                    // ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Confirm Password is required';
+                    }
+                    if (value != controllers['password'].text) {
+                      return 'Passwords donot match';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 15.0),
                 Row(
                   children: [
                     Checkbox(
@@ -346,7 +499,7 @@ class _RegisterState extends State<Register> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 25.0),
+                const SizedBox(height: 20.0),
                 SizedBox(
                     width: double.infinity,
                     child: CustomElevatedButton(
@@ -358,7 +511,10 @@ class _RegisterState extends State<Register> {
                             var response = await http.post(url, body: {
                               'firstName': controllers['firstName'].text.trim(),
                               'lastName': controllers['lastName'].text.trim(),
-                              'phone': controllers['phone'].text.trim(),
+                              'phone': _countryCode.dialCode +
+                                  controllers['phone'].text.trim(),
+                              'gender': _gender,
+                              'accType': _accType,
                               'password': controllers['password'].text,
                               'confirmPassword': controllers['password'].text
                             });
@@ -373,6 +529,7 @@ class _RegisterState extends State<Register> {
                               controllers['lastName'].clear();
                               controllers['phone'].clear();
                               controllers['password'].clear();
+                              controllers['confirmPassword'].clear();
                             } else {
                               print(json.decode(response.body)['message']);
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -392,91 +549,53 @@ class _RegisterState extends State<Register> {
                           }
                         }
                       },
-                    )
-                    // child: ElevatedButton(
-                    //   onPressed: () async {
-                    //     if (_formKey.currentState?.validate() ?? false) {
-                    //       if (_agreePersonalData) {
-                    //         var url = Uri.parse('http://$IP:3001/register');
-                    //         var response = await http.post(url, body: {
-                    //           'firstName': controllers['firstName'].text.trim(),
-                    //           'lastName': controllers['lastName'].text.trim(),
-                    //           'phone': controllers['phone'].text.trim(),
-                    //           'password': controllers['password'].text,
-                    //           'confirmPassword': controllers['password'].text
-                    //         });
-
-                    //         if (response.statusCode == 200) {
-                    //           ScaffoldMessenger.of(context).showSnackBar(
-                    //             const SnackBar(
-                    //               content: Text('Registered Successfully'),
-                    //             ),
-                    //           );
-                    //           controllers['firstName'].clear();
-                    //           controllers['lastName'].clear();
-                    //           controllers['phone'].clear();
-                    //           controllers['password'].clear();
-                    //         } else {
-                    //           print(json.decode(response.body)['message']);
-                    //           ScaffoldMessenger.of(context).showSnackBar(
-                    //             SnackBar(
-                    //               content:
-                    //                   Text(json.decode(response.body)['message']),
-                    //             ),
-                    //           );
-                    //         }
-                    //       } else {
-                    //         ScaffoldMessenger.of(context).showSnackBar(
-                    //           const SnackBar(
-                    //             content: Text(
-                    //                 'Please agree to the processing of personal data'),
-                    //           ),
-                    //         );
-                    //       }
-                    //     }
-                    //   },
-                    //   child: const Text('Register'),
-                    // ),
-                    ),
-                const SizedBox(height: 30.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Divider(
-                        thickness: 0.7,
-                        color: Colors.grey.withOpacity(0.5),
-                      ),
-                    ),
-                    const Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                      child: Text(
-                        'Register with',
-                        style: TextStyle(
-                          color: Colors.black45,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(
-                        thickness: 0.7,
-                        color: Colors.grey.withOpacity(0.5),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 30.0),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Icon(BoxIcons.bxl_facebook),
-                    Icon(BoxIcons.bxl_twitter),
-                    Icon(BoxIcons.bxl_google),
-                    Icon(BoxIcons.bxl_apple),
-                  ],
-                ),
+                    )),
                 const SizedBox(height: 25.0),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     Expanded(
+                //       child: Divider(
+                //         thickness: 0.7,
+                //         color: Colors.grey.withOpacity(0.5),
+                //       ),
+                //     ),
+                //     const Padding(
+                //       padding:
+                //           EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                //       child: Text(
+                //         'Register with',
+                //         style: TextStyle(
+                //           color: Colors.black45,
+                //         ),
+                //       ),
+                //     ),
+                //     Expanded(
+                //       child: Divider(
+                //         thickness: 0.7,
+                //         color: Colors.grey.withOpacity(0.5),
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                // const SizedBox(height: 30.0),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //   children: [
+                //     GestureDetector(
+                //         child: const Icon(BoxIcons.bxl_google),
+                //         onTap: () async {
+                //           GoogleSignIn _googlesignin = GoogleSignIn();
+                //           try {
+                //             var credentials = await _googlesignin.signIn();
+                //             print(credentials);
+                //           } catch (error) {
+                //             print(error);
+                //           }
+                //         })
+                //   ],
+                // ),
+                // const SizedBox(height: 25.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

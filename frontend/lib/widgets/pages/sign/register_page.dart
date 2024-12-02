@@ -27,7 +27,7 @@ class _RegisterPageState extends State<RegisterPage> {
             FocusScope.of(context).unfocus();
           },
           child: Container(
-            height: MediaQuery.of(context).size.height * 0.72,
+            height: MediaQuery.of(context).size.height * 0.75,
             decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
