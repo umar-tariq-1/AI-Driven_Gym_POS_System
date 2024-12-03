@@ -3,10 +3,8 @@ import 'package:frontend/main.dart';
 import 'package:frontend/widgets/base/custom_elevated_button.dart';
 import 'package:frontend/widgets/pages/sign/signin_page.dart';
 import 'package:http/http.dart' as http;
-import 'package:icons_plus/icons_plus.dart';
 import 'dart:convert';
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../theme/theme.dart';
 
@@ -32,6 +30,8 @@ class _RegisterState extends State<Register> {
   String IP = '10.7.240.83';
   CountryCode _countryCode =
       const CountryCode(name: "Pakistan", code: "PK", dialCode: "+92");
+  final FocusNode _focusNode = FocusNode();
+  bool _passwordHasFocus = false;
   final countryPicker = FlCountryCodePicker(
       showSearchBar: true,
       title: Container(
@@ -40,9 +40,29 @@ class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        setState(() {
+          _passwordHasFocus = true;
+        });
+      } else {
+        _passwordHasFocus = false;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(25.0, 40.0, 25.0, 20.0),
+      padding: const EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 0.0),
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -60,15 +80,15 @@ class _RegisterState extends State<Register> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  'Get Started',
-                  style: TextStyle(
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.w900,
-                    color: colorScheme.primary,
-                  ),
-                ),
-                const SizedBox(height: 40.0),
+                // Text(
+                //   'Get Started',
+                //   style: TextStyle(
+                //     fontSize: 30.0,
+                //     fontWeight: FontWeight.w900,
+                //     color: colorScheme.primary,
+                //   ),
+                // ),
+                // const SizedBox(height: 10.0),
                 Row(
                   children: [
                     Expanded(
@@ -161,7 +181,6 @@ class _RegisterState extends State<Register> {
                       flex: 3,
                       child: DropdownButtonFormField<String>(
                         dropdownColor: Colors.white,
-                        // value: 'Not selected', // Default value
                         items: ['Male', 'Female', 'Other']
                             .map((gender) => DropdownMenuItem(
                                   value: gender,
@@ -210,7 +229,6 @@ class _RegisterState extends State<Register> {
                       flex: 4,
                       child: DropdownButtonFormField<String>(
                         dropdownColor: Colors.white,
-                        // value: 'Not selected', // Default value
                         items: ['Client', 'Trainer', 'Manager', 'Owner']
                             .map((account) => DropdownMenuItem(
                                   value: account,
@@ -302,8 +320,7 @@ class _RegisterState extends State<Register> {
                                 Container(
                                   margin: const EdgeInsets.only(left: 12),
                                   child: Text(
-                                    // ignore: prefer_interpolation_to_compose_strings
-                                    (_countryCode.dialCode) + " | ",
+                                    "${_countryCode.dialCode} | ",
                                     style: const TextStyle(
                                         color: Colors.black54, fontSize: 18),
                                   ),
@@ -327,6 +344,7 @@ class _RegisterState extends State<Register> {
                 ),
                 const SizedBox(height: 16.0),
                 TextFormField(
+                  focusNode: _focusNode,
                   keyboardType: TextInputType.visiblePassword,
                   controller: controllers['password'],
                   obscureText: _obscureText,
@@ -382,43 +400,45 @@ class _RegisterState extends State<Register> {
                     return null;
                   },
                   onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Dialog(
-                          backgroundColor: backgroundColor,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width *
-                                1, // Set custom width for the dialog
-                            padding: const EdgeInsets.all(20),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                const Text(
-                                  'Password must contain:',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(height: 10),
-                                const Text(
-                                  '• 6-20 characters,\n• At least 1 number,\n• 1 lowercase letter,\n• 1 uppercase letter',
-                                  style: TextStyle(fontSize: 17),
-                                ),
-                                const SizedBox(height: 20),
-                                TextButton(
-                                  child: const Text('OK',
-                                      style: TextStyle(fontSize: 17)),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
+                    if (!_passwordHasFocus) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Dialog(
+                            backgroundColor: backgroundColor,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width *
+                                  1, // Set custom width for the dialog
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  const Text(
+                                    'Password must contain:',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  const Text(
+                                    '• 6-20 characters,\n• At least 1 number,\n• 1 lowercase letter,\n• 1 uppercase letter',
+                                    style: TextStyle(fontSize: 17),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  TextButton(
+                                    child: const Text('OK',
+                                        style: TextStyle(fontSize: 17)),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    );
+                          );
+                        },
+                      );
+                    }
                   },
                 ),
                 const SizedBox(height: 16.0),
@@ -450,17 +470,6 @@ class _RegisterState extends State<Register> {
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 16, horizontal: 16),
-                    // suffixIcon: IconButton(
-                    //   icon: Icon(
-                    //     _obscureText ? Icons.visibility : Icons.visibility_off,
-                    //     color: Colors.black45,
-                    //   ),
-                    //   onPressed: () {
-                    //     setState(() {
-                    //       _obscureText = !_obscureText;
-                    //     });
-                    //   },
-                    // ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -499,7 +508,7 @@ class _RegisterState extends State<Register> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 17.5),
                 SizedBox(
                     width: double.infinity,
                     child: CustomElevatedButton(
@@ -550,7 +559,7 @@ class _RegisterState extends State<Register> {
                         }
                       },
                     )),
-                const SizedBox(height: 25.0),
+                const SizedBox(height: 30.0),
                 // Row(
                 //   mainAxisAlignment: MainAxisAlignment.center,
                 //   children: [

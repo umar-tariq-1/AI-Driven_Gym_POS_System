@@ -11,7 +11,7 @@ const colorScheme = ColorScheme(
   onError: Color(0xFFFFFFFF),
   shadow: Color.fromARGB(255, 38, 38, 38),
   outlineVariant: Color(0xFFC2C8BC),
-  surface: Color(0xFFF9FAF3),
+  surface: Color(0xFFFFFFFF),
   onSurface: Color(0xFF111827),
   onSurfaceVariant: Color.fromARGB(255, 78, 86, 97),
   tertiary: Color.fromARGB(255, 191, 0, 0),

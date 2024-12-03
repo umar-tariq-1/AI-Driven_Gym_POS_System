@@ -21,11 +21,12 @@ class _WelcomeButtonState extends State<WelcomeButton> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).popAndPushNamed(widget.onTapRoute);
+        Navigator.of(context).pushNamed(widget.onTapRoute);
       },
       child: Container(
-        padding: const EdgeInsets.all(30.0),
+        padding: const EdgeInsets.all(29.0),
         decoration: BoxDecoration(
+          // border: Border.all(width: 1, color: colorScheme.primary),
           color: widget.color!,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(50),
@@ -35,8 +36,8 @@ class _WelcomeButtonState extends State<WelcomeButton> {
           widget.buttonText!,
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold,
+            fontSize: 21.0,
+            // fontWeight: FontWeight.bold,
             color: widget.textColor!,
           ),
         ),
