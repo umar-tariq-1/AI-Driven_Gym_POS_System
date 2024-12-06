@@ -83,16 +83,14 @@ Widget buildHeader(BuildContext context) => Column(
 Widget buildMenuItems(BuildContext context, active) => Column(
       children: [
         CustomListTile(
-            active: active == "Welcome",
-            text: "Welcome Page",
-            iconData: Icons.device_unknown_rounded,
+            active: active == "Home Page",
+            text: "Home Page",
+            iconData: Icons.home_outlined,
+            iconSize: 27.5,
             onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  WelcomeScreen.routePath) {
-                if (ModalRoute.of(context)?.settings.name != MyApp.routePath) {
-                  Navigator.of(context).pop();
-                }
-                Navigator.of(context).popAndPushNamed(WelcomeScreen.routePath);
+              if (ModalRoute.of(context)?.settings.name != MyApp.routePath) {
+                Navigator.of(context).pop();
+                Navigator.of(context).popAndPushNamed(MyApp.routePath);
               }
             }),
         // if (ModalRoute.of(context)?.settings.name != EditQuiz.routePath) {
@@ -105,14 +103,16 @@ Widget buildMenuItems(BuildContext context, active) => Column(
           color: Color.fromARGB(255, 10, 10, 10),
         ),
         CustomListTile(
-            active: active == "Home Page",
-            text: "Home Page",
-            iconData: Icons.home_outlined,
-            iconSize: 27.5,
+            active: active == "Welcome",
+            text: "Logout",
+            iconData: Icons.logout_outlined,
             onTap: () {
-              if (ModalRoute.of(context)?.settings.name != MyApp.routePath) {
-                Navigator.of(context).pop();
-                Navigator.of(context).popAndPushNamed(MyApp.routePath);
+              if (ModalRoute.of(context)?.settings.name !=
+                  WelcomeScreen.routePath) {
+                if (ModalRoute.of(context)?.settings.name != MyApp.routePath) {
+                  Navigator.of(context).pop();
+                }
+                Navigator.of(context).popAndPushNamed(WelcomeScreen.routePath);
               }
             }),
       ],

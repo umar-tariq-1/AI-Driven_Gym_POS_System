@@ -115,12 +115,12 @@ class MyAppState extends State<MyApp> {
         body: Container(
           child: Row(
             children: [
-              CustomElevatedButton(
-                  buttonText: 'Submit', onClick: () {}, active: false),
-              CustomOutlinedButton(
-                buttonText: 'Submit',
-                onClick: () {},
-              ),
+              // CustomElevatedButton(
+              //     buttonText: 'Submit', onClick: () {}, active: false),
+              // CustomOutlinedButton(
+              //   buttonText: 'Submit',
+              //   onClick: () {},
+              // ),
             ],
           ),
         ),

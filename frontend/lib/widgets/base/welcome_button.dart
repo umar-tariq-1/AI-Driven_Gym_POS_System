@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class WelcomeButton extends StatefulWidget {
+class WelcomeButton extends StatelessWidget {
   const WelcomeButton(
       {super.key,
       this.buttonText,
@@ -13,32 +13,27 @@ class WelcomeButton extends StatefulWidget {
   final Color? textColor;
 
   @override
-  State<WelcomeButton> createState() => _WelcomeButtonState();
-}
-
-class _WelcomeButtonState extends State<WelcomeButton> {
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed(widget.onTapRoute);
+        Navigator.of(context).pushNamed(onTapRoute);
       },
       child: Container(
         padding: const EdgeInsets.all(29.0),
         decoration: BoxDecoration(
           // border: Border.all(width: 1, color: colorScheme.primary),
-          color: widget.color!,
+          color: color!,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(50),
           ),
         ),
         child: Text(
-          widget.buttonText!,
+          buttonText!,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 21.0,
             // fontWeight: FontWeight.bold,
-            color: widget.textColor!,
+            color: textColor!,
           ),
         ),
       ),

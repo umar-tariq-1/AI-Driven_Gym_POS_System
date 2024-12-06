@@ -98,9 +98,13 @@ class _RegisterState extends State<Register> {
                         controller: controllers['firstName'],
                         decoration: InputDecoration(
                           label: const Text('First Name'),
-                          hintText: 'First Name',
+                          labelStyle: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          hintText: 'First Name Here Write',
                           hintStyle: const TextStyle(
                             color: Colors.black26,
+                            overflow: TextOverflow.ellipsis,
                           ),
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
@@ -139,6 +143,9 @@ class _RegisterState extends State<Register> {
                         controller: controllers['lastName'],
                         decoration: InputDecoration(
                           label: const Text('Last Name'),
+                          labelStyle: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                          ),
                           hintText: 'Last Name',
                           hintStyle: const TextStyle(
                             color: Colors.black26,
@@ -197,6 +204,9 @@ class _RegisterState extends State<Register> {
                         ),
                         decoration: InputDecoration(
                           label: const Text('Gender'),
+                          labelStyle: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                          ),
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
                               color: Colors.black12,
@@ -239,12 +249,15 @@ class _RegisterState extends State<Register> {
                           _accType = value;
                         },
                         hint: const Text(
-                          'Account',
+                          'Role',
                           style:
                               TextStyle(color: Color.fromARGB(255, 88, 88, 88)),
                         ),
                         decoration: InputDecoration(
-                          label: const Text('Account'),
+                          label: const Text('Role'),
+                          labelStyle: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                          ),
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
                               color: Colors.black12,
@@ -280,6 +293,9 @@ class _RegisterState extends State<Register> {
                   controller: controllers['phone'],
                   decoration: InputDecoration(
                     label: const Text('Phone'),
+                    labelStyle: const TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     hintText: 'Enter Phone',
                     hintStyle: const TextStyle(
                       color: Colors.black26,
@@ -350,6 +366,9 @@ class _RegisterState extends State<Register> {
                   obscureText: _obscureText,
                   decoration: InputDecoration(
                     label: const Text('Password'),
+                    labelStyle: const TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     hintText: 'Enter Password',
                     hintStyle: const TextStyle(
                       color: Colors.black26,
@@ -448,6 +467,9 @@ class _RegisterState extends State<Register> {
                   obscureText: true,
                   decoration: InputDecoration(
                     label: const Text('Confirm Password'),
+                    labelStyle: const TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     hintText: 'Enter Password',
                     hintStyle: const TextStyle(
                       color: Colors.black26,

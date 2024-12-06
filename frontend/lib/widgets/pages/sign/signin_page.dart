@@ -24,7 +24,7 @@ class _SigninPageState extends State<SigninPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 57.5),
+              const SizedBox(height: 70),
               SvgPicture.asset(
                 'assets/images/signin.svg',
                 height: 300,
