@@ -13,7 +13,7 @@ register.post("/", async (req, res) => {
     var userData = {
       firstName: req.body?.firstName.trim(),
       lastName: req.body?.lastName.trim(),
-      phone: req.body?.phone.trim(),
+      email: req.body?.email.trim(),
       password: req.body?.password,
       confirmPassword: req.body?.confirmPassword,
       accType: req.body?.accType.trim(),
@@ -32,11 +32,17 @@ register.post("/", async (req, res) => {
       )} must not be empty`,
     });
   }
+  try {
+    userData.phone = req.body?.phone.trim();
+  } catch {
+    return res.status(403).send({ message: "Information is not complete" });
+  }
 
   // Validate user input
   const validationError = validate(
     userData.firstName,
     userData.lastName,
+    userData.email,
     userData.phone,
     userData.password,
     userData.confirmPassword,
@@ -51,15 +57,22 @@ register.post("/", async (req, res) => {
   // Check if user already exists
   try {
     const [existingUser] = await db.query(
-      "SELECT * FROM gym_pos_system.Users WHERE phone = ?",
-      [userData.phone]
+      `SELECT * FROM gym_pos_system.Users WHERE email = ?${
+        userData.phone == "" ? "" : " OR phone = ?"
+      }`,
+      userData.phone == "" ? [userData.email] : [userData.email, userData.phone]
     );
 
     if (existingUser.length > 0) {
-      return res.status(409).send({ message: "User already exists" });
+      return res.status(409).send({
+        message:
+          existingUser[0].email === userData.email
+            ? "Account already registered with this email"
+            : "Account already registered with this phone",
+      });
     }
   } catch (error) {
-    console.error("Error checking user existence: ", error);
+    console.log("Error checking user existence: ", error);
     return res.status(500).send({ message: "Internal server error" });
   }
 
@@ -71,38 +84,39 @@ register.post("/", async (req, res) => {
   // Insert user into MySQL database
   try {
     const insertQuery = `
-      INSERT INTO gym_pos_system.Users (firstName, lastName, gender, phone, password, accType)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO gym_pos_system.Users (firstName, lastName, gender, email, phone, password, accType)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
 
     const [result] = await db.query(insertQuery, [
       capitalize(userData.firstName),
       capitalize(userData.lastName),
       userData.gender,
-      userData.phone,
+      userData.email,
+      userData.phone === "" ? null : userData.phone,
       userData.password,
       userData.accType,
     ]);
 
-    const token = createToken(result.insertId, "365d");
+    const authToken = createToken(result.insertId, "365d");
     var tokenExpirationTime =
       Date.now() + 1000 * 60 * 60 * 24 * 365 - 1000 * 30;
 
     res.status(200).send({
       message: "User registered and logged in successfully",
       isLoggedIn: true,
-      token,
+      authToken,
       tokenExpirationTime,
       data: {
         firstName: capitalize(userData.firstName),
         lastName: capitalize(userData.lastName),
         gender: userData.gender,
-        phone: userData.phone,
+        phone: userData.phone === "" ? null : userData.phone,
         accType: userData.accType,
       },
     });
   } catch (error) {
-    console.error("Error registering user: ", error);
+    console.log("Error registering user: ", error);
     return res.status(500).send({ message: "Internal server error" });
   }
 });

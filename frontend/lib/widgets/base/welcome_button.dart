@@ -19,7 +19,7 @@ class WelcomeButton extends StatelessWidget {
         Navigator.of(context).pushNamed(onTapRoute);
       },
       child: Container(
-        padding: const EdgeInsets.all(29.0),
+        padding: const EdgeInsets.symmetric(vertical: 30.0),
         decoration: BoxDecoration(
           // border: Border.all(width: 1, color: colorScheme.primary),
           color: color!,

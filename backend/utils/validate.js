@@ -1,6 +1,7 @@
 function validate(
   Fname,
   Lname,
+  Email,
   Phone,
   Password,
   Confirmpassword,
@@ -19,10 +20,12 @@ function validate(
     return "Name must not contain any number";
   } else if (/\s/.test(Lname)) {
     return "Name must not contain blank space";
-  } /* else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(Email)) {
+  } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(Email)) {
     return "Invalid Email";
-  } */ else if (!/^\+?\d{8,15}$/.test(Phone)) {
-    return "Invalid Phone Number";
+  } else if (Phone !== "") {
+    if (!/^\+?\d{8,15}$/.test(Phone)) {
+      return "Invalid Phone Number";
+    }
   } else if (/\s/.test(Password)) {
     return "Password must not contain blank space";
   } else if (!Password.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/)) {

@@ -6,12 +6,12 @@ const deleteUser = express.Router();
 
 deleteUser.delete("/", authorize, async (req, res) => {
   const db = req.db;
-
-  const { token, password } = req.body;
+  const authToken = req.headers["auth-token"];
+  const { password } = req.body;
   const userId = req.userData.id;
   const userPassword = req.userData.password;
 
-  if (!token || !password) {
+  if (!authToken || !password) {
     return res
       .status(403)
       .send({ message: "Token and password are required." });

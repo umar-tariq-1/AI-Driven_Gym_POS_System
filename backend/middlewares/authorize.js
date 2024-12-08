@@ -3,16 +3,16 @@ const jwt = require("jsonwebtoken");
 module.exports.authorize = async (req, res, next) => {
   try {
     const db = req.db;
-    const token = req.body.token;
+    const authToken = req.headers["auth-token"];
 
-    if (!token) {
+    if (!authToken) {
       return res.status(401).send({
         message: "Sorry, you are not logged in for this",
         isLoggedIn: false,
       });
     }
 
-    jwt.verify(token, process.env.TOKEN_KEY, async (err, decoded) => {
+    jwt.verify(authToken, process.env.TOKEN_KEY, async (err, decoded) => {
       if (err) {
         return res.status(401).send({
           message: "Access token expired. Please login again!",

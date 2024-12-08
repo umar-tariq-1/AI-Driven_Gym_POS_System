@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import './register.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -14,6 +15,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
+    double statusBarHeight = MediaQuery.of(context).padding.top;
     return Scaffold(
       backgroundColor: Colors.white,
       body: GestureDetector(
@@ -21,17 +23,49 @@ class _RegisterPageState extends State<RegisterPage> {
           FocusScope.of(context).unfocus();
         },
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Stack(
             children: [
-              const SizedBox(height: 57.5),
-              SvgPicture.asset(
-                'assets/images/register.svg',
-                height: 280,
+              Container(
+                margin: EdgeInsets.only(top: 12 + statusBarHeight, left: 3),
+                child: Align(
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(
+                        Icons.arrow_back_rounded,
+                        size: 27,
+                      ),
+                    )),
               ),
-              const SizedBox(height: 30),
-              const Register(),
-              const SizedBox(height: 35),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Container(
+                  //   margin: EdgeInsets.only(top: 20 + statusBarHeight, left: 3),
+                  //   child: Align(
+                  //       alignment: Alignment.topLeft,
+                  //       child: IconButton(
+                  //         onPressed: () {
+                  //           Navigator.of(context).pop();
+                  //         },
+                  //         icon: const Icon(
+                  //           Icons.arrow_back_rounded,
+                  //           size: 27,
+                  //         ),
+                  //       )),
+                  // ),
+                  const SizedBox(height: 60),
+                  SvgPicture.asset(
+                    'assets/images/register.svg',
+                    height: 270,
+                  ),
+                  const SizedBox(height: 25),
+                  const Register(),
+                  const SizedBox(height: 35),
+                ],
+              ),
             ],
           ),
         ),

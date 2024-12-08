@@ -19,6 +19,7 @@ class _RegisterState extends State<Register> {
   Map controllers = {
     'firstName': TextEditingController(),
     'lastName': TextEditingController(),
+    'email': TextEditingController(),
     'phone': TextEditingController(),
     'password': TextEditingController(),
     'confirmPassword': TextEditingController()
@@ -27,7 +28,7 @@ class _RegisterState extends State<Register> {
   String? _gender = '';
   String? _accType = '';
   bool _obscureText = true;
-  String IP = '10.7.240.83';
+  String IP = '10.7.241.86';
   CountryCode _countryCode =
       const CountryCode(name: "Pakistan", code: "PK", dialCode: "+92");
   final FocusNode _focusNode = FocusNode();
@@ -181,7 +182,7 @@ class _RegisterState extends State<Register> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 15.0),
                 Row(
                   children: [
                     Expanded(
@@ -287,16 +288,60 @@ class _RegisterState extends State<Register> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 15.0),
+                TextFormField(
+                    keyboardType: TextInputType.name,
+                    controller: controllers['email'],
+                    decoration: InputDecoration(
+                      label: const Text('Email'),
+                      labelStyle: const TextStyle(
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      hintText: 'Email',
+                      hintStyle: const TextStyle(
+                        color: Colors.black26,
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Colors.black12,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Colors.black12,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.email_rounded,
+                        color: Colors.black54,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 16),
+                    ),
+                    validator: (value) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          value.trim() == "") {
+                        return 'Email is required';
+                      }
+                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                          .hasMatch(value.trim())) {
+                        return 'Enter a valid email address';
+                      }
+                      return null;
+                    }),
+                const SizedBox(height: 15.0),
                 TextFormField(
                   keyboardType: TextInputType.phone,
                   controller: controllers['phone'],
                   decoration: InputDecoration(
-                    label: const Text('Phone'),
+                    label: const Text('Phone (optional)'),
                     labelStyle: const TextStyle(
                       overflow: TextOverflow.ellipsis,
                     ),
-                    hintText: 'Enter Phone',
+                    hintText: 'Enter Phone (optional)',
                     hintStyle: const TextStyle(
                       color: Colors.black26,
                     ),
@@ -347,18 +392,19 @@ class _RegisterState extends State<Register> {
                         )),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty || value.trim() == "") {
-                      return 'Phone number is required';
-                    }
                     // Regex to validate phone number with country code
                     final phoneRegex = RegExp(r'^\+(\d{1,3})\s?\d{10,15}$');
-                    if (!phoneRegex.hasMatch(_countryCode.dialCode + value)) {
-                      return 'Enter valid phone number with country code';
+                    if (value != null &&
+                        value.isNotEmpty &&
+                        value.trim() != "") {
+                      if (!phoneRegex.hasMatch(_countryCode.dialCode + value)) {
+                        return 'Enter valid phone number with country code';
+                      }
                     }
                     return null;
                   },
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 15.0),
                 TextFormField(
                   focusNode: _focusNode,
                   keyboardType: TextInputType.visiblePassword,
@@ -460,7 +506,7 @@ class _RegisterState extends State<Register> {
                     }
                   },
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 15.0),
                 TextFormField(
                   keyboardType: TextInputType.visiblePassword,
                   controller: controllers['confirmPassword'],
@@ -503,7 +549,7 @@ class _RegisterState extends State<Register> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 15.0),
+                const SizedBox(height: 14.0),
                 Row(
                   children: [
                     Checkbox(
@@ -530,7 +576,7 @@ class _RegisterState extends State<Register> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 17.5),
+                const SizedBox(height: 16.5),
                 SizedBox(
                     width: double.infinity,
                     child: CustomElevatedButton(
@@ -542,8 +588,11 @@ class _RegisterState extends State<Register> {
                             var response = await http.post(url, body: {
                               'firstName': controllers['firstName'].text.trim(),
                               'lastName': controllers['lastName'].text.trim(),
-                              'phone': _countryCode.dialCode +
-                                  controllers['phone'].text.trim(),
+                              'email': controllers['email'].text.trim(),
+                              'phone': controllers['phone'].text.trim() != ""
+                                  ? _countryCode.dialCode +
+                                      controllers['phone'].text.trim()
+                                  : controllers['phone'].text.trim(),
                               'gender': _gender,
                               'accType': _accType,
                               'password': controllers['password'].text,
@@ -553,35 +602,47 @@ class _RegisterState extends State<Register> {
                             if (response.statusCode == 200) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Registered Successfully'),
+                                  backgroundColor: Colors.white,
+                                  content: Text(
+                                    'Registered Successfully',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
                                 ),
                               );
                               controllers['firstName'].clear();
                               controllers['lastName'].clear();
+                              controllers['email'].clear();
                               controllers['phone'].clear();
                               controllers['password'].clear();
                               controllers['confirmPassword'].clear();
+                              // print(json.decode(response.body));
                             } else {
-                              print(json.decode(response.body)['message']);
+                              // print(json.decode(response.body)['message']);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
+                                  backgroundColor: Colors.white,
                                   content: Text(
-                                      json.decode(response.body)['message']),
+                                    json.decode(response.body)['message'],
+                                    style: const TextStyle(color: Colors.black),
+                                  ),
                                 ),
                               );
                             }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
+                                backgroundColor: Colors.white,
                                 content: Text(
-                                    'Please agree to the processing of personal data'),
+                                  'Please agree to the processing of personal data',
+                                  style: TextStyle(color: Colors.black),
+                                ),
                               ),
                             );
                           }
                         }
                       },
                     )),
-                const SizedBox(height: 30.0),
+                const SizedBox(height: 20.0),
                 // Row(
                 //   mainAxisAlignment: MainAxisAlignment.center,
                 //   children: [
@@ -638,6 +699,7 @@ class _RegisterState extends State<Register> {
                     ),
                     GestureDetector(
                       onTap: () {
+                        Navigator.pop(context);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -654,7 +716,8 @@ class _RegisterState extends State<Register> {
                       ),
                     ),
                   ],
-                )
+                ),
+                // const SizedBox(height: 5.0),
               ],
             ),
           ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/main.dart';
 import 'package:frontend/widgets/base/list_tile.dart';
 import 'package:frontend/widgets/pages/welcome.dart';
+import 'package:frontend/widgets/pages/home_page.dart';
 import '../../theme/theme.dart';
 
 class CustomNavigationDrawer extends StatelessWidget {
@@ -88,9 +89,9 @@ Widget buildMenuItems(BuildContext context, active) => Column(
             iconData: Icons.home_outlined,
             iconSize: 27.5,
             onTap: () {
-              if (ModalRoute.of(context)?.settings.name != MyApp.routePath) {
+              if (ModalRoute.of(context)?.settings.name != HomePage.routePath) {
                 Navigator.of(context).pop();
-                Navigator.of(context).popAndPushNamed(MyApp.routePath);
+                Navigator.of(context).popAndPushNamed(HomePage.routePath);
               }
             }),
         // if (ModalRoute.of(context)?.settings.name != EditQuiz.routePath) {
@@ -107,12 +108,15 @@ Widget buildMenuItems(BuildContext context, active) => Column(
             text: "Logout",
             iconData: Icons.logout_outlined,
             onTap: () {
+              // Navigator.of(context)
+              //     .popUntil(ModalRoute.withName(MyApp.routePath));
+              // Navigator.of(context).popAndPushNamed(WelcomeScreen.routePath);
               if (ModalRoute.of(context)?.settings.name !=
-                  WelcomeScreen.routePath) {
+                  WelcomePage.routePath) {
                 if (ModalRoute.of(context)?.settings.name != MyApp.routePath) {
                   Navigator.of(context).pop();
                 }
-                Navigator.of(context).popAndPushNamed(WelcomeScreen.routePath);
+                Navigator.of(context).popAndPushNamed(WelcomePage.routePath);
               }
             }),
       ],

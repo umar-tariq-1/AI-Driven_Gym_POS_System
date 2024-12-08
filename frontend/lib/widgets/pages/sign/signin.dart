@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:frontend/data/local_storage.dart';
+import 'package:frontend/data/secure_storage.dart';
 import 'package:frontend/widgets/base/custom_elevated_button.dart';
+import 'package:frontend/widgets/pages/sign/forget_passsword_page.dart';
 import 'package:frontend/widgets/pages/sign/register_page.dart';
 import 'package:http/http.dart' as http;
-import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 
 import '../../../theme/theme.dart';
 
@@ -15,18 +19,12 @@ class Signin extends StatefulWidget {
 
 class _SigninState extends State<Signin> {
   Map controllers = {
-    'phone': TextEditingController(),
+    'email': TextEditingController(),
     'password': TextEditingController(),
   };
+  String IP = '10.7.241.86';
   bool _obscureText = true;
   bool _rememberPassword = true;
-  CountryCode _countryCode =
-      const CountryCode(name: "Pakistan", code: "PK", dialCode: "+92");
-  final countryPicker = FlCountryCodePicker(
-      showSearchBar: true,
-      title: Container(
-        height: 10,
-      ));
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -61,72 +59,48 @@ class _SigninState extends State<Signin> {
                 //   height: 40.0,
                 // ),
                 TextFormField(
-                  keyboardType: TextInputType.phone,
-                  controller: controllers['phone'],
-                  decoration: InputDecoration(
-                    label: const Text('Phone'),
-                    hintText: 'Enter Phone',
-                    hintStyle: const TextStyle(
-                      color: Colors.black26,
-                    ),
-                    border: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.black12,
+                    keyboardType: TextInputType.name,
+                    controller: controllers['email'],
+                    decoration: InputDecoration(
+                      label: const Text('Email'),
+                      labelStyle: const TextStyle(
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.black12,
+                      hintText: 'Email',
+                      hintStyle: const TextStyle(
+                        color: Colors.black26,
                       ),
-                      borderRadius: BorderRadius.circular(10),
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Colors.black12,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Colors.black12,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.email_rounded,
+                        color: Colors.black54,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 16),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 16),
-                    prefixIcon: GestureDetector(
-                        onTap: () async {
-                          final picked =
-                              await countryPicker.showPicker(context: context);
-                          if (picked != null) {
-                            setState(() {
-                              _countryCode = picked;
-                            });
-                          }
-                        },
-                        child: IntrinsicWidth(
-                          child: Container(
-                            margin: const EdgeInsets.only(left: 13),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.phone,
-                                  color: Colors.black54,
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.only(left: 12),
-                                  child: Text(
-                                    "${_countryCode.dialCode} | ",
-                                    style: const TextStyle(
-                                        color: Colors.black54, fontSize: 18),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty || value.trim() == "") {
-                      return 'Phone number is required';
-                    }
-                    // Regex to validate phone number with country code
-                    final phoneRegex = RegExp(r'^\+(\d{1,3})\s?\d{10,15}$');
-                    if (!phoneRegex.hasMatch(_countryCode.dialCode + value)) {
-                      return 'Enter valid phone number with country code';
-                    }
-                    return null;
-                  },
-                ),
+                    validator: (value) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          value.trim() == "") {
+                        return 'Email is required';
+                      }
+                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                          .hasMatch(value.trim())) {
+                        return 'Enter a valid email address';
+                      }
+                      return null;
+                    }),
                 const SizedBox(height: 16.0),
                 TextFormField(
                   keyboardType: TextInputType.visiblePassword,
@@ -134,6 +108,9 @@ class _SigninState extends State<Signin> {
                   obscureText: _obscureText,
                   decoration: InputDecoration(
                     label: const Text('Password'),
+                    labelStyle: const TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     hintText: 'Enter Password',
                     hintStyle: const TextStyle(
                       color: Colors.black26,
@@ -213,7 +190,15 @@ class _SigninState extends State<Signin> {
                           color: colorScheme.primary,
                         ),
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (e) => const ForgetPasswordPage(),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -226,29 +211,55 @@ class _SigninState extends State<Signin> {
                     buttonText: "Sign In",
                     onClick: () async {
                       if (_formKey.currentState?.validate() ?? false) {
-                        var url = Uri.parse('http://localhost:3001/signin');
+                        var url = Uri.parse('http://$IP:3001/signin');
                         var response = await http.post(url, body: {
-                          'phone': _countryCode.dialCode +
-                              controllers['phone'].text.trim(),
+                          'email': controllers['email'].text.trim(),
                           'password': controllers['password'].text,
                         });
 
                         if (response.statusCode == 200) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('SignedIn Successfully'),
+                              backgroundColor: Colors.white,
+                              content: Text(
+                                'Signed In Successfully',
+                                style: TextStyle(color: Colors.black),
+                              ),
                             ),
                           );
-                          controllers['phone'].clear();
+                          controllers['email'].clear();
                           controllers['password'].clear();
-                          // print(response.body);
+
+                          Map responseBody = json.decode(response.body);
+                          await SecureStorage()
+                              .setItem("authToken", responseBody["authToken"]);
+                          await LocalStorage().setItems([
+                            "isLoggedIn",
+                            "tokenExpirationTime",
+                            "userData"
+                          ], [
+                            true,
+                            responseBody["tokenExpirationTime"],
+                            responseBody["data"]
+                          ]);
+                          Navigator.pop(context);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (e) => const RegisterPage(),
+                              ));
+                          // print(json.decode(response.body));
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Failed to LogIn'),
+                            SnackBar(
+                              backgroundColor: Colors.white,
+                              content: Text(
+                                json.decode(response.body)['message'],
+                                style: const TextStyle(color: Colors.black),
+                              ),
                             ),
                           );
-                          // print(response.body);
+                          // print(json.decode(response.body)['message']);
                         }
                       }
                     },
@@ -269,6 +280,7 @@ class _SigninState extends State<Signin> {
                     ),
                     GestureDetector(
                       onTap: () {
+                        Navigator.pop(context);
                         Navigator.push(
                           context,
                           MaterialPageRoute(

@@ -80,7 +80,8 @@ editUser.put("/info", authorize, async (req, res) => {
     var validationError1 = validate(
       firstName,
       "Tariq",
-      "12345678910",
+      "email@gmail.com",
+      "+1234567890",
       "Qwe123",
       "Qwe123",
       "admin"
@@ -90,7 +91,8 @@ editUser.put("/info", authorize, async (req, res) => {
     var validationError2 = validate(
       "Umar",
       lastName,
-      "12345678910",
+      "email@gmail.com",
+      "+1234567890",
       "Qwe123",
       "Qwe123",
       "admin"

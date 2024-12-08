@@ -14,6 +14,7 @@ class SigninPage extends StatefulWidget {
 class _SigninPageState extends State<SigninPage> {
   @override
   Widget build(BuildContext context) {
+    double statusBarHeight = MediaQuery.of(context).padding.top;
     return Scaffold(
       backgroundColor: Colors.white,
       body: GestureDetector(
@@ -21,17 +22,35 @@ class _SigninPageState extends State<SigninPage> {
           FocusScope.of(context).unfocus();
         },
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Stack(
             children: [
-              const SizedBox(height: 70),
-              SvgPicture.asset(
-                'assets/images/signin.svg',
-                height: 300,
+              Container(
+                margin: EdgeInsets.only(top: 12 + statusBarHeight, left: 3),
+                child: Align(
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(
+                        Icons.arrow_back_rounded,
+                        size: 27,
+                      ),
+                    )),
               ),
-              const SizedBox(height: 35),
-              const Signin(),
-              const SizedBox(height: 35),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 110),
+                  SvgPicture.asset(
+                    'assets/images/signin.svg',
+                    height: 300,
+                  ),
+                  const SizedBox(height: 35),
+                  const Signin(),
+                  const SizedBox(height: 30),
+                ],
+              ),
             ],
           ),
         ),
