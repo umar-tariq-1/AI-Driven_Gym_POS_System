@@ -102,7 +102,7 @@ class _RegisterState extends State<Register> {
                           labelStyle: const TextStyle(
                             overflow: TextOverflow.ellipsis,
                           ),
-                          hintText: 'First Name Here Write',
+                          hintText: 'First Name',
                           hintStyle: const TextStyle(
                             color: Colors.black26,
                             overflow: TextOverflow.ellipsis,
@@ -290,7 +290,7 @@ class _RegisterState extends State<Register> {
                 ),
                 const SizedBox(height: 15.0),
                 TextFormField(
-                    keyboardType: TextInputType.name,
+                    keyboardType: TextInputType.emailAddress,
                     controller: controllers['email'],
                     decoration: InputDecoration(
                       label: const Text('Email'),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/data/local_storage.dart';
 import 'package:frontend/widgets/pages/home_page.dart';
-import 'package:frontend/widgets/pages/welcome.dart';
+import 'package:frontend/widgets/pages/welcome_page.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -34,9 +34,9 @@ class _LandingPageState extends State<LandingPage> {
       if (isLoggedIn &&
           tokenExpirationTime != null &&
           tokenExpirationTime > currentTime) {
-        Navigator.pushReplacementNamed(context, HomePage.routePath);
+        Navigator.of(context).popAndPushNamed(HomePage.routePath);
       } else {
-        Navigator.pushReplacementNamed(context, WelcomePage.routePath);
+        Navigator.of(context).popAndPushNamed(WelcomePage.routePath);
       }
     }
   }

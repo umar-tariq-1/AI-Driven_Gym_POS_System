@@ -31,6 +31,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                     ),
                   )),
             ),
+            const Text("Forget Password")
           ],
         ));
   }

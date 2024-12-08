@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/data/local_storage.dart';
 import 'package:frontend/data/secure_storage.dart';
 import 'package:frontend/widgets/base/custom_elevated_button.dart';
+import 'package:frontend/widgets/pages/home_page.dart';
 import 'package:frontend/widgets/pages/sign/forget_passsword_page.dart';
 import 'package:frontend/widgets/pages/sign/register_page.dart';
 import 'package:http/http.dart' as http;
@@ -59,7 +60,7 @@ class _SigninState extends State<Signin> {
                 //   height: 40.0,
                 // ),
                 TextFormField(
-                    keyboardType: TextInputType.name,
+                    keyboardType: TextInputType.emailAddress,
                     controller: controllers['email'],
                     decoration: InputDecoration(
                       label: const Text('Email'),
@@ -246,7 +247,7 @@ class _SigninState extends State<Signin> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (e) => const RegisterPage(),
+                                builder: (e) => const HomePage(),
                               ));
                           // print(json.decode(response.body));
                         } else {

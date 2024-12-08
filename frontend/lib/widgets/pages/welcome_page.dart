@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/data/local_storage.dart';
+import 'package:frontend/widgets/pages/home_page.dart';
 import 'package:frontend/widgets/pages/sign/register_page.dart';
 import 'package:frontend/widgets/pages/sign/signin_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -133,17 +135,39 @@ class _WelcomePageState extends State<WelcomePage> {
                       Expanded(
                         child: WelcomeButton(
                           buttonText: 'Sign in',
-                          onTapRoute: SigninPage.routePath,
                           color: Colors.transparent,
                           textColor: colorScheme.primary,
+                          onClick: () async {
+                            final localStorage = LocalStorage();
+                            final isLoggedIn =
+                                await localStorage.getItem('isLoggedIn') ==
+                                    true;
+                            final tokenExpirationTime = await localStorage
+                                .getItem('tokenExpirationTime');
+
+                            final currentTime =
+                                DateTime.now().millisecondsSinceEpoch;
+                            if (isLoggedIn &&
+                                tokenExpirationTime != null &&
+                                tokenExpirationTime > currentTime) {
+                              Navigator.of(context)
+                                  .pushNamed(HomePage.routePath);
+                            } else {
+                              Navigator.of(context)
+                                  .pushNamed(SigninPage.routePath);
+                            }
+                          },
                         ),
                       ),
                       Expanded(
                         child: WelcomeButton(
                           buttonText: 'Register',
-                          onTapRoute: RegisterPage.routePath,
                           color: colorScheme.primary,
                           textColor: colorScheme.onPrimary,
+                          onClick: () {
+                            Navigator.of(context)
+                                .pushNamed(RegisterPage.routePath);
+                          },
                         ),
                       ),
                     ],

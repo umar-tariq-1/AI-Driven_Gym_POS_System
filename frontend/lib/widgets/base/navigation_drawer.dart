@@ -1,9 +1,9 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:frontend/main.dart';
+import 'package:frontend/data/local_storage.dart';
 import 'package:frontend/widgets/base/list_tile.dart';
-import 'package:frontend/widgets/pages/welcome.dart';
+import 'package:frontend/widgets/pages/welcome_page.dart';
 import 'package:frontend/widgets/pages/home_page.dart';
 import '../../theme/theme.dart';
 
@@ -90,34 +90,24 @@ Widget buildMenuItems(BuildContext context, active) => Column(
             iconSize: 27.5,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name != HomePage.routePath) {
-                Navigator.of(context).pop();
+                // Navigator.of(context).pop();
                 Navigator.of(context).popAndPushNamed(HomePage.routePath);
               }
             }),
-        // if (ModalRoute.of(context)?.settings.name != EditQuiz.routePath) {
-        //         if (ModalRoute.of(context)?.settings.name != MyApp.routePath) {
-        //           Navigator.of(context).pop();
-        //         }
-        //         Navigator.of(context).popAndPushNamed(EditQuiz.routePath);
-        //       }
         const Divider(
           color: Color.fromARGB(255, 10, 10, 10),
         ),
         CustomListTile(
-            active: active == "Welcome",
+            active: active == "Logout",
             text: "Logout",
             iconData: Icons.logout_outlined,
             onTap: () {
-              // Navigator.of(context)
-              //     .popUntil(ModalRoute.withName(MyApp.routePath));
-              // Navigator.of(context).popAndPushNamed(WelcomeScreen.routePath);
-              if (ModalRoute.of(context)?.settings.name !=
-                  WelcomePage.routePath) {
-                if (ModalRoute.of(context)?.settings.name != MyApp.routePath) {
-                  Navigator.of(context).pop();
-                }
-                Navigator.of(context).popAndPushNamed(WelcomePage.routePath);
-              }
+              final localStorage = LocalStorage();
+              localStorage
+                  .setItems(["isLoggedIn", "tokenExpirationTime"], [false, 0]);
+              Navigator.of(context)
+                  .popUntil((route) => route.settings.name == '/');
+              Navigator.of(context).popAndPushNamed(WelcomePage.routePath);
             }),
       ],
     );

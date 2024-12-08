@@ -3,7 +3,7 @@ import 'package:frontend/widgets/pages/landing_page.dart';
 import 'package:frontend/widgets/pages/sign/forget_passsword_page.dart';
 import 'package:frontend/widgets/pages/sign/register_page.dart';
 import 'package:frontend/widgets/pages/sign/signin_page.dart';
-import 'package:frontend/widgets/pages/welcome.dart';
+import 'package:frontend/widgets/pages/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './theme/theme.dart';
