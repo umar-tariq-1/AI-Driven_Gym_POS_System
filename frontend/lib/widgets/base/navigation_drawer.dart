@@ -87,11 +87,11 @@ Widget buildMenuItems(BuildContext context, active) => Column(
             active: active == "Home Page",
             text: "Home Page",
             iconData: Icons.home_outlined,
-            iconSize: 27.5,
+            iconSize: 26.75,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name != HomePage.routePath) {
-                // Navigator.of(context).pop();
-                Navigator.of(context).popAndPushNamed(HomePage.routePath);
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    HomePage.routePath, (route) => false);
               }
             }),
         const Divider(
@@ -105,9 +105,8 @@ Widget buildMenuItems(BuildContext context, active) => Column(
               final localStorage = LocalStorage();
               localStorage
                   .setItems(["isLoggedIn", "tokenExpirationTime"], [false, 0]);
-              Navigator.of(context)
-                  .popUntil((route) => route.settings.name == '/');
-              Navigator.of(context).popAndPushNamed(WelcomePage.routePath);
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  WelcomePage.routePath, (route) => false);
             }),
       ],
     );

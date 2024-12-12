@@ -35,7 +35,7 @@ app.use(express.urlencoded({ extended: true }));
     app.use("/signin", signin);
     app.use("/delete-user", deleteUser);
     app.use("/edit-user", editUser);
-    app.use("/send-otp", sendOtp);
+    app.use("/otp", sendOtp);
 
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {

@@ -243,12 +243,8 @@ class _SigninState extends State<Signin> {
                             responseBody["tokenExpirationTime"],
                             responseBody["data"]
                           ]);
-                          Navigator.pop(context);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (e) => const HomePage(),
-                              ));
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              HomePage.routePath, (route) => false);
                           // print(json.decode(response.body));
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(

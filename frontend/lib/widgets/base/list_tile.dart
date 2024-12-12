@@ -14,7 +14,7 @@ class CustomListTile extends StatelessWidget {
       required this.text,
       required this.iconData,
       required this.onTap,
-      this.iconSize = 26});
+      this.iconSize = 25});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class CustomListTile extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'RalewayLight',
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
+                fontSize: 17.5,
                 color: active ? colorScheme.onPrimary : colorScheme.shadow,
               ),
             )),

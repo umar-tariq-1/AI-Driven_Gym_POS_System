@@ -66,7 +66,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(85),
+                        borderRadius: BorderRadius.circular(80),
                         child: Image.asset(
                           'assets/images/welcome.gif',
                           width: screenWidth <= _backgroundHeight * 0.37

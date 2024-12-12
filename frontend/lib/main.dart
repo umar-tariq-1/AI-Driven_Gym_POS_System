@@ -36,6 +36,7 @@ class MyAppState extends State<MyApp> {
     ));
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
         overlays: List.empty());
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     return MaterialApp(
         initialRoute: MyApp.routePath,

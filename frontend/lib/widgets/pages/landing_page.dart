@@ -34,9 +34,11 @@ class _LandingPageState extends State<LandingPage> {
       if (isLoggedIn &&
           tokenExpirationTime != null &&
           tokenExpirationTime > currentTime) {
-        Navigator.of(context).popAndPushNamed(HomePage.routePath);
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(HomePage.routePath, (route) => false);
       } else {
-        Navigator.of(context).popAndPushNamed(WelcomePage.routePath);
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(WelcomePage.routePath, (route) => false);
       }
     }
   }
