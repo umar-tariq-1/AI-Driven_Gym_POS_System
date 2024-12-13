@@ -13,7 +13,7 @@ class CustomElevatedButton extends StatelessWidget {
   final bool disabled;
   final bool active;
   final Icon? leadingIcon;
-  final void Function() onClick;
+  final VoidCallback onClick;
 
   const CustomElevatedButton(
       {super.key,
@@ -49,8 +49,12 @@ class CustomElevatedButton extends StatelessWidget {
         ),
         child: ElevatedButton(
           style: TextButton.styleFrom(
-            backgroundColor: backgroundColor ?? colorScheme.primary,
-            foregroundColor: foregroundColor ?? colorScheme.onPrimary,
+            backgroundColor: disabled
+                ? Colors.grey.shade400
+                : backgroundColor ?? colorScheme.primary,
+            foregroundColor: disabled
+                ? Colors.grey.shade600
+                : foregroundColor ?? colorScheme.onPrimary,
             padding: EdgeInsets.symmetric(horizontal: 25, vertical: height),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(borderRadius),

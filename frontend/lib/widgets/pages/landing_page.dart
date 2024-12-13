@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/data/local_storage.dart';
 import 'package:frontend/widgets/pages/home_page.dart';
+import 'package:frontend/widgets/pages/sign/forget_passsword_page.dart';
 import 'package:frontend/widgets/pages/welcome_page.dart';
 
 class LandingPage extends StatefulWidget {
@@ -37,8 +38,9 @@ class _LandingPageState extends State<LandingPage> {
         Navigator.of(context)
             .pushNamedAndRemoveUntil(HomePage.routePath, (route) => false);
       } else {
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(WelcomePage.routePath, (route) => false);
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            /* WelcomePage.routePath */ ForgetPasswordPage.routePath,
+            (route) => false);
       }
     }
   }

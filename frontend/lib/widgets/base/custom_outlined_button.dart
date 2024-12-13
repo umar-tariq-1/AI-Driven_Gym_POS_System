@@ -14,7 +14,7 @@ class CustomOutlinedButton extends StatelessWidget {
   final Icon? leadingIcon;
   final bool transitionColor;
   final bool border;
-  final void Function() onClick;
+  final VoidCallback onClick;
 
   const CustomOutlinedButton(
       {super.key,
@@ -63,14 +63,18 @@ class CustomOutlinedButton extends StatelessWidget {
                 // }
                 return BorderSide(
                   color: border
-                      ? color ?? colorScheme.primary
+                      ? disabled
+                          ? Colors.grey.shade400
+                          : color ?? colorScheme.primary
                       : Colors.transparent,
                 );
               },
             ),
             foregroundColor: WidgetStateProperty.resolveWith<Color?>(
               (Set<WidgetState> states) {
-                if (states.contains(WidgetState.hovered) ||
+                if (disabled) {
+                  return Colors.grey.shade400;
+                } else if (states.contains(WidgetState.hovered) ||
                     states.contains(WidgetState.pressed)) {
                   return transitionColor
                       ? colorScheme.surface

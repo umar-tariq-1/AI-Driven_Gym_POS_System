@@ -31,9 +31,9 @@ sendOtp.post("/send", async (req, res) => {
 
     // const info = await transporter.sendMail(mailOptions);
 
-    if (!info) {
-      return res.status(500).send({ message: "Failed to send OTP over Email" });
-    }
+    // if (!info) {
+    //   return res.status(500).send({ message: "Failed to send OTP over Email" });
+    // }
     const salt = await bcrypt.genSalt(10);
     const hashedOTP = await bcrypt.hash(otp.toString(), salt);
     res.status(200).send({
@@ -41,6 +41,7 @@ sendOtp.post("/send", async (req, res) => {
       hashedOTP,
     });
   } catch (error) {
+    console.log(error);
     if (error.code === "EENVELOPE") {
       res.status(400).send({ message: "Invalid Email Address" });
     } else if (error.code === "EAUTH") {
