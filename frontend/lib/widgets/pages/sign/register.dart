@@ -484,7 +484,7 @@ class _RegisterState extends State<Register> {
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold),
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 15),
                                   const Text(
                                     '• 6-20 characters,\n• At least 1 number,\n• 1 lowercase letter,\n• 1 uppercase letter',
                                     style: TextStyle(fontSize: 17),
@@ -492,7 +492,7 @@ class _RegisterState extends State<Register> {
                                   const SizedBox(height: 20),
                                   TextButton(
                                     child: const Text('OK',
-                                        style: TextStyle(fontSize: 17)),
+                                        style: TextStyle(fontSize: 18)),
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },

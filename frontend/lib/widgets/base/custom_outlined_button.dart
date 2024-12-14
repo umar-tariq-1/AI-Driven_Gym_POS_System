@@ -64,7 +64,7 @@ class CustomOutlinedButton extends StatelessWidget {
                 return BorderSide(
                   color: border
                       ? disabled
-                          ? Colors.grey.shade400
+                          ? Colors.grey.shade500
                           : color ?? colorScheme.primary
                       : Colors.transparent,
                 );
@@ -73,7 +73,7 @@ class CustomOutlinedButton extends StatelessWidget {
             foregroundColor: WidgetStateProperty.resolveWith<Color?>(
               (Set<WidgetState> states) {
                 if (disabled) {
-                  return Colors.grey.shade400;
+                  return Colors.grey.shade500;
                 } else if (states.contains(WidgetState.hovered) ||
                     states.contains(WidgetState.pressed)) {
                   return transitionColor

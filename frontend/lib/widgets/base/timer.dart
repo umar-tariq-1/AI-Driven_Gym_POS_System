@@ -58,7 +58,7 @@ class _TimerWidgetState extends State<TimerWidget> {
       child: Text(
         '${widget.beforeText}$_secondsRemaining seconds',
         style: TextStyle(
-          color: colorScheme.onSurface,
+          color: Colors.grey.shade800,
           fontFamily: "RalewayMedium",
           fontSize: 14,
         ),

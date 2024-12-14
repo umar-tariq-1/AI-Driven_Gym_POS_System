@@ -6,6 +6,7 @@ import 'package:frontend/widgets/pages/sign/signin_page.dart';
 import 'package:frontend/widgets/pages/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import './theme/theme.dart';
 
 Color statusBarColor = /* Colors.black26 */ Colors.transparent;
@@ -38,13 +39,14 @@ class MyAppState extends State<MyApp> {
         overlays: List.empty());
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-    return MaterialApp(
+    return GetMaterialApp(
         initialRoute: MyApp.routePath,
         routes: {
           WelcomePage.routePath: (context) => const WelcomePage(),
           RegisterPage.routePath: (context) => const RegisterPage(),
           SigninPage.routePath: (context) => const SigninPage(),
-          ForgetPasswordPage.routePath: (context) => const ForgetPasswordPage(),
+          ForgetPasswordPage.routePath: (context) =>
+              ForgetPasswordPage(email: "No Email Entered"),
           HomePage.routePath: (context) => const HomePage(),
           LandingPage.routePath: (context) => const LandingPage(),
         },

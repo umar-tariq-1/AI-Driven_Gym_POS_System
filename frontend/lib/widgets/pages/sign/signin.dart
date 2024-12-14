@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/data/local_storage.dart';
 import 'package:frontend/data/secure_storage.dart';
+import 'package:frontend/main.dart';
 import 'package:frontend/widgets/base/custom_elevated_button.dart';
 import 'package:frontend/widgets/pages/home_page.dart';
 import 'package:frontend/widgets/pages/sign/forget_passsword_page.dart';
@@ -27,6 +28,7 @@ class _SigninState extends State<Signin> {
   bool _obscureText = true;
   bool _rememberPassword = true;
   final _formKey = GlobalKey<FormState>();
+  final _forgetPasswordFormKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -192,12 +194,111 @@ class _SigninState extends State<Signin> {
                         ),
                       ),
                       onTap: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (e) => const ForgetPasswordPage(),
-                          ),
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Dialog(
+                              backgroundColor: backgroundColor,
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 1,
+                                padding:
+                                    const EdgeInsets.fromLTRB(15, 25, 15, 17.5),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    const Text(
+                                      'Enter Email for OTP Verification',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 30),
+                                    Form(
+                                      key: _forgetPasswordFormKey,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          TextFormField(
+                                            keyboardType:
+                                                TextInputType.emailAddress,
+                                            controller: controllers['email'],
+                                            decoration: InputDecoration(
+                                              label: const Text('Email'),
+                                              labelStyle: const TextStyle(
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              hintText: 'Email',
+                                              hintStyle: const TextStyle(
+                                                color: Colors.black26,
+                                              ),
+                                              border: OutlineInputBorder(
+                                                borderSide: const BorderSide(
+                                                  color: Colors.black12,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: const BorderSide(
+                                                  color: Colors.black12,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              prefixIcon: const Icon(
+                                                Icons.email_rounded,
+                                                color: Colors.black54,
+                                              ),
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 16,
+                                                      horizontal: 16),
+                                            ),
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty ||
+                                                  value.trim() == "") {
+                                                return 'Email is required';
+                                              }
+                                              if (!RegExp(
+                                                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                                  .hasMatch(value.trim())) {
+                                                return 'Enter a valid email address';
+                                              }
+                                              return null;
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    TextButton(
+                                      child: const Text('Request OTP',
+                                          style: TextStyle(fontSize: 18)),
+                                      onPressed: () {
+                                        if (_forgetPasswordFormKey.currentState
+                                                ?.validate() ??
+                                            false) {
+                                          Navigator.pop(context);
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (e) =>
+                                                  ForgetPasswordPage(
+                                                      email:
+                                                          controllers['email']
+                                                              .text),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         );
                       },
                     ),

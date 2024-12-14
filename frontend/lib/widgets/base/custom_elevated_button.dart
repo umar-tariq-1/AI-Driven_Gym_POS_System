@@ -53,7 +53,7 @@ class CustomElevatedButton extends StatelessWidget {
                 ? Colors.grey.shade400
                 : backgroundColor ?? colorScheme.primary,
             foregroundColor: disabled
-                ? Colors.grey.shade600
+                ? Colors.grey.shade700
                 : foregroundColor ?? colorScheme.onPrimary,
             padding: EdgeInsets.symmetric(horizontal: 25, vertical: height),
             shape: RoundedRectangleBorder(

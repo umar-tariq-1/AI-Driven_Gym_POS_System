@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/widgets/base/pinput.dart';
+import 'package:frontend/widgets/base/otp.dart';
 
 class ForgetPasswordPage extends StatefulWidget {
-  const ForgetPasswordPage({super.key});
+  String email;
+  ForgetPasswordPage({super.key, required this.email});
 
   static const routePath = '/forget-password';
 
@@ -11,10 +12,13 @@ class ForgetPasswordPage extends StatefulWidget {
 }
 
 class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
+  final String id = "forgetPassword";
   final TextEditingController otpController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     double statusBarHeight = MediaQuery.of(context).padding.top;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
         backgroundColor: Colors.white,
         body: GestureDetector(
@@ -35,7 +39,15 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                       ),
                     )),
               ),
-              Center(child: RoundedWithCustomCursor())
+              Container(
+                margin: EdgeInsets.fromLTRB(0, statusBarHeight + 60, 0, 20),
+                height: screenHeight,
+                width: screenWidth,
+                child: OTP(
+                  email: widget.email,
+                  id: id,
+                ),
+              )
             ],
           ),
         ));

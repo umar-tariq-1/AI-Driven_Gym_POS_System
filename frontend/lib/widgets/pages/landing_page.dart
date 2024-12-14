@@ -39,7 +39,7 @@ class _LandingPageState extends State<LandingPage> {
             .pushNamedAndRemoveUntil(HomePage.routePath, (route) => false);
       } else {
         Navigator.of(context).pushNamedAndRemoveUntil(
-            /* WelcomePage.routePath */ ForgetPasswordPage.routePath,
+            WelcomePage.routePath /* ForgetPasswordPage.routePath */,
             (route) => false);
       }
     }
