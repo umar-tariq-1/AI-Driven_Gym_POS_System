@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:frontend/data/local_storage.dart';
+import 'package:frontend/data/secure_storage.dart';
 import 'package:frontend/widgets/base/list_tile.dart';
 import 'package:frontend/widgets/pages/welcome_page.dart';
 import 'package:frontend/widgets/pages/home_page.dart';
@@ -102,9 +103,10 @@ Widget buildMenuItems(BuildContext context, active) => Column(
             text: "Logout",
             iconData: Icons.logout_outlined,
             onTap: () {
-              final localStorage = LocalStorage();
-              localStorage
-                  .setItems(["isLoggedIn", "tokenExpirationTime"], [false, 0]);
+              final secureStorage = SecureStorage();
+              secureStorage.setItems(
+                  ["isLoggedIn", "tokenExpirationTime", "authToken"],
+                  [false, 0, ""]);
               Navigator.of(context).pushNamedAndRemoveUntil(
                   WelcomePage.routePath, (route) => false);
             }),

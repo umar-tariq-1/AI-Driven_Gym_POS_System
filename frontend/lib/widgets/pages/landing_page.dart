@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/data/secure_storage.dart';
 import 'package:frontend/widgets/pages/home_page.dart';
 import 'package:frontend/widgets/pages/welcome_page.dart';
@@ -24,16 +25,16 @@ class _LandingPageState extends State<LandingPage> {
     await Future.delayed(const Duration(milliseconds: 2000));
 
     final secureStorage = SecureStorage();
-    final isLoggedIn = await secureStorage.getItem('isLoggedIn') == true;
+    final isLoggedIn = await secureStorage.getItem('isLoggedIn');
+    final auth = await secureStorage.getItem('authToken');
     final tokenExpirationTime =
         await secureStorage.getItem('tokenExpirationTime');
 
     final currentTime = DateTime.now().millisecondsSinceEpoch;
-
     if (mounted) {
-      if (isLoggedIn &&
+      if (isLoggedIn == "true" &&
           tokenExpirationTime != null &&
-          tokenExpirationTime > currentTime) {
+          int.parse(tokenExpirationTime) > currentTime) {
         Navigator.of(context)
             .pushNamedAndRemoveUntil(HomePage.routePath, (route) => false);
       } else {
@@ -46,12 +47,18 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: Text(
-          "Loading...",
-          style: TextStyle(fontSize: 24, color: Colors.black),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/images/signin.svg',
+              height: 300,
+            )
+          ],
         ),
       ),
     );

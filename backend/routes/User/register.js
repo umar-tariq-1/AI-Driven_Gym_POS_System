@@ -101,7 +101,7 @@ register.post("/", async (req, res) => {
       Date.now() + 1000 * 60 * 60 * 24 * 365 - 1000 * 30;
 
     res.status(200).send({
-      message: "User registered and logged in successfully",
+      message: "User registered and signed in successfully",
       isLoggedIn: true,
       authToken,
       tokenExpirationTime,

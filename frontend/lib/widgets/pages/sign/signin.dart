@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/data/local_storage.dart';
 import 'package:frontend/data/secure_storage.dart';
 import 'package:frontend/main.dart';
 import 'package:frontend/states/server_address.dart';
@@ -12,7 +11,6 @@ import 'package:frontend/widgets/pages/sign/forget_passsword_page.dart';
 import 'package:frontend/widgets/pages/sign/register_page.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
 import '../../../theme/theme.dart';
 
@@ -283,7 +281,7 @@ class _SigninState extends State<Signin> {
                         );
                       },
                       child: Text(
-                        'Sign up',
+                        'Register',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: colorScheme.primary,

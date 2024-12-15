@@ -44,7 +44,7 @@ signin.post("/", async (req, res) => {
     if (foundUser.length === 0) {
       return res
         .status(401)
-        .send({ message: "No accound registered with this email" });
+        .send({ message: "No account registered with this email" });
     }
 
     const validPassword = await bcrypt.compare(

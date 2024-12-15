@@ -35,6 +35,7 @@ class _OTPState extends State<OTP> {
   bool _showTimer = false;
   String? _errorText;
   bool _showEmailSentText = false;
+  bool _isLoading = true;
   // bool _otpVerified = false;
   final serverAddressController = Get.find<ServerAddressController>();
 
@@ -69,9 +70,11 @@ class _OTPState extends State<OTP> {
         _isVerifyDisabled = true;
         _showTimer = false;
         _timeLeft = 0;
+        _isLoading = true;
         sendOtpRequest();
       } else {
         _isVerifyDisabled = false;
+        _isLoading = false;
         _showTimer = true;
         _timeLeft = otpInfo["validTill"] -
             (DateTime.now().millisecondsSinceEpoch ~/ 1000);
@@ -86,6 +89,7 @@ class _OTPState extends State<OTP> {
       _enabled = false;
       _triesLeft = 3;
       _errorText = null;
+      _isLoading = true;
       // _otpVerified = false;
     });
     formKey.currentState?.validate();
@@ -127,6 +131,7 @@ class _OTPState extends State<OTP> {
     }
     setState(() {
       _enabled = true;
+      _isLoading = false;
     });
   }
 
@@ -148,8 +153,10 @@ class _OTPState extends State<OTP> {
         );
 
         if (response.statusCode == 200) {
-          CustomSnackbar.showSuccessSnackbar(
-              context, "Success!", jsonDecode(response.body)["message"]);
+          widget.id == "ForgetPassword"
+              ? CustomSnackbar.showSuccessSnackbar(
+                  context, "Success!", jsonDecode(response.body)["message"])
+              : null;
           // SecureStorage().deleteItem("${widget.id}otpEmail");
           setState(() {
             _isVerifyDisabled = false;
@@ -241,12 +248,15 @@ class _OTPState extends State<OTP> {
             height: 75,
           ),
           Text(
-            _showEmailSentText
-                ? "Enter the OTP sent to Email"
-                : "Couldn't send OTP to Email",
+            _isLoading
+                ? "Wait while we send OTP to Email"
+                : _showEmailSentText
+                    ? "Enter the OTP sent to Email"
+                    : "Couldn't send OTP to Email",
             style: const TextStyle(
                 color: Color.fromARGB(255, 138, 138, 138),
                 fontSize: 19.25,
+                overflow: TextOverflow.ellipsis,
                 letterSpacing: 0.5),
           ),
           const SizedBox(

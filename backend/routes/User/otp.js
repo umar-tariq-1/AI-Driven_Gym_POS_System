@@ -75,9 +75,10 @@ OTP.post("/verify", async (req, res) => {
     const { enteredOTP, hashedOTP } = req.body;
 
     if (!enteredOTP || !hashedOTP) {
-      return res
-        .status(400)
-        .send({ message: "Both Entered-OTP and Hashed-OTP are Required" });
+      return res.status(400).send({
+        message:
+          "Incomplete Info" /* "Both Entered-OTP and Hashed-OTP are Required" */,
+      });
     }
 
     const isMatch = await bcrypt.compare(enteredOTP, hashedOTP);
