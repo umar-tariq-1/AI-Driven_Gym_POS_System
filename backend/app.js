@@ -7,7 +7,7 @@ const register = require("./routes/User/register");
 const signin = require("./routes/User/signin");
 const deleteUser = require("./routes/User/delete");
 const editUser = require("./routes/User/edit");
-const sendOtp = require("./routes/User/otp");
+const OTP = require("./routes/User/otp");
 
 const app = express();
 
@@ -35,7 +35,7 @@ app.use(express.urlencoded({ extended: true }));
     app.use("/signin", signin);
     app.use("/delete-user", deleteUser);
     app.use("/edit-user", editUser);
-    app.use("/otp", sendOtp);
+    app.use("/otp", OTP);
 
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {

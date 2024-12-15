@@ -5,6 +5,7 @@ import 'package:frontend/widgets/pages/sign/signin_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
+import 'package:flutter/services.dart';
 
 import '../../../theme/theme.dart';
 
@@ -28,7 +29,7 @@ class _RegisterState extends State<Register> {
   String? _gender = '';
   String? _accType = '';
   bool _obscureText = true;
-  String IP = '10.7.241.86';
+  String IP = '10.7.240.185';
   CountryCode _countryCode =
       const CountryCode(name: "Pakistan", code: "PK", dialCode: "+92");
   final FocusNode _focusNode = FocusNode();
@@ -336,6 +337,9 @@ class _RegisterState extends State<Register> {
                 TextFormField(
                   keyboardType: TextInputType.phone,
                   controller: controllers['phone'],
+                  onChanged: (_) {
+                    HapticFeedback.lightImpact();
+                  },
                   decoration: InputDecoration(
                     label: const Text('Phone (optional)'),
                     labelStyle: const TextStyle(
@@ -469,38 +473,7 @@ class _RegisterState extends State<Register> {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return Dialog(
-                            backgroundColor: backgroundColor,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width *
-                                  1, // Set custom width for the dialog
-                              padding: const EdgeInsets.all(20),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  const Text(
-                                    'Password must contain:',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(height: 15),
-                                  const Text(
-                                    '• 6-20 characters,\n• At least 1 number,\n• 1 lowercase letter,\n• 1 uppercase letter',
-                                    style: TextStyle(fontSize: 17),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  TextButton(
-                                    child: const Text('OK',
-                                        style: TextStyle(fontSize: 18)),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
+                          return const PasswordRequirementsDialog();
                         },
                       );
                     }
@@ -721,6 +694,45 @@ class _RegisterState extends State<Register> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class PasswordRequirementsDialog extends StatelessWidget {
+  const PasswordRequirementsDialog({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 35, vertical: 25),
+      backgroundColor: backgroundColor,
+      child: Container(
+        width: MediaQuery.of(context).size.width * 1,
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const Text(
+              'Password must contain:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 15),
+            const Text(
+              '• 6-20 characters,\n• At least 1 number,\n• 1 lowercase letter,\n• 1 uppercase letter',
+              style: TextStyle(fontSize: 17),
+            ),
+            const SizedBox(height: 20),
+            TextButton(
+              child: const Text('OK', style: TextStyle(fontSize: 18)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
         ),
       ),
     );

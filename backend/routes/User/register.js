@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const { findKeyWithEmptyStringValue } = require("../../utils/objectFunctions");
 const { capitalize } = require("../../utils/validate");
 const { validate } = require("../../utils/validate");
+const nodemailer = require("nodemailer");
 const { createToken } = require("../../utils/token");
 
 const register = express.Router();
@@ -54,7 +55,6 @@ register.post("/", async (req, res) => {
     return res.status(403).send({ message: validationError });
   }
 
-  // Check if user already exists
   try {
     const [existingUser] = await db.query(
       `SELECT * FROM gym_pos_system.Users WHERE email = ?${
@@ -76,12 +76,10 @@ register.post("/", async (req, res) => {
     return res.status(500).send({ message: "Internal server error" });
   }
 
-  // Hash the password before storing in db
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(userData.password, salt);
   userData.password = hashedPassword;
 
-  // Insert user into MySQL database
   try {
     const insertQuery = `
       INSERT INTO gym_pos_system.Users (firstName, lastName, gender, email, phone, password, accType)
@@ -118,6 +116,58 @@ register.post("/", async (req, res) => {
   } catch (error) {
     console.log("Error registering user: ", error);
     return res.status(500).send({ message: "Internal server error" });
+  }
+});
+
+register.post("/otp", async (req, res) => {
+  try {
+    const email = req.body.email?.trim();
+
+    if (!email) {
+      return res.status(400).send({ message: "Email is required" });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(400).send({ message: "Invalid Email" });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    console.log("OTP:", otp);
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "gympossystem@gmail.com",
+        pass: "zmyf jhxf pojr ltjd",
+      },
+    });
+
+    const mailOptions = {
+      from: "Gym POS System <gympossystem@gmail.com>",
+      to: email,
+      subject: `Email verification OTP: ${otp}`,
+      text: `We received a request to verify your email for Gym Point of Sales System registration process.\n\nYour one time password for email verification is ${otp}.\n\nWarning: Don't share your one time password with anyone.\n\nIf you didn't try to register with Gym Point of Sales System, you can safely ignore this email.\n\nThanks`,
+    };
+
+    // const info = await transporter.sendMail(mailOptions);
+
+    // if (!info) {
+    //   return res.status(500).send({ message: "Failed to send OTP over Email" });
+    // }
+    const salt = await bcrypt.genSalt(10);
+    const hashedOTP = await bcrypt.hash(otp.toString(), salt);
+    res.status(200).send({
+      message: "OTP Sent Successfully over Email",
+      hashedOTP,
+    });
+  } catch (error) {
+    console.log(error);
+    if (error.code === "EENVELOPE") {
+      res.status(400).send({ message: "Invalid Email Address" });
+    } else if (error.code === "EAUTH") {
+      res.status(500).send({ message: "Internal Server Error" });
+    } else {
+      res.status(500).send({ message: "An unexpected error occurred" });
+    }
   }
 });
 

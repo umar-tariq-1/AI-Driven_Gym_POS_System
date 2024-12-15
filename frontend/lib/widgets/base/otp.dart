@@ -6,6 +6,7 @@ import 'package:frontend/data/secure_storage.dart';
 import 'package:frontend/widgets/base/custom_elevated_button.dart';
 import 'package:frontend/widgets/base/custom_outlined_button.dart';
 import 'package:frontend/widgets/base/timer.dart';
+import 'package:frontend/widgets/pages/sign/register.dart';
 import "../../theme/theme.dart";
 import 'package:http/http.dart' as http;
 import 'package:pinput/pinput.dart';
@@ -13,7 +14,7 @@ import 'package:pinput/pinput.dart';
 class OTP extends StatefulWidget {
   final String email;
   final String id;
-  const OTP({super.key, this.email = "No Email Entered", this.id = ""});
+  const OTP({super.key, required this.email, required this.id});
 
   @override
   _OTPState createState() => _OTPState();
@@ -31,7 +32,7 @@ class _OTPState extends State<OTP> {
   bool _showTimer = false;
   String? _errorText;
   bool _showEmailSentText = false;
-  bool _otpVerified = false;
+  // bool _otpVerified = false;
 
   @override
   void initState() {
@@ -81,14 +82,18 @@ class _OTPState extends State<OTP> {
       _enabled = false;
       _triesLeft = 3;
       _errorText = null;
-      _otpVerified = false;
+      // _otpVerified = false;
     });
     formKey.currentState?.validate();
     pinController.clear();
-
+    String subRoute = widget.id == 'ForgetPassword'
+        ? 'otp'
+        : widget.id == 'Register'
+            ? 'register/otp'
+            : 'no-id-specified';
     try {
       final response = await http.post(
-        Uri.parse('http://$IP:3001/otp/send'),
+        Uri.parse('http://$IP:3001/$subRoute'),
         body: {'email': widget.email},
       );
 
@@ -115,6 +120,7 @@ class _OTPState extends State<OTP> {
         );
       }
     } catch (e) {
+      print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Error: Unable to send OTP')),
       );
@@ -145,13 +151,21 @@ class _OTPState extends State<OTP> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(jsonDecode(response.body)["message"])),
           );
-          SecureStorage().deleteItem("${widget.id}otpEmail");
+          // SecureStorage().deleteItem("${widget.id}otpEmail");
           setState(() {
             _isVerifyDisabled = false;
             _enabled = true;
             _errorText = null;
-            _otpVerified = true;
+            // _otpVerified = true;
           });
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return ChangePasswordDialog(
+                id: widget.id,
+              );
+            },
+          );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(jsonDecode(response.body)["message"])),
@@ -197,10 +211,9 @@ class _OTPState extends State<OTP> {
 
   @override
   Widget build(BuildContext context) {
-    const Color borderColor = Color.fromARGB(255, 0, 60, 133);
-    Color fillColor = Colors.grey.shade100;
-    Color submittedFillColor = /* Colors.grey.shade200 */ fillColor;
-    Color focusedBorderColor = colorScheme.primary;
+    const Color focusedBorderColor = Color.fromARGB(255, 0, 60, 133);
+    Color fillColor = Colors.grey.shade200;
+    Color submittedFillColor = fillColor;
     final screenWidth = MediaQuery.of(context).size.width;
 
     final defaultPinTheme = PinTheme(
@@ -212,7 +225,7 @@ class _OTPState extends State<OTP> {
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(19),
-        border: Border.all(color: borderColor),
+        border: Border.all(color: focusedBorderColor),
       ),
     );
 
@@ -220,42 +233,36 @@ class _OTPState extends State<OTP> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: 40),
+          const SizedBox(height: 35),
           SvgPicture.asset(
             'assets/images/OTP.svg',
-            height: 250,
+            height: 240,
           ),
           const SizedBox(
             height: 75,
           ),
-          _showEmailSentText
-              ? const Text(
-                  "Enter the OTP sent to Email",
-                  style: TextStyle(
-                      color: Color.fromARGB(255, 138, 138, 138),
-                      fontSize: 19.25,
-                      letterSpacing: 0.5),
-                )
-              : const SizedBox(),
-          _showEmailSentText
-              ? const SizedBox(
-                  height: 2,
-                )
-              : const SizedBox(),
-          _showEmailSentText
-              ? Text(
-                  widget.email,
-                  style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 19,
-                      fontWeight: FontWeight.bold),
-                )
-              : const SizedBox(),
-          _showEmailSentText
-              ? const SizedBox(
-                  height: 60,
-                )
-              : const SizedBox(),
+          Text(
+            _showEmailSentText
+                ? "Enter the OTP sent to Email"
+                : "Couldn't send OTP to Email",
+            style: const TextStyle(
+                color: Color.fromARGB(255, 138, 138, 138),
+                fontSize: 19.25,
+                letterSpacing: 0.5),
+          ),
+          const SizedBox(
+            height: 2,
+          ),
+          Text(
+            widget.email,
+            style: TextStyle(
+                color: Colors.grey.shade600,
+                fontSize: 19,
+                fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(
+            height: 60,
+          ),
           Form(
             key: formKey,
             child: Column(
@@ -272,10 +279,10 @@ class _OTPState extends State<OTP> {
                     focusNode: focusNode,
                     defaultPinTheme: defaultPinTheme.copyWith(
                       decoration: defaultPinTheme.decoration!.copyWith(
-                        color: /* fillColor */ Colors.grey.shade300,
+                        color: fillColor,
                         borderRadius: BorderRadius.circular(15),
                         border: Border.all(
-                            color: /* borderColor */ Colors.transparent),
+                            color: /* borderColor */ Colors.grey.shade300),
                       ),
                     ),
                     errorBuilder: (_errorText, pin) {
@@ -311,15 +318,16 @@ class _OTPState extends State<OTP> {
                     focusedPinTheme: defaultPinTheme.copyWith(
                       decoration: defaultPinTheme.decoration!.copyWith(
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: borderColor),
+                        border: Border.all(color: focusedBorderColor),
                       ),
                     ),
                     submittedPinTheme: defaultPinTheme.copyWith(
                       decoration: defaultPinTheme.decoration!.copyWith(
-                        color: /* submittedFillColor */ Colors.grey.shade300,
+                        color: submittedFillColor,
                         borderRadius: BorderRadius.circular(15),
                         border: Border.all(
-                            color: /* focusedBorderColor */ Colors.transparent),
+                            color: /* focusedBorderColor */
+                                Colors.grey.shade300),
                       ),
                     ),
                     errorPinTheme: defaultPinTheme.copyBorderWith(
@@ -343,19 +351,21 @@ class _OTPState extends State<OTP> {
                               }),
                         ],
                       )
-                    : Column(
-                        children: [
-                          const SizedBox(height: 20),
-                          Text(
-                            'OTP Expired. Request again',
-                            style: TextStyle(
-                              color: colorScheme.error,
-                              fontFamily: "RalewayMedium",
-                              fontSize: 14,
-                            ),
+                    : _showEmailSentText
+                        ? Column(
+                            children: [
+                              const SizedBox(height: 20),
+                              Text(
+                                'OTP Expired. Request again',
+                                style: TextStyle(
+                                  color: colorScheme.error,
+                                  fontFamily: "RalewayMedium",
+                                  fontSize: 15,
+                                ),
+                              )
+                            ],
                           )
-                        ],
-                      ),
+                        : const SizedBox(),
                 const SizedBox(height: 70),
                 SizedBox(
                   width: screenWidth * 0.9,
@@ -371,14 +381,244 @@ class _OTPState extends State<OTP> {
                     child: CustomOutlinedButton(
                       buttonText: "Verify",
                       onClick: verifyOTPRequest,
-                      transitionColor: true,
                       maxWidthScreenFactor: 1,
                       disabled: (_isVerifyDisabled && !_enabled) || !_showTimer,
                     )),
+                const SizedBox(height: 20),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ChangePasswordDialog extends StatefulWidget {
+  String id;
+  ChangePasswordDialog({super.key, required this.id});
+
+  @override
+  State<ChangePasswordDialog> createState() => _ChangePasswordDialogState();
+}
+
+class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
+  final Map controllers = {
+    'password': TextEditingController(),
+    'confirmPassword': TextEditingController()
+  };
+  final FocusNode _focusNode = FocusNode();
+  final _passwordFormKey = GlobalKey<FormState>();
+  bool _passwordHasFocus = false;
+  bool _obscureText = true;
+  String IP = '10.7.240.185';
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        setState(() {
+          _passwordHasFocus = true;
+        });
+      } else {
+        _passwordHasFocus = false;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+      backgroundColor: Colors.white,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.fromLTRB(18, 25, 18, 17.5),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const Text(
+              'Enter New Password',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 30),
+            Form(
+              key: _passwordFormKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFormField(
+                    focusNode: _focusNode,
+                    keyboardType: TextInputType.visiblePassword,
+                    controller: controllers['password'],
+                    obscureText: _obscureText,
+                    decoration: InputDecoration(
+                      label: const Text('Password'),
+                      labelStyle: const TextStyle(
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      hintText: 'Enter Password',
+                      hintStyle: const TextStyle(
+                        color: Colors.black26,
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Colors.black12,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Colors.black12,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.lock,
+                        color: Colors.black54,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 16),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureText
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.black45,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
+                        },
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Password is required';
+                      }
+                      if (value.length < 6) {
+                        return 'Password must be at least 6 characters long';
+                      }
+                      if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                        return 'Password must contain at least one uppercase letter';
+                      }
+                      if (!RegExp(r'[0-9]').hasMatch(value)) {
+                        return 'Password must contain at least one number';
+                      }
+                      return null;
+                    },
+                    onTap: () {
+                      if (!_passwordHasFocus) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return const PasswordRequirementsDialog();
+                          },
+                        );
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 15.0),
+                  TextFormField(
+                    keyboardType: TextInputType.visiblePassword,
+                    controller: controllers['confirmPassword'],
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      label: const Text('Confirm Password'),
+                      labelStyle: const TextStyle(
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      hintText: 'Enter Password',
+                      hintStyle: const TextStyle(
+                        color: Colors.black26,
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Colors.black12,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Colors.black12,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.lock,
+                        color: Colors.black54,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 16),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Confirm Password is required';
+                      }
+                      if (value != controllers['password'].text) {
+                        return 'Passwords donot match';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            TextButton(
+              child:
+                  const Text('Change Password', style: TextStyle(fontSize: 18)),
+              onPressed: () async {
+                String email =
+                    await SecureStorage().getItem("${widget.id}otpEmail");
+                if (_passwordFormKey.currentState?.validate() ?? false) {
+                  var url = Uri.parse('http://$IP:3001/otp/update-password');
+                  var response = await http.put(url, body: {
+                    'email': email,
+                    'password': controllers['password'].text,
+                    'confirmPassword': controllers['password'].text
+                  });
+
+                  if (response.statusCode == 200) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        backgroundColor: Colors.white,
+                        content: Text(
+                          'Password Updated Successfully',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    );
+                    controllers['password'].clear();
+                    controllers['confirmPassword'].clear();
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                    // print(json.decode(response.body));
+                  } else {
+                    // print(json.decode(response.body)['message']);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: Colors.white,
+                        content: Text(
+                          json.decode(response.body)['message'],
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    );
+                  }
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

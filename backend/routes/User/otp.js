@@ -1,15 +1,33 @@
 const express = require("express");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
+const { findKeyWithEmptyStringValue } = require("../../utils/objectFunctions");
+const { validate } = require("../../utils/validate");
 
-const sendOtp = express.Router();
+const OTP = express.Router();
 
-sendOtp.post("/send", async (req, res) => {
+OTP.post("/", async (req, res) => {
   try {
-    const email = req.body.email;
+    const email = req.body.email?.trim();
+    const db = req.db;
 
     if (!email) {
-      return res.status(400).send({ message: "Email is required" });
+      return res.status(403).send({ message: "Email is required" });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(400).send({ message: "Invalid Email" });
+    }
+
+    const [foundUser] = await db.query(
+      "SELECT * FROM gym_pos_system.Users WHERE email = ?",
+      [email]
+    );
+
+    if (foundUser.length == 0) {
+      return res
+        .status(404)
+        .json({ message: "No user registered with this email" });
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000);
@@ -26,7 +44,7 @@ sendOtp.post("/send", async (req, res) => {
       from: "Gym POS System <gympossystem@gmail.com>",
       to: email,
       subject: `Email verification OTP: ${otp}`,
-      text: `We received a request to verify your email for Gym Point of Sales System registration process.\n\nYour one time password for email verification is ${otp}.\n\nWarning: Don't share your one time password with anyone.\n\nIf you didn't try to register with Gym Point of Sales System, you can safely ignore this email.\n\nThanks`,
+      text: `We received a request to change your account password for Gym Point of Sales System.\n\nYour one time password for verification is ${otp}.\n\nWarning: Don't share your one time password with anyone.\n\nIf you didn't try to change password for Gym Point of Sales System account, you can safely ignore this email.\n\nThanks`,
     };
 
     // const info = await transporter.sendMail(mailOptions);
@@ -52,7 +70,7 @@ sendOtp.post("/send", async (req, res) => {
   }
 });
 
-sendOtp.post("/verify", async (req, res) => {
+OTP.post("/verify", async (req, res) => {
   try {
     const { enteredOTP, hashedOTP } = req.body;
 
@@ -74,4 +92,78 @@ sendOtp.post("/verify", async (req, res) => {
   }
 });
 
-module.exports = sendOtp;
+OTP.put("/update-password", async (req, res) => {
+  const db = req.db;
+  try {
+    var userData = {
+      email: req.body?.email.trim(),
+      password: req.body?.password,
+      confirmPassword: req.body?.confirmPassword,
+    };
+  } catch {
+    return res.status(403).send({ message: "Information is not complete" });
+  }
+
+  // Check for empty fields
+  const emptyKey = findKeyWithEmptyStringValue(userData);
+  if (emptyKey !== null) {
+    return res.status(422).send({
+      message: `${capitalize(
+        emptyKey.replace(/([A-Z])/g, " $1")
+      )} must not be empty`,
+    });
+  }
+
+  try {
+    // Validate user input
+    const validationError = validate(
+      "Umar",
+      "Tariq",
+      userData.email,
+      "+1234567890",
+      userData.password,
+      userData.confirmPassword,
+      "Admin",
+      "Male"
+    );
+
+    if (validationError) {
+      return res.status(403).send({ message: validationError });
+    }
+
+    // Check if email exists in the database
+    const [existingUser] = await db.query(
+      "SELECT * FROM gym_pos_system.Users WHERE email = ?",
+      [userData.email]
+    );
+
+    if (existingUser.length == 0) {
+      return res
+        .status(404)
+        .send({ error: "No user registered with this email" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(userData.password, salt);
+    userData.password = hashedPassword;
+
+    await db.query(
+      "UPDATE gym_pos_system.Users SET password = ? WHERE email = ?",
+      [userData.password, userData.email]
+    );
+
+    res.status(200).send({ message: "Password Updated Successfully" });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .send({ message: "An error occurred while updating the password" });
+  }
+});
+
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+module.exports = OTP;

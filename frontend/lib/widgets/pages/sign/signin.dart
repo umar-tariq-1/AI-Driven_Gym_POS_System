@@ -24,11 +24,10 @@ class _SigninState extends State<Signin> {
     'email': TextEditingController(),
     'password': TextEditingController(),
   };
-  String IP = '10.7.241.86';
+  String IP = '10.7.240.185';
   bool _obscureText = true;
   bool _rememberPassword = true;
   final _formKey = GlobalKey<FormState>();
-  final _forgetPasswordFormKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -197,107 +196,8 @@ class _SigninState extends State<Signin> {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            return Dialog(
-                              backgroundColor: backgroundColor,
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 1,
-                                padding:
-                                    const EdgeInsets.fromLTRB(15, 25, 15, 17.5),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    const Text(
-                                      'Enter Email for OTP Verification',
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    const SizedBox(height: 30),
-                                    Form(
-                                      key: _forgetPasswordFormKey,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          TextFormField(
-                                            keyboardType:
-                                                TextInputType.emailAddress,
-                                            controller: controllers['email'],
-                                            decoration: InputDecoration(
-                                              label: const Text('Email'),
-                                              labelStyle: const TextStyle(
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                              hintText: 'Email',
-                                              hintStyle: const TextStyle(
-                                                color: Colors.black26,
-                                              ),
-                                              border: OutlineInputBorder(
-                                                borderSide: const BorderSide(
-                                                  color: Colors.black12,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderSide: const BorderSide(
-                                                  color: Colors.black12,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              prefixIcon: const Icon(
-                                                Icons.email_rounded,
-                                                color: Colors.black54,
-                                              ),
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 16,
-                                                      horizontal: 16),
-                                            ),
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty ||
-                                                  value.trim() == "") {
-                                                return 'Email is required';
-                                              }
-                                              if (!RegExp(
-                                                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                                  .hasMatch(value.trim())) {
-                                                return 'Enter a valid email address';
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 20),
-                                    TextButton(
-                                      child: const Text('Request OTP',
-                                          style: TextStyle(fontSize: 18)),
-                                      onPressed: () {
-                                        if (_forgetPasswordFormKey.currentState
-                                                ?.validate() ??
-                                            false) {
-                                          Navigator.pop(context);
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (e) =>
-                                                  ForgetPasswordPage(
-                                                      email:
-                                                          controllers['email']
-                                                              .text),
-                                            ),
-                                          );
-                                        }
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
+                            return EmailOTPDialog(
+                                controller: controllers['email']);
                           },
                         );
                       },
@@ -402,6 +302,97 @@ class _SigninState extends State<Signin> {
               ],
             ),
           ))),
+    );
+  }
+}
+
+class EmailOTPDialog extends StatelessWidget {
+  final TextEditingController controller;
+  final _forgetPasswordFormKey = GlobalKey<FormState>();
+
+  EmailOTPDialog({
+    super.key,
+    required this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+      backgroundColor: backgroundColor,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.fromLTRB(18, 25, 18, 17.5),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const Text(
+              'Enter Email for OTP Verification',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 30),
+            Form(
+              key: _forgetPasswordFormKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    controller: controller,
+                    decoration: InputDecoration(
+                      label: const Text('Email'),
+                      labelStyle:
+                          const TextStyle(overflow: TextOverflow.ellipsis),
+                      hintText: 'Email',
+                      hintStyle: const TextStyle(color: Colors.black26),
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.black12),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.black12),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      prefixIcon: const Icon(Icons.email_rounded,
+                          color: Colors.black54),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 16),
+                    ),
+                    validator: (value) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          value.trim() == "") {
+                        return 'Email is required';
+                      }
+                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                          .hasMatch(value.trim())) {
+                        return 'Enter a valid email address';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            TextButton(
+              child: const Text('Request OTP', style: TextStyle(fontSize: 18)),
+              onPressed: () {
+                if (_forgetPasswordFormKey.currentState?.validate() ?? false) {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ForgetPasswordPage(email: controller.text.trim()),
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

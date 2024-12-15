@@ -12,7 +12,7 @@ class ForgetPasswordPage extends StatefulWidget {
 }
 
 class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
-  final String id = "forgetPassword";
+  final String id = "ForgetPassword";
   final TextEditingController otpController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                     )),
               ),
               Container(
-                margin: EdgeInsets.fromLTRB(0, statusBarHeight + 60, 0, 20),
+                margin: EdgeInsets.fromLTRB(0, statusBarHeight + 60, 0, 0),
                 height: screenHeight,
                 width: screenWidth,
                 child: OTP(
