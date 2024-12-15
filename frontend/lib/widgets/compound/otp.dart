@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 // import 'package:frontend/data/local_storage.dart';
 import 'package:frontend/data/secure_storage.dart';
+import 'package:frontend/states/server_address.dart';
 import 'package:frontend/widgets/base/custom_elevated_button.dart';
 import 'package:frontend/widgets/base/custom_outlined_button.dart';
+import 'package:frontend/widgets/base/snackbar.dart';
 import 'package:frontend/widgets/base/timer.dart';
 import 'package:frontend/widgets/pages/sign/register.dart';
+import 'package:get/get.dart';
 import "../../theme/theme.dart";
 import 'package:http/http.dart' as http;
 import 'package:pinput/pinput.dart';
@@ -14,7 +17,8 @@ import 'package:pinput/pinput.dart';
 class OTP extends StatefulWidget {
   final String email;
   final String id;
-  const OTP({super.key, required this.email, required this.id});
+  final VoidCallback? onSuccess;
+  const OTP({super.key, required this.email, required this.id, this.onSuccess});
 
   @override
   _OTPState createState() => _OTPState();
@@ -27,12 +31,12 @@ class _OTPState extends State<OTP> {
   int _triesLeft = 3;
   bool _enabled = true;
   bool _isVerifyDisabled = true;
-  String IP = "10.7.240.185";
   int _timeLeft = 0;
   bool _showTimer = false;
   String? _errorText;
   bool _showEmailSentText = false;
   // bool _otpVerified = false;
+  final serverAddressController = Get.find<ServerAddressController>();
 
   @override
   void initState() {
@@ -88,12 +92,12 @@ class _OTPState extends State<OTP> {
     pinController.clear();
     String subRoute = widget.id == 'ForgetPassword'
         ? 'otp'
-        : widget.id == 'Register'
+        : widget.id == 'VerifyEmail'
             ? 'register/otp'
             : 'no-id-specified';
     try {
       final response = await http.post(
-        Uri.parse('http://$IP:3001/$subRoute'),
+        Uri.parse('http://${serverAddressController.IP}:3001/$subRoute'),
         body: {'email': widget.email},
       );
 
@@ -106,24 +110,20 @@ class _OTPState extends State<OTP> {
         });
         SecureStorage().setItem("${widget.id}otp_triesLeft", _triesLeft);
         SecureStorage().setItem("${widget.id}otpEmail", widget.email);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(jsonDecode(response.body)["message"])),
-        );
+        CustomSnackbar.showSuccessSnackbar(
+            context, "Success!", jsonDecode(response.body)["message"]);
         setState(() {
           _showTimer = true;
           _showEmailSentText = true;
           _timeLeft = 89;
         });
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(jsonDecode(response.body)["message"])),
-        );
+        CustomSnackbar.showFailureSnackbar(
+            context, "Oops!", jsonDecode(response.body)["message"]);
       }
     } catch (e) {
-      print(e);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error: Unable to send OTP')),
-      );
+      CustomSnackbar.showFailureSnackbar(
+          context, "Oops!", "Sorry, couldn't request to server");
     }
     setState(() {
       _enabled = true;
@@ -140,7 +140,7 @@ class _OTPState extends State<OTP> {
       try {
         var otpInfo = await SecureStorage().getItem("${widget.id}otpInfo");
         final response = await http.post(
-          Uri.parse('http://$IP:3001/otp/verify'),
+          Uri.parse('http://${serverAddressController.IP}:3001/otp/verify'),
           body: {
             'hashedOTP': otpInfo["hashedOTP"],
             'enteredOTP': pinController.text
@@ -148,9 +148,8 @@ class _OTPState extends State<OTP> {
         );
 
         if (response.statusCode == 200) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(jsonDecode(response.body)["message"])),
-          );
+          CustomSnackbar.showSuccessSnackbar(
+              context, "Success!", jsonDecode(response.body)["message"]);
           // SecureStorage().deleteItem("${widget.id}otpEmail");
           setState(() {
             _isVerifyDisabled = false;
@@ -158,18 +157,20 @@ class _OTPState extends State<OTP> {
             _errorText = null;
             // _otpVerified = true;
           });
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return ChangePasswordDialog(
-                id: widget.id,
-              );
-            },
-          );
+          widget.onSuccess == null
+              ? showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return ChangePasswordDialog(
+                      id: widget.id,
+                    );
+                  },
+                )
+              : widget.onSuccess!();
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(jsonDecode(response.body)["message"])),
-          );
+          CustomSnackbar.showFailureSnackbar(
+              context, "Oops!", jsonDecode(response.body)["message"]);
+
           if (jsonDecode(response.body)["message"] == "Invalid OTP") {
             setState(() {
               if (_triesLeft > 1) {
@@ -194,10 +195,8 @@ class _OTPState extends State<OTP> {
         setState(() {
           _enabled = true;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Error: Unable to Send Verification Request')),
-        );
+        CustomSnackbar.showFailureSnackbar(
+            context, "Oops!", "Sorry, couldn't request to server");
       }
     } else {
       setState(() {
@@ -411,7 +410,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
   final _passwordFormKey = GlobalKey<FormState>();
   bool _passwordHasFocus = false;
   bool _obscureText = true;
-  String IP = '10.7.240.185';
+  final serverAddressController = Get.find<ServerAddressController>();
 
   @override
   void initState() {
@@ -579,41 +578,32 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
               onPressed: () async {
                 String email =
                     await SecureStorage().getItem("${widget.id}otpEmail");
-                if (_passwordFormKey.currentState?.validate() ?? false) {
-                  var url = Uri.parse('http://$IP:3001/otp/update-password');
-                  var response = await http.put(url, body: {
-                    'email': email,
-                    'password': controllers['password'].text,
-                    'confirmPassword': controllers['password'].text
-                  });
+                try {
+                  if (_passwordFormKey.currentState?.validate() ?? false) {
+                    var url = Uri.parse(
+                        'http://${serverAddressController.IP}:3001/otp/update-password');
+                    var response = await http.put(url, body: {
+                      'email': email,
+                      'password': controllers['password'].text,
+                      'confirmPassword': controllers['password'].text
+                    });
 
-                  if (response.statusCode == 200) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        backgroundColor: Colors.white,
-                        content: Text(
-                          'Password Updated Successfully',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ),
-                    );
-                    controllers['password'].clear();
-                    controllers['confirmPassword'].clear();
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pop();
-                    // print(json.decode(response.body));
-                  } else {
-                    // print(json.decode(response.body)['message']);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        backgroundColor: Colors.white,
-                        content: Text(
-                          json.decode(response.body)['message'],
-                          style: const TextStyle(color: Colors.black),
-                        ),
-                      ),
-                    );
+                    if (response.statusCode == 200) {
+                      CustomSnackbar.showSuccessSnackbar(
+                          context, "Success!", "Password Updated Successfully");
+                      controllers['password'].clear();
+                      controllers['confirmPassword'].clear();
+                      SecureStorage().deleteItem("${widget.id}otpEmail");
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    } else {
+                      CustomSnackbar.showFailureSnackbar(context, "Oops!",
+                          jsonDecode(response.body)["message"]);
+                    }
                   }
+                } catch (e) {
+                  CustomSnackbar.showFailureSnackbar(
+                      context, "Oops!", "Sorry, couldn't request to server");
                 }
               },
             ),

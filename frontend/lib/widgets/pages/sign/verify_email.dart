@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/widgets/compound/otp.dart';
 
-class ForgetPasswordPage extends StatefulWidget {
+class VerifyEmailPage extends StatefulWidget {
   String email;
-  ForgetPasswordPage({super.key, required this.email});
+  VoidCallback onSuccess;
+  VerifyEmailPage({super.key, required this.email, required this.onSuccess});
 
-  static const routePath = '/forget-password';
+  static const routePath = '/verify-email';
 
   @override
-  State<ForgetPasswordPage> createState() => _ForgetPasswordPageState();
+  State<VerifyEmailPage> createState() => _VerifyEmailPageState();
 }
 
-class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
-  final String id = "ForgetPassword";
+class _VerifyEmailPageState extends State<VerifyEmailPage> {
+  final String id = "VerifyEmail";
   final TextEditingController otpController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -46,6 +47,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                 child: OTP(
                   email: widget.email,
                   id: id,
+                  onSuccess: widget.onSuccess,
                 ),
               )
             ],

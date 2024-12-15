@@ -171,4 +171,9 @@ register.post("/otp", async (req, res) => {
   }
 });
 
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
 module.exports = register;

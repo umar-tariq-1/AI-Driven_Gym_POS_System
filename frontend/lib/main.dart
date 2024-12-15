@@ -1,3 +1,4 @@
+import 'package:frontend/states/server_address.dart';
 import 'package:frontend/widgets/pages/home_page.dart';
 import 'package:frontend/widgets/pages/landing_page.dart';
 import 'package:frontend/widgets/pages/sign/forget_passsword_page.dart';
@@ -15,6 +16,7 @@ Color appBarTextColor = colorScheme.onPrimary;
 Color backgroundColor = colorScheme.surface;
 
 void main() {
+  Get.put(ServerAddressController());
   runApp(const MyApp());
 }
 

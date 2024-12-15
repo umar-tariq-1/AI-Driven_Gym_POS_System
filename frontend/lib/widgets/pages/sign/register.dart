@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/data/secure_storage.dart';
 import 'package:frontend/main.dart';
+import 'package:frontend/states/server_address.dart';
 import 'package:frontend/widgets/base/custom_elevated_button.dart';
+import 'package:frontend/widgets/base/snackbar.dart';
+import 'package:frontend/widgets/pages/home_page.dart';
 import 'package:frontend/widgets/pages/sign/signin_page.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import './verify_email.dart';
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/services.dart';
 
@@ -25,11 +31,10 @@ class _RegisterState extends State<Register> {
     'password': TextEditingController(),
     'confirmPassword': TextEditingController()
   };
-  bool _agreePersonalData = true;
+  bool _agreePersonalData = false;
   String? _gender = '';
   String? _accType = '';
   bool _obscureText = true;
-  String IP = '10.7.240.185';
   CountryCode _countryCode =
       const CountryCode(name: "Pakistan", code: "PK", dialCode: "+92");
   final FocusNode _focusNode = FocusNode();
@@ -40,6 +45,7 @@ class _RegisterState extends State<Register> {
         height: 10,
       ));
   final _formKey = GlobalKey<FormState>();
+  final serverAddressController = Get.find<ServerAddressController>();
 
   @override
   void initState() {
@@ -553,68 +559,137 @@ class _RegisterState extends State<Register> {
                 SizedBox(
                     width: double.infinity,
                     child: CustomElevatedButton(
-                      buttonText: "Register",
-                      onClick: () async {
-                        if (_formKey.currentState?.validate() ?? false) {
-                          if (_agreePersonalData) {
-                            var url = Uri.parse('http://$IP:3001/register');
-                            var response = await http.post(url, body: {
-                              'firstName': controllers['firstName'].text.trim(),
-                              'lastName': controllers['lastName'].text.trim(),
-                              'email': controllers['email'].text.trim(),
-                              'phone': controllers['phone'].text.trim() != ""
-                                  ? _countryCode.dialCode +
-                                      controllers['phone'].text.trim()
-                                  : controllers['phone'].text.trim(),
-                              'gender': _gender,
-                              'accType': _accType,
-                              'password': controllers['password'].text,
-                              'confirmPassword': controllers['password'].text
-                            });
+                        buttonText: "Register",
+                        onClick: () {
+                          if (_formKey.currentState?.validate() ?? false) {
+                            if (_agreePersonalData) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => VerifyEmailPage(
+                                          email:
+                                              controllers['email'].text.trim(),
+                                          onSuccess: () async {
+                                            try {
+                                              if (_formKey.currentState
+                                                      ?.validate() ??
+                                                  false) {
+                                                if (_agreePersonalData) {
+                                                  var url = Uri.parse(
+                                                      'http://${serverAddressController.IP}:3001/register');
+                                                  var response = await http
+                                                      .post(url, body: {
+                                                    'firstName':
+                                                        controllers['firstName']
+                                                            .text
+                                                            .trim(),
+                                                    'lastName':
+                                                        controllers['lastName']
+                                                            .text
+                                                            .trim(),
+                                                    'email':
+                                                        controllers['email']
+                                                            .text
+                                                            .trim(),
+                                                    'phone': controllers[
+                                                                    'phone']
+                                                                .text
+                                                                .trim() !=
+                                                            ""
+                                                        ? _countryCode
+                                                                .dialCode +
+                                                            controllers['phone']
+                                                                .text
+                                                                .trim()
+                                                        : controllers['phone']
+                                                            .text
+                                                            .trim(),
+                                                    'gender': _gender,
+                                                    'accType': _accType,
+                                                    'password':
+                                                        controllers['password']
+                                                            .text,
+                                                    'confirmPassword':
+                                                        controllers['password']
+                                                            .text
+                                                  });
 
-                            if (response.statusCode == 200) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  backgroundColor: Colors.white,
-                                  content: Text(
-                                    'Registered Successfully',
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                ),
+                                                  if (response.statusCode ==
+                                                      200) {
+                                                    CustomSnackbar
+                                                        .showSuccessSnackbar(
+                                                            context,
+                                                            "Success!",
+                                                            "Registered Successfully");
+                                                    Map responseBody = json
+                                                        .decode(response.body);
+                                                    await SecureStorage()
+                                                        .setItem(
+                                                            "authToken",
+                                                            responseBody[
+                                                                "authToken"]);
+                                                    await SecureStorage()
+                                                        .setItems([
+                                                      "isLoggedIn",
+                                                      "tokenExpirationTime",
+                                                      "userData"
+                                                    ], [
+                                                      true,
+                                                      responseBody[
+                                                          "tokenExpirationTime"],
+                                                      responseBody["data"]
+                                                    ]);
+                                                    controllers['firstName']
+                                                        .clear();
+                                                    controllers['lastName']
+                                                        .clear();
+                                                    controllers['email']
+                                                        .clear();
+                                                    controllers['phone']
+                                                        .clear();
+                                                    controllers['password']
+                                                        .clear();
+                                                    controllers[
+                                                            'confirmPassword']
+                                                        .clear();
+                                                    Navigator.of(context)
+                                                        .pushNamedAndRemoveUntil(
+                                                            HomePage.routePath,
+                                                            (route) => false);
+                                                  } else {
+                                                    CustomSnackbar
+                                                        .showFailureSnackbar(
+                                                            context,
+                                                            "Oops!",
+                                                            json.decode(response
+                                                                    .body)[
+                                                                'message']);
+                                                  }
+                                                } else {
+                                                  CustomSnackbar
+                                                      .showWarningSnackbar(
+                                                          context,
+                                                          "Attention!",
+                                                          'Please agree to the processing of personal data');
+                                                }
+                                              }
+                                            } catch (e) {
+                                              CustomSnackbar.showFailureSnackbar(
+                                                  context,
+                                                  "Oops!",
+                                                  "Sorry, couldn't request to server");
+                                            }
+                                          },
+                                        )),
                               );
-                              controllers['firstName'].clear();
-                              controllers['lastName'].clear();
-                              controllers['email'].clear();
-                              controllers['phone'].clear();
-                              controllers['password'].clear();
-                              controllers['confirmPassword'].clear();
-                              // print(json.decode(response.body));
                             } else {
-                              // print(json.decode(response.body)['message']);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  backgroundColor: Colors.white,
-                                  content: Text(
-                                    json.decode(response.body)['message'],
-                                    style: const TextStyle(color: Colors.black),
-                                  ),
-                                ),
-                              );
+                              CustomSnackbar.showWarningSnackbar(
+                                  context,
+                                  "Attention!",
+                                  'Please agree to the processing of personal data');
                             }
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                backgroundColor: Colors.white,
-                                content: Text(
-                                  'Please agree to the processing of personal data',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                            );
                           }
-                        }
-                      },
-                    )),
+                        })),
                 const SizedBox(height: 20.0),
                 // Row(
                 //   mainAxisAlignment: MainAxisAlignment.center,
@@ -738,3 +813,53 @@ class PasswordRequirementsDialog extends StatelessWidget {
     );
   }
 }
+
+
+// async {
+//                         try {
+//                           if (_formKey.currentState?.validate() ?? false) {
+//                             if (_agreePersonalData) {
+//                               var url = Uri.parse(
+//                                   'http://${serverAddressController.IP}:3001/register');
+//                               var response = await http.post(url, body: {
+//                                 'firstName':
+//                                     controllers['firstName'].text.trim(),
+//                                 'lastName': controllers['lastName'].text.trim(),
+//                                 'email': controllers['email'].text.trim(),
+//                                 'phone': controllers['phone'].text.trim() != ""
+//                                     ? _countryCode.dialCode +
+//                                         controllers['phone'].text.trim()
+//                                     : controllers['phone'].text.trim(),
+//                                 'gender': _gender,
+//                                 'accType': _accType,
+//                                 'password': controllers['password'].text,
+//                                 'confirmPassword': controllers['password'].text
+//                               });
+
+//                               if (response.statusCode == 200) {
+//                                 CustomSnackbar.showSuccessSnackbar(context,
+//                                     "Success!", "Registered Successfully");
+//                                 controllers['firstName'].clear();
+//                                 controllers['lastName'].clear();
+//                                 controllers['email'].clear();
+//                                 controllers['phone'].clear();
+//                                 controllers['password'].clear();
+//                                 controllers['confirmPassword'].clear();
+//                               } else {
+//                                 CustomSnackbar.showFailureSnackbar(
+//                                     context,
+//                                     "Oops!",
+//                                     json.decode(response.body)['message']);
+//                               }
+//                             } else {
+//                               CustomSnackbar.showWarningSnackbar(
+//                                   context,
+//                                   "Attention!",
+//                                   'Please agree to the processing of personal data');
+//                             }
+//                           }
+//                         } catch (e) {
+//                           CustomSnackbar.showFailureSnackbar(context, "Oops!",
+//                               "Sorry, couldn't request to server");
+//                         }
+//                       },

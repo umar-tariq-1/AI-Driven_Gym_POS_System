@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:frontend/data/local_storage.dart';
 import 'package:frontend/data/secure_storage.dart';
 import 'package:frontend/main.dart';
+import 'package:frontend/states/server_address.dart';
 import 'package:frontend/widgets/base/custom_elevated_button.dart';
+import 'package:frontend/widgets/base/snackbar.dart';
 import 'package:frontend/widgets/pages/home_page.dart';
 import 'package:frontend/widgets/pages/sign/forget_passsword_page.dart';
 import 'package:frontend/widgets/pages/sign/register_page.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
 import '../../../theme/theme.dart';
 
@@ -24,10 +28,11 @@ class _SigninState extends State<Signin> {
     'email': TextEditingController(),
     'password': TextEditingController(),
   };
-  String IP = '10.7.240.185';
   bool _obscureText = true;
   bool _rememberPassword = true;
   final _formKey = GlobalKey<FormState>();
+  final serverAddressController = Get.find<ServerAddressController>();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -212,53 +217,44 @@ class _SigninState extends State<Signin> {
                   child: CustomElevatedButton(
                     buttonText: "Sign In",
                     onClick: () async {
-                      if (_formKey.currentState?.validate() ?? false) {
-                        var url = Uri.parse('http://$IP:3001/signin');
-                        var response = await http.post(url, body: {
-                          'email': controllers['email'].text.trim(),
-                          'password': controllers['password'].text,
-                        });
+                      try {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          var url = Uri.parse(
+                              'http://${serverAddressController.IP}:3001/signin');
+                          var response = await http.post(url, body: {
+                            'email': controllers['email'].text.trim(),
+                            'password': controllers['password'].text,
+                          });
 
-                        if (response.statusCode == 200) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              backgroundColor: Colors.white,
-                              content: Text(
-                                'Signed In Successfully',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                          );
-                          controllers['email'].clear();
-                          controllers['password'].clear();
+                          if (response.statusCode == 200) {
+                            CustomSnackbar.showSuccessSnackbar(
+                                context, "Success!", "Signed In Successfully");
+                            controllers['email'].clear();
+                            controllers['password'].clear();
 
-                          Map responseBody = json.decode(response.body);
-                          await SecureStorage()
-                              .setItem("authToken", responseBody["authToken"]);
-                          await LocalStorage().setItems([
-                            "isLoggedIn",
-                            "tokenExpirationTime",
-                            "userData"
-                          ], [
-                            true,
-                            responseBody["tokenExpirationTime"],
-                            responseBody["data"]
-                          ]);
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                              HomePage.routePath, (route) => false);
-                          // print(json.decode(response.body));
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: Colors.white,
-                              content: Text(
-                                json.decode(response.body)['message'],
-                                style: const TextStyle(color: Colors.black),
-                              ),
-                            ),
-                          );
-                          // print(json.decode(response.body)['message']);
+                            Map responseBody = json.decode(response.body);
+                            await SecureStorage().setItem(
+                                "authToken", responseBody["authToken"]);
+                            await SecureStorage().setItems([
+                              "isLoggedIn",
+                              "tokenExpirationTime",
+                              "userData"
+                            ], [
+                              true,
+                              responseBody["tokenExpirationTime"],
+                              responseBody["data"]
+                            ]);
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                HomePage.routePath, (route) => false);
+                            // print(json.decode(response.body));
+                          } else {
+                            CustomSnackbar.showFailureSnackbar(context, "Oops!",
+                                json.decode(response.body)['message']);
+                          }
                         }
+                      } catch (e) {
+                        CustomSnackbar.showFailureSnackbar(context, "Oops!",
+                            "Sorry, couldn't request to server");
                       }
                     },
                   ),

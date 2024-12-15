@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/data/local_storage.dart';
+import 'package:frontend/data/secure_storage.dart';
 import 'package:frontend/widgets/pages/home_page.dart';
-import 'package:frontend/widgets/pages/sign/forget_passsword_page.dart';
 import 'package:frontend/widgets/pages/welcome_page.dart';
 
 class LandingPage extends StatefulWidget {
@@ -24,10 +23,10 @@ class _LandingPageState extends State<LandingPage> {
     // Simulate a delay to show the loading screen
     await Future.delayed(const Duration(milliseconds: 2000));
 
-    final localStorage = LocalStorage();
-    final isLoggedIn = await localStorage.getItem('isLoggedIn') == true;
+    final secureStorage = SecureStorage();
+    final isLoggedIn = await secureStorage.getItem('isLoggedIn') == true;
     final tokenExpirationTime =
-        await localStorage.getItem('tokenExpirationTime');
+        await secureStorage.getItem('tokenExpirationTime');
 
     final currentTime = DateTime.now().millisecondsSinceEpoch;
 
