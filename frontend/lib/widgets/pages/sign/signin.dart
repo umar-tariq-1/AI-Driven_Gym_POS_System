@@ -6,9 +6,10 @@ import 'package:frontend/main.dart';
 import 'package:frontend/states/server_address.dart';
 import 'package:frontend/widgets/base/custom_elevated_button.dart';
 import 'package:frontend/widgets/base/snackbar.dart';
-import 'package:frontend/widgets/pages/home_page.dart';
+import 'package:frontend/widgets/pages/client/home_page.dart';
 import 'package:frontend/widgets/pages/sign/forget_passsword_page.dart';
 import 'package:frontend/widgets/pages/sign/register_page.dart';
+import 'package:frontend/widgets/pages/trainer/dashboard_page.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -52,17 +53,6 @@ class _SigninState extends State<Signin> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Text(
-                //   'Welcome back',
-                //   style: TextStyle(
-                //     fontSize: 30.0,
-                //     fontWeight: FontWeight.w900,
-                //     color: colorScheme.primary,
-                //   ),
-                // ),
-                // const SizedBox(
-                //   height: 40.0,
-                // ),
                 TextFormField(
                     keyboardType: TextInputType.emailAddress,
                     controller: controllers['email'],
@@ -243,7 +233,10 @@ class _SigninState extends State<Signin> {
                               responseBody["data"]
                             ]);
                             Navigator.of(context).pushNamedAndRemoveUntil(
-                                HomePage.routePath, (route) => false);
+                                responseBody["data"]['accType'] == 'Trainer'
+                                    ? TrainerDashboardPage.routePath
+                                    : ClientHomePage.routePath,
+                                (route) => false);
                             // print(json.decode(response.body));
                           } else {
                             CustomSnackbar.showFailureSnackbar(context, "Oops!",

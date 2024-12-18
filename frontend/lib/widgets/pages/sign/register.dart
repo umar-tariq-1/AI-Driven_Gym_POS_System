@@ -4,8 +4,9 @@ import 'package:frontend/main.dart';
 import 'package:frontend/states/server_address.dart';
 import 'package:frontend/widgets/base/custom_elevated_button.dart';
 import 'package:frontend/widgets/base/snackbar.dart';
-import 'package:frontend/widgets/pages/home_page.dart';
+import 'package:frontend/widgets/pages/client/home_page.dart';
 import 'package:frontend/widgets/pages/sign/signin_page.dart';
+import 'package:frontend/widgets/pages/trainer/dashboard_page.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -88,15 +89,6 @@ class _RegisterState extends State<Register> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Text(
-                //   'Get Started',
-                //   style: TextStyle(
-                //     fontSize: 30.0,
-                //     fontWeight: FontWeight.w900,
-                //     color: colorScheme.primary,
-                //   ),
-                // ),
-                // const SizedBox(height: 10.0),
                 Row(
                   children: [
                     Expanded(
@@ -228,7 +220,7 @@ class _RegisterState extends State<Register> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           prefixIcon: const Icon(
-                            Icons.person,
+                            Icons.wc_rounded,
                             color: Colors.black54,
                           ),
                           contentPadding: const EdgeInsets.only(
@@ -279,7 +271,7 @@ class _RegisterState extends State<Register> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           prefixIcon: const Icon(
-                            Icons.person,
+                            Icons.account_circle_outlined,
                             color: Colors.black54,
                           ),
                           contentPadding: const EdgeInsets.only(
@@ -654,7 +646,14 @@ class _RegisterState extends State<Register> {
                                                         .clear();
                                                     Navigator.of(context)
                                                         .pushNamedAndRemoveUntil(
-                                                            HomePage.routePath,
+                                                            responseBody["data"]
+                                                                        [
+                                                                        'accType'] ==
+                                                                    'Trainer'
+                                                                ? TrainerDashboardPage
+                                                                    .routePath
+                                                                : ClientHomePage
+                                                                    .routePath,
                                                             (route) => false);
                                                   } else {
                                                     CustomSnackbar
@@ -691,51 +690,6 @@ class _RegisterState extends State<Register> {
                           }
                         })),
                 const SizedBox(height: 20.0),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: [
-                //     Expanded(
-                //       child: Divider(
-                //         thickness: 0.7,
-                //         color: Colors.grey.withOpacity(0.5),
-                //       ),
-                //     ),
-                //     const Padding(
-                //       padding:
-                //           EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                //       child: Text(
-                //         'Register with',
-                //         style: TextStyle(
-                //           color: Colors.black45,
-                //         ),
-                //       ),
-                //     ),
-                //     Expanded(
-                //       child: Divider(
-                //         thickness: 0.7,
-                //         color: Colors.grey.withOpacity(0.5),
-                //       ),
-                //     ),
-                //   ],
-                // ),
-                // const SizedBox(height: 30.0),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //   children: [
-                //     GestureDetector(
-                //         child: const Icon(BoxIcons.bxl_google),
-                //         onTap: () async {
-                //           GoogleSignIn _googlesignin = GoogleSignIn();
-                //           try {
-                //             var credentials = await _googlesignin.signIn();
-                //             print(credentials);
-                //           } catch (error) {
-                //             print(error);
-                //           }
-                //         })
-                //   ],
-                // ),
-                // const SizedBox(height: 25.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -813,53 +767,3 @@ class PasswordRequirementsDialog extends StatelessWidget {
     );
   }
 }
-
-
-// async {
-//                         try {
-//                           if (_formKey.currentState?.validate() ?? false) {
-//                             if (_agreePersonalData) {
-//                               var url = Uri.parse(
-//                                   'http://${serverAddressController.IP}:3001/register');
-//                               var response = await http.post(url, body: {
-//                                 'firstName':
-//                                     controllers['firstName'].text.trim(),
-//                                 'lastName': controllers['lastName'].text.trim(),
-//                                 'email': controllers['email'].text.trim(),
-//                                 'phone': controllers['phone'].text.trim() != ""
-//                                     ? _countryCode.dialCode +
-//                                         controllers['phone'].text.trim()
-//                                     : controllers['phone'].text.trim(),
-//                                 'gender': _gender,
-//                                 'accType': _accType,
-//                                 'password': controllers['password'].text,
-//                                 'confirmPassword': controllers['password'].text
-//                               });
-
-//                               if (response.statusCode == 200) {
-//                                 CustomSnackbar.showSuccessSnackbar(context,
-//                                     "Success!", "Registered Successfully");
-//                                 controllers['firstName'].clear();
-//                                 controllers['lastName'].clear();
-//                                 controllers['email'].clear();
-//                                 controllers['phone'].clear();
-//                                 controllers['password'].clear();
-//                                 controllers['confirmPassword'].clear();
-//                               } else {
-//                                 CustomSnackbar.showFailureSnackbar(
-//                                     context,
-//                                     "Oops!",
-//                                     json.decode(response.body)['message']);
-//                               }
-//                             } else {
-//                               CustomSnackbar.showWarningSnackbar(
-//                                   context,
-//                                   "Attention!",
-//                                   'Please agree to the processing of personal data');
-//                             }
-//                           }
-//                         } catch (e) {
-//                           CustomSnackbar.showFailureSnackbar(context, "Oops!",
-//                               "Sorry, couldn't request to server");
-//                         }
-//                       },

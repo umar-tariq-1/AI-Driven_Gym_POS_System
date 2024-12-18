@@ -1,3 +1,4 @@
+const { database } = require("firebase-admin");
 const mysql = require("mysql2/promise");
 
 async function connectDatabase() {
@@ -7,6 +8,7 @@ async function connectDatabase() {
       port: process.env.DB_PORT || 3306,
       user: process.env.DB_USER || "superBrain",
       password: process.env.DB_PASSWORD || "superBrain123",
+      database: "gym_pos_system",
     };
 
     const con = await mysql.createConnection(connectionConfig);

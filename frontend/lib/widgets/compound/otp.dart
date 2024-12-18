@@ -79,6 +79,7 @@ class _OTPState extends State<OTP> {
         _timeLeft = otpInfo["validTill"] -
             (DateTime.now().millisecondsSinceEpoch ~/ 1000);
         _showTimer = true;
+        _showEmailSentText = true;
       }
     });
   }

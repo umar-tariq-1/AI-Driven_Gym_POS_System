@@ -1,9 +1,13 @@
 import 'package:frontend/states/server_address.dart';
-import 'package:frontend/widgets/pages/home_page.dart';
+import 'package:frontend/widgets/pages/client/book_classes.dart';
+import 'package:frontend/widgets/pages/client/home_page.dart';
 import 'package:frontend/widgets/pages/landing_page.dart';
 import 'package:frontend/widgets/pages/sign/forget_passsword_page.dart';
 import 'package:frontend/widgets/pages/sign/register_page.dart';
 import 'package:frontend/widgets/pages/sign/signin_page.dart';
+import 'package:frontend/widgets/pages/trainer/create_class.dart';
+import 'package:frontend/widgets/pages/trainer/dashboard_page.dart';
+import 'package:frontend/widgets/pages/trainer/manage_classes_page.dart';
 import 'package:frontend/widgets/pages/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,8 +53,13 @@ class MyAppState extends State<MyApp> {
           SigninPage.routePath: (context) => const SigninPage(),
           ForgetPasswordPage.routePath: (context) =>
               ForgetPasswordPage(email: "No Email Entered"),
-          HomePage.routePath: (context) => const HomePage(),
+          ClientHomePage.routePath: (context) => const ClientHomePage(),
           LandingPage.routePath: (context) => const LandingPage(),
+          CreateClassPage.routePath: (context) => const CreateClassPage(),
+          ManageClassesPage.routePath: (context) => const ManageClassesPage(),
+          TrainerDashboardPage.routePath: (context) =>
+              const TrainerDashboardPage(),
+          BookClassesPage.routePath: (context) => const BookClassesPage()
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

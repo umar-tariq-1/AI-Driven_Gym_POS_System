@@ -40,7 +40,7 @@ class CustomListTile extends StatelessWidget {
       child: ListTile(
         leading: Icon(
           iconData,
-          color: active ? colorScheme.onPrimary : colorScheme.shadow,
+          color: active ? colorScheme.onPrimary : Colors.grey.shade800,
           size: iconSize,
         ),
         title: Padding(
@@ -51,7 +51,8 @@ class CustomListTile extends StatelessWidget {
                 fontFamily: 'RalewayLight',
                 fontWeight: FontWeight.bold,
                 fontSize: 17.5,
-                color: active ? colorScheme.onPrimary : colorScheme.shadow,
+                letterSpacing: 0.85,
+                color: active ? colorScheme.onPrimary : Colors.grey.shade800,
               ),
             )),
         onTap: onTap,

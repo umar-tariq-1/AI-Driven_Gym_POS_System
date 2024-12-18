@@ -1,0 +1,95 @@
+import 'package:flutter/material.dart';
+
+Widget CustomTextFormField({
+  required TextEditingController controller,
+  required String label,
+  required String hint,
+  bool multiline = false,
+  bool disabled = false,
+  TextInputType keyboardType = TextInputType.text,
+}) {
+  return TextFormField(
+    controller: controller,
+    keyboardType: keyboardType,
+    enabled: !disabled,
+    maxLines: multiline ? null : 1,
+    decoration: InputDecoration(
+      enabled: !disabled,
+      label: Text(label),
+      labelStyle: const TextStyle(
+        overflow: TextOverflow.ellipsis,
+      ),
+      hintText: hint,
+      border: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.black12),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.black12),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+    ),
+    validator: (value) {
+      if (value == null || value.trim().isEmpty) {
+        return '$label is required';
+      }
+      return null;
+    },
+  );
+}
+
+Widget CustomDropdownField({
+  required String label,
+  required List<String> items,
+  required String? value,
+  required void Function(String?) onChanged,
+}) {
+  return DropdownButtonFormField<String>(
+    dropdownColor: Colors.white,
+    items: items
+        .map((item) => DropdownMenuItem(value: item, child: Text(item)))
+        .toList(),
+    value: value,
+    onChanged: onChanged,
+    decoration: InputDecoration(
+      label: Text(label),
+      labelStyle: const TextStyle(
+        overflow: TextOverflow.ellipsis,
+      ),
+      hintStyle: const TextStyle(
+        overflow: TextOverflow.ellipsis,
+      ),
+      border: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.black12),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.black12),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+    ),
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return '$label is required';
+      }
+      return null;
+    },
+  );
+}
+
+Future<DateTime?> pickDate(BuildContext context,
+    {initialDate, firstDate}) async {
+  return showDatePicker(
+    context: context,
+    initialDate: initialDate ?? DateTime.now(),
+    firstDate: firstDate ?? DateTime.now(),
+    lastDate: DateTime(2100),
+  );
+}
+
+Future<TimeOfDay?> pickTime(BuildContext context, {initialTime}) async {
+  return showTimePicker(
+      context: context, initialTime: initialTime ?? TimeOfDay.now());
+}

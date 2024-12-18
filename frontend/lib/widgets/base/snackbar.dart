@@ -8,6 +8,7 @@ class CustomSnackbar {
       margin: const EdgeInsets.all(0),
       elevation: 0,
       behavior: SnackBarBehavior.floating,
+      dismissDirection: DismissDirection.horizontal,
       backgroundColor: Colors.transparent,
       content: AwesomeSnackbarContent(
         title: title,
@@ -27,6 +28,7 @@ class CustomSnackbar {
       margin: const EdgeInsets.all(0),
       elevation: 0,
       behavior: SnackBarBehavior.floating,
+      dismissDirection: DismissDirection.horizontal,
       backgroundColor: Colors.transparent,
       content: AwesomeSnackbarContent(
         title: title,
@@ -46,6 +48,7 @@ class CustomSnackbar {
       margin: const EdgeInsets.all(0),
       elevation: 0,
       behavior: SnackBarBehavior.floating,
+      dismissDirection: DismissDirection.horizontal,
       backgroundColor: Colors.transparent,
       content: AwesomeSnackbarContent(
         title: title,
@@ -65,6 +68,7 @@ class CustomSnackbar {
       margin: const EdgeInsets.all(0),
       elevation: 0,
       behavior: SnackBarBehavior.floating,
+      dismissDirection: DismissDirection.horizontal,
       backgroundColor: Colors.transparent,
       content: AwesomeSnackbarContent(
         title: title,

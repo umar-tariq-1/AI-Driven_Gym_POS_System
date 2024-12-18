@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/data/local_storage.dart';
-import 'package:frontend/widgets/pages/home_page.dart';
+import 'package:frontend/data/secure_storage.dart';
+import 'package:frontend/widgets/pages/client/home_page.dart';
 import 'package:frontend/widgets/pages/sign/register_page.dart';
 import 'package:frontend/widgets/pages/sign/signin_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -75,56 +76,38 @@ class _WelcomePageState extends State<WelcomePage> {
                           height: _backgroundHeight * 0.37,
                           fit: BoxFit.cover,
                         ),
-                        // child: SvgPicture.asset(
-                        //   'assets/images/.svg',
-                        //   width: screenWidth <= _backgroundHeight * 0.37
-                        //       ? screenWidth - 40
-                        //       : null,
-                        //   height: _backgroundHeight * 0.37,
-                        //   fit: BoxFit.cover,
-                        // ),
                       ),
                     ),
                   ),
                   Container(
                       padding: EdgeInsets.only(
                           bottom: _backgroundHeight * 0.14,
-                          left: 22.5,
-                          right: 22.5),
+                          left: 15,
+                          right: 15),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // WidgetAnimator(
-                          //   incomingEffect:
-                          //       WidgetTransitionEffects.incomingSlideInFromTop(
-                          //           duration: const Duration(milliseconds: 800),
-                          //           delay: const Duration(milliseconds: 200)),
-                          //   child: Text("Welcome!",
-                          //       style: TextStyle(
-                          //           fontFamily: "RalewaySemiBold",
-                          //           fontSize: 49.0,
-                          //           color: colorScheme.primary)),
-                          // ),
-                          // const SizedBox(
-                          //   height: 25,
-                          // ),
                           TextAnimator(
-                            'Simplify your fitness journey,',
-                            initialDelay: const Duration(milliseconds: 200),
-                            style: TextStyle(
-                                fontSize: 21.0, color: colorScheme.primary),
-                            incomingEffect: WidgetTransitionEffects
-                                .incomingSlideInFromRight(
+                            'Transform your gym experience,',
+                            textAlign: TextAlign.center,
+                            initialDelay: const Duration(milliseconds: 250),
+                            style: const TextStyle(
+                                fontSize: 21.0,
+                                color: Color.fromARGB(255, 11, 82, 168)),
+                            incomingEffect:
+                                WidgetTransitionEffects.outgoingScaleUp(
                                     duration:
                                         const Duration(milliseconds: 300)),
                           ),
                           TextAnimator(
-                            'One click, one platform.',
-                            initialDelay: const Duration(milliseconds: 200),
-                            style: TextStyle(
-                                fontSize: 21.0, color: colorScheme.primary),
-                            incomingEffect: WidgetTransitionEffects
-                                .incomingSlideInFromRight(
+                            'Everything you need, online and easy.',
+                            textAlign: TextAlign.center,
+                            initialDelay: const Duration(milliseconds: 250),
+                            style: const TextStyle(
+                                fontSize: 21.0,
+                                color: Color.fromARGB(255, 11, 82, 168)),
+                            incomingEffect:
+                                WidgetTransitionEffects.outgoingScaleUp(
                                     duration:
                                         const Duration(milliseconds: 300)),
                           ),
@@ -138,11 +121,11 @@ class _WelcomePageState extends State<WelcomePage> {
                           color: Colors.transparent,
                           textColor: colorScheme.primary,
                           onClick: () async {
-                            final localStorage = LocalStorage();
+                            final secureStorage = SecureStorage();
                             final isLoggedIn =
-                                await localStorage.getItem('isLoggedIn') ==
-                                    true;
-                            final tokenExpirationTime = await localStorage
+                                await secureStorage.getItem('isLoggedIn') ==
+                                    'true';
+                            final tokenExpirationTime = await secureStorage
                                 .getItem('tokenExpirationTime');
 
                             final currentTime =
@@ -151,7 +134,7 @@ class _WelcomePageState extends State<WelcomePage> {
                                 tokenExpirationTime != null &&
                                 tokenExpirationTime > currentTime) {
                               Navigator.of(context)
-                                  .pushNamed(HomePage.routePath);
+                                  .pushNamed(ClientHomePage.routePath);
                             } else {
                               Navigator.of(context)
                                   .pushNamed(SigninPage.routePath);
