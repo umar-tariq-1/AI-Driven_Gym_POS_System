@@ -46,7 +46,7 @@ class _LandingPageState extends State<LandingPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SvgPicture.asset(
-              'assets/images/gym 2.svg',
+              'assets/images/gym 3.svg',
               width: MediaQuery.of(context).size.width * 0.8,
             ),
             const SizedBox(height: 50),
@@ -73,7 +73,7 @@ class _LandingPageState extends State<LandingPage> {
             TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0, end: 1),
                 duration: const Duration(milliseconds: 2000),
-                onEnd: () async {
+                onEnd: () {
                   if (_isLoggedIn == "true" &&
                       int.parse(_tokenExpirationTime) > currentTime) {
                     Navigator.of(context).pushNamedAndRemoveUntil(

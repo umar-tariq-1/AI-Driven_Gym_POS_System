@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:frontend/data/secure_storage.dart';
 import 'package:frontend/main.dart';
 import 'package:frontend/states/server_address.dart';
@@ -27,6 +28,7 @@ class _SigninState extends State<Signin> {
     'email': TextEditingController(),
     'password': TextEditingController(),
   };
+  bool isLoading = false;
   bool _obscureText = true;
   bool _rememberPassword = true;
   final _formKey = GlobalKey<FormState>();
@@ -186,6 +188,7 @@ class _SigninState extends State<Signin> {
                         ),
                       ),
                       onTap: () {
+                        HapticFeedback.lightImpact();
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -204,9 +207,14 @@ class _SigninState extends State<Signin> {
                   width: double.infinity,
                   child: CustomElevatedButton(
                     buttonText: "Sign In",
+                    disabled: isLoading,
                     onClick: () async {
+                      HapticFeedback.lightImpact();
                       try {
                         if (_formKey.currentState?.validate() ?? false) {
+                          setState(() {
+                            isLoading = true;
+                          });
                           var url = Uri.parse(
                               'http://${serverAddressController.IP}:3001/signin');
                           var response = await http.post(url, body: {
@@ -247,6 +255,9 @@ class _SigninState extends State<Signin> {
                         CustomSnackbar.showFailureSnackbar(context, "Oops!",
                             "Sorry, couldn't request to server");
                       }
+                      setState(() {
+                        isLoading = false;
+                      });
                     },
                   ),
                 ),
@@ -265,6 +276,7 @@ class _SigninState extends State<Signin> {
                     ),
                     GestureDetector(
                       onTap: () {
+                        HapticFeedback.lightImpact();
                         Navigator.pop(context);
                         Navigator.push(
                           context,
@@ -365,6 +377,7 @@ class EmailOTPDialog extends StatelessWidget {
             TextButton(
               child: const Text('Request OTP', style: TextStyle(fontSize: 18)),
               onPressed: () {
+                HapticFeedback.lightImpact();
                 if (_forgetPasswordFormKey.currentState?.validate() ?? false) {
                   Navigator.pop(context);
                   Navigator.push(

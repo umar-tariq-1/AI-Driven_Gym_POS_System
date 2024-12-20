@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/data/local_storage.dart';
 import 'package:frontend/data/secure_storage.dart';
+import 'package:frontend/main.dart';
+import 'package:frontend/states/server_address.dart';
 import 'package:frontend/widgets/pages/client/home_page.dart';
 import 'package:frontend/widgets/pages/sign/register_page.dart';
 import 'package:frontend/widgets/pages/sign/signin_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:widget_and_text_animator/widget_and_text_animator.dart';
@@ -63,18 +66,28 @@ class _WelcomePageState extends State<WelcomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(top: _backgroundHeight * 0.11),
+                    margin: EdgeInsets.only(top: _backgroundHeight * 0.12),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(80),
-                        child: Image.asset(
-                          'assets/images/welcome.gif',
-                          width: screenWidth <= _backgroundHeight * 0.37
-                              ? screenWidth - 40
-                              : null,
-                          height: _backgroundHeight * 0.37,
-                          fit: BoxFit.cover,
+                        borderRadius: BorderRadius.circular(/* 80 */ 0),
+                        child: GestureDetector(
+                          onLongPress: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return ChangeServerIPDialog();
+                              },
+                            );
+                          },
+                          child: SvgPicture.asset(
+                            'assets/images/gym 6.svg',
+                            width: screenWidth <= _backgroundHeight * 0.37
+                                ? screenWidth - 40
+                                : null,
+                            height: _backgroundHeight * 0.37,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
@@ -160,6 +173,73 @@ class _WelcomePageState extends State<WelcomePage> {
             ),
           ),
         ]),
+      ),
+    );
+  }
+}
+
+class ChangeServerIPDialog extends StatelessWidget {
+  final serverAddressController = Get.find<ServerAddressController>();
+  final TextEditingController controller = TextEditingController();
+
+  ChangeServerIPDialog({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    controller.text = serverAddressController.IP;
+    return Dialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+      backgroundColor: backgroundColor,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.fromLTRB(18, 25, 18, 17.5),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const Text(
+              'Change Server\'s IP Address',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 30),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  keyboardType: TextInputType.emailAddress,
+                  controller: controller,
+                  decoration: InputDecoration(
+                    label: const Text('IP Address'),
+                    labelStyle:
+                        const TextStyle(overflow: TextOverflow.ellipsis),
+                    hintText: 'Enter IP Address',
+                    hintStyle: const TextStyle(color: Colors.black26),
+                    border: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.black12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.black12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    prefixIcon:
+                        const Icon(Icons.dns_outlined, color: Colors.black54),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 16),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            TextButton(
+              child: const Text('Update', style: TextStyle(fontSize: 18)),
+              onPressed: () {
+                serverAddressController.setIP(controller.text);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

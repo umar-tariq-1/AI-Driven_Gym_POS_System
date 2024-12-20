@@ -139,7 +139,7 @@ trainer.post("/create", authorize, upload, async (req, res) => {
   }
 });
 
-trainer.get("/classes", authorize, async (req, res) => {
+trainer.get("/", authorize, async (req, res) => {
   const db = req.db;
   const userData = req.userData;
 
@@ -149,7 +149,7 @@ trainer.get("/classes", authorize, async (req, res) => {
     `;
     const classes = await db.query(query, [userData.id]);
 
-    return res.status(200).send({ success: true, data: classes });
+    return res.status(200).send({ success: true, data: classes[0] });
   } catch (error) {
     console.error(error?.message);
     return res.status(500).send({ success: false, message: error?.message });

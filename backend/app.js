@@ -9,6 +9,7 @@ const deleteUser = require("./routes/User/delete");
 const editUser = require("./routes/User/edit");
 const OTP = require("./routes/User/otp");
 const trainer = require("./routes/trainer/class");
+const client = require("./routes/client/classes");
 
 const app = express();
 
@@ -40,6 +41,9 @@ app.use(express.urlencoded({ extended: true }));
 
     // Trainer routes
     app.use("/trainer/class", trainer);
+
+    // Client routes
+    app.use("/client/classes", client);
 
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {

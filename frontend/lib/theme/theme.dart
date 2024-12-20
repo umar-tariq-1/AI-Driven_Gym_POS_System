@@ -6,6 +6,7 @@ const colorScheme = ColorScheme(
       Color.fromARGB(255, 12, 98, 204),
   onPrimary: Color(0xFFFFFFFF),
   secondary: Color(0xFF6EAEE7),
+  inversePrimary: Color.fromARGB(255, 17, 43, 78),
   onSecondary: Color(0xFFFFFFFF),
   error: Color(0xFFBA1A1A),
   onError: Color(0xFFFFFFFF),

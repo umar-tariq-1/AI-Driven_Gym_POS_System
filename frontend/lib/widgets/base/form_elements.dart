@@ -6,9 +6,11 @@ Widget CustomTextFormField({
   required String hint,
   bool multiline = false,
   bool disabled = false,
+  bool readOnly = false,
   TextInputType keyboardType = TextInputType.text,
 }) {
   return TextFormField(
+    readOnly: readOnly,
     controller: controller,
     keyboardType: keyboardType,
     enabled: !disabled,
@@ -92,4 +94,41 @@ Future<DateTime?> pickDate(BuildContext context,
 Future<TimeOfDay?> pickTime(BuildContext context, {initialTime}) async {
   return showTimePicker(
       context: context, initialTime: initialTime ?? TimeOfDay.now());
+}
+
+class CustomDataDisplayTextField extends StatelessWidget {
+  final String value;
+  final String label;
+
+  const CustomDataDisplayTextField({
+    super.key,
+    required this.value,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      initialValue: value,
+      readOnly: true,
+      decoration: InputDecoration(
+        label: Text(label),
+        labelStyle: const TextStyle(
+          overflow: TextOverflow.ellipsis,
+        ),
+        filled: true,
+        fillColor: Colors.grey[200],
+        border: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.black12),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.black12),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      ),
+    );
+  }
 }

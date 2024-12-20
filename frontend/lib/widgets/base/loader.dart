@@ -1,17 +1,18 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:frontend/theme/theme.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class Loader extends StatelessWidget {
   final bool isLoading;
-  final Color overlayColor;
+  final Color? overlayColor;
   final Color? loaderColor;
 
   const Loader(
       {super.key,
       required this.isLoading,
-      required this.overlayColor,
+      this.overlayColor,
       this.loaderColor});
 
   @override
@@ -25,7 +26,9 @@ class Loader extends StatelessWidget {
         if (isLoading)
           Opacity(
             opacity: 0.8,
-            child: ModalBarrier(dismissible: false, color: overlayColor),
+            child: ModalBarrier(
+                dismissible: false,
+                color: overlayColor ?? colorScheme.onPrimary),
           ),
         if (isLoading)
           Center(
@@ -33,7 +36,7 @@ class Loader extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               LoadingAnimationWidget.threeArchedCircle(
-                color: loaderColor ?? Theme.of(context).primaryColor,
+                color: loaderColor ?? colorScheme.inversePrimary,
                 size: 58,
               ),
               Container(
@@ -41,7 +44,7 @@ class Loader extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 4),
                 child: Text("Loading...",
                     style: TextStyle(
-                        color: loaderColor ?? Theme.of(context).primaryColor,
+                        color: loaderColor ?? colorScheme.inversePrimary,
                         fontSize: 15.5,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1.1)),

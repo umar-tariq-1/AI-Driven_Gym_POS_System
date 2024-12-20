@@ -33,6 +33,7 @@ class _RegisterState extends State<Register> {
     'confirmPassword': TextEditingController()
   };
   bool _agreePersonalData = false;
+  bool isLoading = false;
   String? _gender = '';
   String? _accType = '';
   bool _obscureText = true;
@@ -552,7 +553,9 @@ class _RegisterState extends State<Register> {
                     width: double.infinity,
                     child: CustomElevatedButton(
                         buttonText: "Register",
+                        disabled: isLoading,
                         onClick: () {
+                          HapticFeedback.lightImpact();
                           if (_formKey.currentState?.validate() ?? false) {
                             if (_agreePersonalData) {
                               Navigator.push(
@@ -567,6 +570,9 @@ class _RegisterState extends State<Register> {
                                                       ?.validate() ??
                                                   false) {
                                                 if (_agreePersonalData) {
+                                                  setState(() {
+                                                    isLoading = true;
+                                                  });
                                                   var url = Uri.parse(
                                                       'http://${serverAddressController.IP}:3001/register');
                                                   var response = await http
@@ -678,6 +684,9 @@ class _RegisterState extends State<Register> {
                                                   "Oops!",
                                                   "Sorry, couldn't request to server");
                                             }
+                                            setState(() {
+                                              isLoading = false;
+                                            });
                                           },
                                         )),
                               );
@@ -701,6 +710,7 @@ class _RegisterState extends State<Register> {
                     ),
                     GestureDetector(
                       onTap: () {
+                        HapticFeedback.lightImpact();
                         Navigator.pop(context);
                         Navigator.push(
                           context,
