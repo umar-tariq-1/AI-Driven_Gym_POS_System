@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/states/server_address.dart';
+import 'package:frontend/widgets/base/snackbar.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/data/secure_storage.dart';
@@ -23,6 +24,7 @@ class BookClassesPage extends StatefulWidget {
 class _BookClassesPageState extends State<BookClassesPage> {
   late Map userData;
   List<Map<String, dynamic>> classesData = [];
+  String authToken = '';
   final serverAddressController = Get.find<ServerAddressController>();
 
   @override
@@ -38,9 +40,10 @@ class _BookClassesPageState extends State<BookClassesPage> {
 
   Future<void> fetchClassesData() async {
     try {
+      authToken = await SecureStorage().getItem('authToken');
       final response = await http.get(
-        Uri.parse('http://${serverAddressController.IP}:3001/client/classes'),
-      );
+          Uri.parse('http://${serverAddressController.IP}:3001/client/classes'),
+          headers: {'auth-token': authToken});
       if (response.statusCode == 200) {
         setState(() {
           classesData = List<Map<String, dynamic>>.from(
@@ -48,10 +51,12 @@ class _BookClassesPageState extends State<BookClassesPage> {
           );
         });
       } else {
-        throw Exception('Failed to load classes');
+        CustomSnackbar.showFailureSnackbar(
+            context, "Oops!", json.decode(response.body)['message']);
       }
     } catch (e) {
-      print('Error fetching classes data: $e');
+      CustomSnackbar.showFailureSnackbar(
+          context, "Oops!", "Sorry, couldn't request to server");
     }
   }
 

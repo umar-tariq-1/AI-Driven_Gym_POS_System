@@ -3,7 +3,7 @@ const { authorize } = require("../../middlewares/authorize");
 
 const client = express.Router();
 
-client.get("/", async (req, res) => {
+client.get("/", authorize, async (req, res) => {
   const db = req.db;
   const userData = req.userData;
 
@@ -23,7 +23,9 @@ client.get("/", async (req, res) => {
     return res.status(200).send({ success: true, data: classes[0] });
   } catch (error) {
     console.error(error?.message);
-    return res.status(500).send({ success: false, message: error?.message });
+    return res
+      .status(500)
+      .send({ success: false, message: "Internal Server Error" });
   }
 });
 

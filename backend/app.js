@@ -8,7 +8,7 @@ const signin = require("./routes/User/signin");
 const deleteUser = require("./routes/User/delete");
 const editUser = require("./routes/User/edit");
 const OTP = require("./routes/User/otp");
-const trainer = require("./routes/trainer/class");
+const trainer = require("./routes/trainer/classes");
 const client = require("./routes/client/classes");
 
 const app = express();
@@ -40,7 +40,7 @@ app.use(express.urlencoded({ extended: true }));
     app.use("/otp", OTP);
 
     // Trainer routes
-    app.use("/trainer/class", trainer);
+    app.use("/trainer/classes", trainer);
 
     // Client routes
     app.use("/client/classes", client);

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:frontend/data/secure_storage.dart';
 import 'package:frontend/main.dart';
 import 'package:frontend/states/server_address.dart';
@@ -8,6 +9,7 @@ import 'package:frontend/theme/theme.dart';
 import 'package:frontend/widgets/base/app_bar.dart';
 import 'package:frontend/widgets/base/card.dart';
 import 'package:frontend/widgets/base/navigation_drawer.dart';
+import 'package:frontend/widgets/base/snackbar.dart';
 import 'package:frontend/widgets/pages/trainer/create_class.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
@@ -22,6 +24,8 @@ class ManageClassesPage extends StatefulWidget {
 
 class _ManageClassesPageState extends State<ManageClassesPage> {
   late Map userData;
+  String authToken = '';
+
   List<Map<String, dynamic>> classesData = [];
   final serverAddressController = Get.find<ServerAddressController>();
 
@@ -38,9 +42,13 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
 
   Future<void> fetchClassesData() async {
     try {
+      authToken = await SecureStorage().getItem('authToken');
       final response = await http.get(
-        Uri.parse('http://${serverAddressController.IP}:3001/client/classes'),
-      );
+          Uri.parse(
+              'http://${serverAddressController.IP}:3001/trainer/classes'),
+          headers: {
+            'auth-token': authToken,
+          });
       if (response.statusCode == 200) {
         setState(() {
           classesData = List<Map<String, dynamic>>.from(
@@ -48,10 +56,12 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
           );
         });
       } else {
-        throw Exception('Failed to load classes');
+        CustomSnackbar.showFailureSnackbar(
+            context, "Oops!", json.decode(response.body)['message']);
       }
     } catch (e) {
-      print('Error fetching classes data: $e');
+      CustomSnackbar.showFailureSnackbar(
+          context, "Oops!", "Sorry, couldn't request to server");
     }
   }
 
@@ -69,6 +79,7 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
       backgroundColor: colorScheme.surface,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          HapticFeedback.lightImpact();
           Navigator.of(context).pushNamed(CreateClassPage.routePath);
         },
         backgroundColor: colorScheme.inversePrimary,

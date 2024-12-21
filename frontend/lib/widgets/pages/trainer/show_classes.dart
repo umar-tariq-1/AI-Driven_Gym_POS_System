@@ -9,15 +9,15 @@ import 'package:frontend/widgets/base/custom_elevated_button.dart';
 import 'package:frontend/widgets/base/custom_outlined_button.dart';
 import 'package:frontend/widgets/base/form_elements.dart';
 
-class ShowClassPage extends StatefulWidget {
+class ShowMyClassPage extends StatefulWidget {
   Map<String, dynamic> classData = {};
-  ShowClassPage({super.key, required this.classData});
+  ShowMyClassPage({super.key, required this.classData});
 
   @override
-  State<ShowClassPage> createState() => _ShowClassPageState();
+  State<ShowMyClassPage> createState() => _ShowMyClassPageState();
 }
 
-class _ShowClassPageState extends State<ShowClassPage> {
+class _ShowMyClassPageState extends State<ShowMyClassPage> {
   String formatDate(String date) {
     final months = {
       '01': 'Jan',
@@ -264,16 +264,16 @@ class _ShowClassPageState extends State<ShowClassPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 32),
-                    Center(
-                      child: CustomElevatedButton(
-                          onClick: () {
-                            HapticFeedback.lightImpact();
-                          },
-                          minWidth: MediaQuery.of(context).size.width - 32,
-                          fontSize: 16.5,
-                          buttonText: ('Register for Class')),
-                    ),
+                    // const SizedBox(height: 32),
+                    // Center(
+                    //   child: CustomElevatedButton(
+                    //       onClick: () {
+                    //         HapticFeedback.lightImpact();
+                    //       },
+                    //       minWidth: MediaQuery.of(context).size.width - 32,
+                    //       fontSize: 16.5,
+                    //       buttonText: ('Register for Class')),
+                    // ),
                     const SizedBox(height: 15),
                   ],
                 ),

@@ -88,7 +88,7 @@ class _CreateClassPageState extends State<CreateClassPage> {
   Future<void> sendCreateRequest() async {
     final String authToken = await SecureStorage().getItem('authToken');
     final uri = Uri.parse(
-        'http://${serverAddressController.IP}:3001/trainer/class/create');
+        'http://${serverAddressController.IP}:3001/trainer/classes/create');
     final request = http.MultipartRequest('POST', uri);
     request.headers['auth-token'] = authToken;
     // Add text fields

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:frontend/data/local_storage.dart';
 import 'package:frontend/data/secure_storage.dart';
 import 'package:frontend/main.dart';
@@ -73,6 +74,7 @@ class _WelcomePageState extends State<WelcomePage> {
                         borderRadius: BorderRadius.circular(/* 80 */ 0),
                         child: GestureDetector(
                           onLongPress: () {
+                            HapticFeedback.mediumImpact();
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -207,7 +209,8 @@ class ChangeServerIPDialog extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextFormField(
-                  keyboardType: TextInputType.emailAddress,
+                  keyboardType: TextInputType.number,
+                  onChanged: (_) => HapticFeedback.lightImpact(),
                   controller: controller,
                   decoration: InputDecoration(
                     label: const Text('IP Address'),
@@ -236,6 +239,7 @@ class ChangeServerIPDialog extends StatelessWidget {
               child: const Text('Update', style: TextStyle(fontSize: 18)),
               onPressed: () {
                 serverAddressController.setIP(controller.text);
+                Navigator.of(context).pop();
               },
             ),
           ],

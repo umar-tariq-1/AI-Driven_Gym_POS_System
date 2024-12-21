@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/data/secure_storage.dart';
 import 'package:frontend/widgets/base/list_tile.dart';
+import 'package:frontend/widgets/base/snackbar.dart';
 import 'package:frontend/widgets/pages/client/book_classes.dart';
 import 'package:frontend/widgets/pages/trainer/create_class.dart';
 import 'package:frontend/widgets/pages/trainer/dashboard_page.dart';
@@ -206,6 +207,8 @@ Widget buildClientMenuItems(BuildContext context, active) => Column(
               secureStorage.setItems(
                   ["isLoggedIn", "tokenExpirationTime", "authToken"],
                   [false, 0, ""]);
+              CustomSnackbar.showSuccessSnackbar(
+                  context, "Success!", "Logged out Successfully");
               Navigator.of(context).pushNamedAndRemoveUntil(
                   WelcomePage.routePath, (route) => false);
             }),
@@ -323,6 +326,8 @@ Widget buildTrainerMenuItems(BuildContext context, active) => Column(
               secureStorage.setItems(
                   ["isLoggedIn", "tokenExpirationTime", "authToken"],
                   [false, 0, ""]);
+              CustomSnackbar.showSuccessSnackbar(
+                  context, "Success!", "Logged out Successfully");
               Navigator.of(context).pushNamedAndRemoveUntil(
                   WelcomePage.routePath, (route) => false);
             }),
@@ -439,6 +444,8 @@ Widget buildOwnerMenuItems(BuildContext context, active) => Column(
               secureStorage.setItems(
                   ["isLoggedIn", "tokenExpirationTime", "authToken"],
                   [false, 0, ""]);
+              CustomSnackbar.showSuccessSnackbar(
+                  context, "Success!", "Logged out Successfully");
               Navigator.of(context).pushNamedAndRemoveUntil(
                   WelcomePage.routePath, (route) => false);
             }),
@@ -555,6 +562,8 @@ Widget buildAdminMenuItems(BuildContext context, active) => Column(
               secureStorage.setItems(
                   ["isLoggedIn", "tokenExpirationTime", "authToken"],
                   [false, 0, ""]);
+              CustomSnackbar.showSuccessSnackbar(
+                  context, "Success!", "Logged out Successfully");
               Navigator.of(context).pushNamedAndRemoveUntil(
                   WelcomePage.routePath, (route) => false);
             }),

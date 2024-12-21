@@ -152,7 +152,9 @@ trainer.get("/", authorize, async (req, res) => {
     return res.status(200).send({ success: true, data: classes[0] });
   } catch (error) {
     console.error(error?.message);
-    return res.status(500).send({ success: false, message: error?.message });
+    return res
+      .status(500)
+      .send({ success: false, message: "Internal Server Error" });
   }
 });
 

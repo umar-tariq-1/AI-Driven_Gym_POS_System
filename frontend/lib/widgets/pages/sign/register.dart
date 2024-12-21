@@ -521,7 +521,7 @@ class _RegisterState extends State<Register> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 14.0),
+                const SizedBox(height: 13.0),
                 Row(
                   children: [
                     Checkbox(
@@ -548,7 +548,7 @@ class _RegisterState extends State<Register> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16.5),
+                const SizedBox(height: 15),
                 SizedBox(
                     width: double.infinity,
                     child: CustomElevatedButton(
