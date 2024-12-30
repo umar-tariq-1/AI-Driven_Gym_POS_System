@@ -82,9 +82,9 @@ register.post("/", async (req, res) => {
 
   try {
     const insertQuery = `
-      INSERT INTO gym_pos_system.Users (firstName, lastName, gender, email, phone, password, accType)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `;
+    INSERT INTO gym_pos_system.Users (firstName, lastName, gender, email, phone, password, accType)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
 
     const [result] = await db.query(insertQuery, [
       capitalize(userData.firstName),
@@ -96,8 +96,15 @@ register.post("/", async (req, res) => {
       userData.accType,
     ]);
 
+    const insertedData = {
+      ...userData,
+      id: result.insertId,
+    };
+
+    delete insertedData.password;
+
     const authToken = createToken(result.insertId, "365d");
-    var tokenExpirationTime =
+    const tokenExpirationTime =
       Date.now() + 1000 * 60 * 60 * 24 * 365 - 1000 * 30;
 
     res.status(200).send({
@@ -105,13 +112,7 @@ register.post("/", async (req, res) => {
       isLoggedIn: true,
       authToken,
       tokenExpirationTime,
-      data: {
-        firstName: capitalize(userData.firstName),
-        lastName: capitalize(userData.lastName),
-        gender: userData.gender,
-        phone: userData.phone === "" ? null : userData.phone,
-        accType: userData.accType,
-      },
+      data: insertedData,
     });
   } catch (error) {
     console.log("Error registering user: ", error);

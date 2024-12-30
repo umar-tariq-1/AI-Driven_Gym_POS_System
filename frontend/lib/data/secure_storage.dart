@@ -29,11 +29,7 @@ class SecureStorage {
   Future<void> setItem(String key, dynamic value) async {
     if (_storage != null) {
       String dataToStore;
-      if (value is Map) {
-        dataToStore = jsonEncode(value);
-      } else {
-        dataToStore = value.toString();
-      }
+      dataToStore = jsonEncode(value);
       await _storage!.write(key: key, value: dataToStore);
     }
   }
@@ -44,9 +40,7 @@ class SecureStorage {
       if (data != null) {
         try {
           final decodedData = jsonDecode(data);
-          if (decodedData is Map) {
-            return decodedData;
-          }
+          return decodedData;
         } catch (_) {
           // Not JSON, return as is
         }

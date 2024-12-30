@@ -55,10 +55,8 @@ class _OTPState extends State<OTP> {
 
   void checkOTPInfo() async {
     var otpInfo = await SecureStorage().getItem("${widget.id}otpInfo");
-    _triesLeft = int.tryParse(
-            await SecureStorage().getItem("${widget.id}otp_triesLeft") ??
-                '3') ??
-        3;
+    _triesLeft =
+        await SecureStorage().getItem("${widget.id}otp_triesLeft") ?? 3;
     var lastEmail = await SecureStorage().getItem("${widget.id}otpEmail");
 
     setState(() {

@@ -4,6 +4,7 @@ import 'package:frontend/theme/theme.dart';
 import 'package:animations/animations.dart';
 import 'package:frontend/widgets/pages/client/show_class.dart';
 import 'package:frontend/widgets/pages/trainer/show_classes.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CustomCard extends StatefulWidget {
   final String imageUrl;
@@ -61,15 +62,15 @@ class _CustomCardState extends State<CustomCard> {
                         child: ClipRRect(
                           borderRadius: const BorderRadius.horizontal(
                               left: Radius.circular(15)),
-                          child: Image.network(
-                            widget.imageUrl,
+                          child: Image(
+                            image: CachedNetworkImageProvider(widget.imageUrl),
                             // width: MediaQuery.of(context).size.width * 0.4,
                             height: double.infinity,
                             fit: BoxFit.cover,
                             loadingBuilder: (context, child, loadingProgress) {
                               if (loadingProgress == null) return child;
                               return SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.4,
+                                // width: MediaQuery.of(context).size.width * 0.4,
                                 child: Center(
                                   child: CircularProgressIndicator(
                                     value: loadingProgress.expectedTotalBytes !=

@@ -274,7 +274,7 @@ class _ShowMyClassPageState extends State<ShowMyClassPage> {
                     //       fontSize: 16.5,
                     //       buttonText: ('Register for Class')),
                     // ),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 5),
                   ],
                 ),
               ),

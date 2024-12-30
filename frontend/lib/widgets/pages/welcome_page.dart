@@ -139,7 +139,7 @@ class _WelcomePageState extends State<WelcomePage> {
                             final secureStorage = SecureStorage();
                             final isLoggedIn =
                                 await secureStorage.getItem('isLoggedIn') ==
-                                    'true';
+                                    true;
                             final tokenExpirationTime = await secureStorage
                                 .getItem('tokenExpirationTime');
 

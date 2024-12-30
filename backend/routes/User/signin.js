@@ -59,7 +59,6 @@ signin.post("/", async (req, res) => {
 
     var userData = { ...foundUser[0] };
     delete userData.password;
-    delete userData.id;
 
     var tokenExpirationTime =
       Date.now() + 1000 * 60 * 60 * 24 * 365 - 1000 * 30;

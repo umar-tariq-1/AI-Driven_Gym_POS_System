@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/states/client.dart';
 import 'package:frontend/states/server_address.dart';
 import 'package:frontend/widgets/base/snackbar.dart';
 import 'package:get/get.dart';
@@ -23,9 +24,9 @@ class BookClassesPage extends StatefulWidget {
 
 class _BookClassesPageState extends State<BookClassesPage> {
   late Map userData;
-  List<Map<String, dynamic>> classesData = [];
   String authToken = '';
   final serverAddressController = Get.find<ServerAddressController>();
+  final clientClassesController = Get.find<ClientController>();
 
   @override
   void initState() {
@@ -45,11 +46,11 @@ class _BookClassesPageState extends State<BookClassesPage> {
           Uri.parse('http://${serverAddressController.IP}:3001/client/classes'),
           headers: {'auth-token': authToken});
       if (response.statusCode == 200) {
-        setState(() {
-          classesData = List<Map<String, dynamic>>.from(
-            json.decode(response.body)['data'],
-          );
-        });
+        clientClassesController
+            .setClassesData(jsonDecode(response.body)['data']);
+        SecureStorage()
+            .setItem('clientClassesData', jsonDecode(response.body)['data']);
+        SecureStorage().setItem('clientClassesDataUserId', userData['id']);
       } else {
         CustomSnackbar.showFailureSnackbar(
             context, "Oops!", json.decode(response.body)['message']);
@@ -63,28 +64,31 @@ class _BookClassesPageState extends State<BookClassesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-          title: "Book Classes",
-          backgroundColor: appBarColor,
-          foregroundColor: appBarTextColor),
-      drawer: const CustomNavigationDrawer(
-        active: 'Book Classes',
-        accType: "Client",
-      ),
-      backgroundColor: colorScheme.surface,
-      body: ListView(
-        children: classesData.map((classData) {
-          return CustomCard(
-            imageUrl:
-                "https://ik.imagekit.io/umartariq/trainerClassImages/${classData['imageData']['name'] ?? ''}",
-            cost: classData['classFee'] ?? '',
-            location: classData['gymLocation'] ?? '',
-            className: classData['className'] ?? '',
-            classGender: classData['classGender'] ?? '',
-            classData: classData,
-          );
-        }).toList(),
-      ),
-    );
+        appBar: CustomAppBar(
+            title: "Book Classes",
+            backgroundColor: appBarColor,
+            foregroundColor: appBarTextColor),
+        drawer: const CustomNavigationDrawer(
+          active: 'Book Classes',
+          accType: "Client",
+        ),
+        backgroundColor: colorScheme.surface,
+        body: GetBuilder<ClientController>(
+          builder: (controller) {
+            return ListView(
+              children: controller.classesData.map((classData) {
+                return CustomCard(
+                  imageUrl:
+                      "https://ik.imagekit.io/umartariq/trainerClassImages/${classData['imageData']['name'] ?? ''}",
+                  cost: classData['classFee'] ?? '',
+                  location: classData['gymLocation'] ?? '',
+                  className: classData['className'] ?? '',
+                  classGender: classData['classGender'] ?? '',
+                  classData: classData,
+                );
+              }).toList(),
+            );
+          },
+        ));
   }
 }

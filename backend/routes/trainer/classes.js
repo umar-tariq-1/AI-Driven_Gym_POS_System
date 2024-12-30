@@ -70,7 +70,7 @@ trainer.post("/create", authorize, upload, async (req, res) => {
         endTime,
         startDate,
         endDate,
-        userId,
+        trainerId,
         imageData
       )
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -145,7 +145,7 @@ trainer.get("/", authorize, async (req, res) => {
 
   try {
     const query = `
-      SELECT * FROM TrainerClasses WHERE userId = ?;
+      SELECT * FROM TrainerClasses WHERE trainerId = ?;
     `;
     const classes = await db.query(query, [userData.id]);
 

@@ -2,12 +2,18 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frontend/data/secure_storage.dart';
 import 'package:frontend/main.dart';
+import 'package:frontend/states/server_address.dart';
 import 'package:frontend/theme/theme.dart';
 import 'package:frontend/widgets/base/app_bar.dart';
 import 'package:frontend/widgets/base/custom_elevated_button.dart';
 import 'package:frontend/widgets/base/custom_outlined_button.dart';
 import 'package:frontend/widgets/base/form_elements.dart';
+import 'package:frontend/widgets/base/snackbar.dart';
+import 'package:http/http.dart' as http;
+import 'package:get/get.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ShowClassPage extends StatefulWidget {
   Map<String, dynamic> classData = {};
@@ -18,6 +24,7 @@ class ShowClassPage extends StatefulWidget {
 }
 
 class _ShowClassPageState extends State<ShowClassPage> {
+  final serverAddressController = Get.find<ServerAddressController>();
   String formatDate(String date) {
     final months = {
       '01': 'Jan',
@@ -72,15 +79,18 @@ class _ShowClassPageState extends State<ShowClassPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(15)),
-                  child: Image.network(
-                    "https://ik.imagekit.io/umartariq/trainerClassImages/${widget.classData['imageData']['name'] ?? ''}",
+                  child: Image(
+                    image: CachedNetworkImageProvider(
+                        "https://ik.imagekit.io/umartariq/trainerClassImages/${widget.classData['imageData']['name'] ?? ''}"),
                     width: double.infinity,
                     // height: 300,
                     fit: BoxFit.scaleDown,
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) return child;
-                      return SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.4,
+                      return Container(
+                        // width: MediaQuery.of(context).size.width * 0.4,
+                        height: 230,
+                        color: Colors.grey[200],
                         child: Center(
                           child: CircularProgressIndicator(
                             value: loadingProgress.expectedTotalBytes != null
@@ -92,8 +102,8 @@ class _ShowClassPageState extends State<ShowClassPage> {
                       );
                     },
                     errorBuilder: (context, error, stackTrace) => Container(
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      height: double.infinity,
+                      // width: MediaQuery.of(context).size.width * 0.4,
+                      height: 230,
                       color: Colors.grey[300],
                       child: Center(
                           child: Icon(
@@ -103,6 +113,37 @@ class _ShowClassPageState extends State<ShowClassPage> {
                       )),
                     ),
                   ),
+                  // child: Image.network(
+                  //   "https://ik.imagekit.io/umartariq/trainerClassImages/${widget.classData['imageData']['name'] ?? ''}",
+                  //   width: double.infinity,
+                  //   // height: 300,
+                  //   fit: BoxFit.scaleDown,
+                  //   loadingBuilder: (context, child, loadingProgress) {
+                  //     if (loadingProgress == null) return child;
+                  //     return SizedBox(
+                  //       // width: MediaQuery.of(context).size.width * 0.4,
+                  //       child: Center(
+                  //         child: CircularProgressIndicator(
+                  //           value: loadingProgress.expectedTotalBytes != null
+                  //               ? loadingProgress.cumulativeBytesLoaded /
+                  //                   (loadingProgress.expectedTotalBytes ?? 1)
+                  //               : null,
+                  //         ),
+                  //       ),
+                  //     );
+                  //   },
+                  //   errorBuilder: (context, error, stackTrace) => Container(
+                  //     // width: MediaQuery.of(context).size.width * 0.4,
+                  //     height: 230,
+                  //     color: Colors.grey[300],
+                  //     child: Center(
+                  //         child: Icon(
+                  //       Icons.error,
+                  //       color: colorScheme.error,
+                  //       size: 50,
+                  //     )),
+                  //   ),
+                  // ),
                 ),
               ),
               Padding(
@@ -267,11 +308,42 @@ class _ShowClassPageState extends State<ShowClassPage> {
                     const SizedBox(height: 32),
                     Center(
                       child: CustomElevatedButton(
-                          onClick: () {
+                          onClick: () async {
                             HapticFeedback.lightImpact();
+                            try {
+                              String authToken =
+                                  await SecureStorage().getItem('authToken');
+                              final response = await http.post(
+                                Uri.parse(
+                                    'http://${serverAddressController.IP}:3001/client/classes/register'),
+                                headers: {
+                                  'Content-Type': 'application/json',
+                                  'auth-token': authToken
+                                },
+                                body: jsonEncode({
+                                  'classId': widget.classData['id'],
+                                }),
+                              );
+                              if (response.statusCode == 200) {
+                                CustomSnackbar.showSuccessSnackbar(
+                                    context,
+                                    "Success!",
+                                    "You registered for this class, successfully");
+                              } else {
+                                CustomSnackbar.showFailureSnackbar(
+                                    context,
+                                    "Oops!",
+                                    "Sorry, couldn't register for this class");
+                              }
+                            } catch (e) {
+                              CustomSnackbar.showFailureSnackbar(context,
+                                  "Oops!", "Sorry, couldn't request to server");
+                            }
                           },
                           minWidth: MediaQuery.of(context).size.width - 32,
                           fontSize: 16.5,
+                          disabled:
+                              widget.classData['isAlreadyRegistered'] == 1,
                           buttonText: ('Register for Class')),
                     ),
                     const SizedBox(height: 15),

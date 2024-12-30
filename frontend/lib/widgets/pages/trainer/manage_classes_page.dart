@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:frontend/data/secure_storage.dart';
 import 'package:frontend/main.dart';
 import 'package:frontend/states/server_address.dart';
+import 'package:frontend/states/trainer.dart';
 import 'package:frontend/theme/theme.dart';
 import 'package:frontend/widgets/base/app_bar.dart';
 import 'package:frontend/widgets/base/card.dart';
@@ -26,8 +27,8 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
   late Map userData;
   String authToken = '';
 
-  List<Map<String, dynamic>> classesData = [];
   final serverAddressController = Get.find<ServerAddressController>();
+  final trainerClassesController = Get.find<TrainerController>();
 
   @override
   void initState() {
@@ -50,11 +51,16 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
             'auth-token': authToken,
           });
       if (response.statusCode == 200) {
-        setState(() {
-          classesData = List<Map<String, dynamic>>.from(
-            json.decode(response.body)['data'],
-          );
-        });
+        // setState(() {
+        //   classesData = List<Map<String, dynamic>>.from(
+        //     json.decode(response.body)['data'],
+        //   );
+        // });
+        trainerClassesController
+            .setClassesData(jsonDecode(response.body)['data']);
+        SecureStorage()
+            .setItem('trainerClassesData', jsonDecode(response.body)['data']);
+        SecureStorage().setItem('clientClassesDataUserId', userData['id']);
       } else {
         CustomSnackbar.showFailureSnackbar(
             context, "Oops!", json.decode(response.body)['message']);
@@ -68,36 +74,38 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-          title: "Manage Classes",
-          backgroundColor: appBarColor,
-          foregroundColor: appBarTextColor),
-      drawer: const CustomNavigationDrawer(
-        active: 'Manage Classes',
-        accType: "Trainer",
-      ),
-      backgroundColor: colorScheme.surface,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          HapticFeedback.lightImpact();
-          Navigator.of(context).pushNamed(CreateClassPage.routePath);
-        },
-        backgroundColor: colorScheme.inversePrimary,
-        child: const Icon(Icons.add_rounded),
-      ),
-      body: ListView(
-        children: classesData.map((classData) {
-          return CustomCard(
-            imageUrl:
-                "https://ik.imagekit.io/umartariq/trainerClassImages/${classData['imageData']['name'] ?? ''}",
-            cost: classData['classFee'] ?? '',
-            location: classData['gymLocation'] ?? '',
-            className: classData['className'] ?? '',
-            classGender: classData['classGender'] ?? '',
-            classData: classData,
+        appBar: CustomAppBar(
+            title: "Manage Classes",
+            backgroundColor: appBarColor,
+            foregroundColor: appBarTextColor),
+        drawer: const CustomNavigationDrawer(
+          active: 'Manage Classes',
+          accType: "Trainer",
+        ),
+        backgroundColor: colorScheme.surface,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            HapticFeedback.lightImpact();
+            Navigator.of(context).pushNamed(CreateClassPage.routePath);
+          },
+          backgroundColor: colorScheme.inversePrimary,
+          child: const Icon(Icons.add_rounded),
+        ),
+        body: GetBuilder<TrainerController>(builder: (controller) {
+          return ListView(
+            children: controller.classesData.map((classData) {
+              return CustomCard(
+                imageUrl:
+                    "https://ik.imagekit.io/umartariq/trainerClassImages/${classData['imageData']['name'] ?? ''}",
+                cost: classData['classFee'] ?? '',
+                location: classData['gymLocation'] ?? '',
+                className: classData['className'] ?? '',
+                classGender: classData['classGender'] ?? '',
+                classData: classData,
+                isTrainer: true,
+              );
+            }).toList(),
           );
-        }).toList(),
-      ),
-    );
+        }));
   }
 }

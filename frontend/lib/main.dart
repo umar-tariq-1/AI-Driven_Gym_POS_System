@@ -1,4 +1,6 @@
+import 'package:frontend/states/client.dart';
 import 'package:frontend/states/server_address.dart';
+import 'package:frontend/states/trainer.dart';
 import 'package:frontend/widgets/pages/client/book_classes.dart';
 import 'package:frontend/widgets/pages/client/home_page.dart';
 import 'package:frontend/widgets/pages/landing_page.dart';
@@ -21,6 +23,8 @@ Color backgroundColor = colorScheme.surface;
 
 void main() {
   Get.put(ServerAddressController());
+  Get.put(ClientController());
+  Get.put(TrainerController());
   runApp(const MyApp());
 }
 

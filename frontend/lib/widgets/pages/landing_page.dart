@@ -16,8 +16,8 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   final SecureStorage _secureStorage = SecureStorage();
-  String _isLoggedIn = "false";
-  String _tokenExpirationTime = "0";
+  bool _isLoggedIn = false;
+  int _tokenExpirationTime = 0;
   final currentTime = DateTime.now().millisecondsSinceEpoch;
   Map<String, dynamic> userData = {};
 
@@ -74,8 +74,7 @@ class _LandingPageState extends State<LandingPage> {
                 tween: Tween(begin: 0, end: 1),
                 duration: const Duration(milliseconds: 2000),
                 onEnd: () {
-                  if (_isLoggedIn == "true" &&
-                      int.parse(_tokenExpirationTime) > currentTime) {
+                  if (_isLoggedIn && _tokenExpirationTime > currentTime) {
                     Navigator.of(context).pushNamedAndRemoveUntil(
                         userData['accType'] == "Trainer"
                             ? TrainerDashboardPage.routePath
