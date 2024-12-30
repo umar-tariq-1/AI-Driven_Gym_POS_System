@@ -223,7 +223,7 @@ class _CreateClassPageState extends State<CreateClassPage> {
                     const SizedBox(height: 30),
                     CustomTextFormField(
                       controller: controllers['className']!,
-                      label: 'Class title',
+                      label: 'Class Title',
                       hint: 'Enter class title',
                     ),
                     const SizedBox(height: 15),
@@ -305,6 +305,7 @@ class _CreateClassPageState extends State<CreateClassPage> {
                               'Yoga',
                               'Cardio',
                               'Zumba',
+                              "Other"
                             ],
                             value: classCategory,
                             onChanged: (value) =>

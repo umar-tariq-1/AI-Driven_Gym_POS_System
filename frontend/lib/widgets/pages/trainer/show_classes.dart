@@ -170,9 +170,9 @@ class _ShowMyClassPageState extends State<ShowMyClassPage> {
                         Expanded(
                             flex: 1,
                             child: CustomDataDisplayTextField(
-                                value: widget.classData['maxParticipants']
-                                    .toString(),
-                                label: "Max Participants")),
+                                value:
+                                    '${widget.classData['maxParticipants'] - widget.classData['remainingSeats']}/${widget.classData['maxParticipants']}',
+                                label: "Registered/Max Members")),
                         const SizedBox(width: 10),
                         Expanded(
                             flex: 1,

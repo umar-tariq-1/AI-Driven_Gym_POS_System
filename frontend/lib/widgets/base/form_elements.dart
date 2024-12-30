@@ -99,17 +99,16 @@ Future<TimeOfDay?> pickTime(BuildContext context, {initialTime}) async {
 class CustomDataDisplayTextField extends StatelessWidget {
   final String value;
   final String label;
+  final TextEditingController? controller;
 
-  const CustomDataDisplayTextField({
-    super.key,
-    required this.value,
-    required this.label,
-  });
+  const CustomDataDisplayTextField(
+      {super.key, required this.value, required this.label, this.controller});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      initialValue: value,
+      initialValue: controller == null ? value : null,
+      controller: controller,
       readOnly: true,
       decoration: InputDecoration(
         label: Text(label),

@@ -72,7 +72,7 @@ class _LandingPageState extends State<LandingPage> {
             const SizedBox(height: 80),
             TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0, end: 1),
-                duration: const Duration(milliseconds: 2000),
+                duration: const Duration(milliseconds: 1500),
                 onEnd: () {
                   if (_isLoggedIn && _tokenExpirationTime > currentTime) {
                     Navigator.of(context).pushNamedAndRemoveUntil(

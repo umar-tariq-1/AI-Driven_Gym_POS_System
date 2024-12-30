@@ -11,22 +11,27 @@ client.get("/", authorize, async (req, res) => {
     const userId = userData.id;
 
     const query = `
-      SELECT 
-        TrainerClasses.*, 
-        JSON_OBJECT(
-          'firstName', Users.firstName,
-          'lastName', Users.lastName
-        ) AS trainer,
-        EXISTS (
-          SELECT 1 
-          FROM registeredclasses 
-          WHERE registeredclasses.clientId = ? 
-            AND registeredclasses.classId = TrainerClasses.id
-        ) AS isAlreadyRegistered
-      FROM TrainerClasses
-      JOIN gym_pos_system.users AS Users
-      ON TrainerClasses.trainerId = Users.id;
-    `;
+    SELECT 
+      TrainerClasses.*, 
+      JSON_OBJECT(
+        'firstName', Users.firstName,
+        'lastName', Users.lastName
+      ) AS trainer,
+      EXISTS (
+        SELECT 1 
+        FROM registeredclasses 
+        WHERE registeredclasses.clientId = ? 
+          AND registeredclasses.classId = TrainerClasses.id
+      ) AS isAlreadyRegistered,
+      (TrainerClasses.maxParticipants - 
+        (SELECT COUNT(*) 
+         FROM registeredclasses 
+         WHERE registeredclasses.classId = TrainerClasses.id)
+      ) AS remainingSeats
+    FROM TrainerClasses
+    JOIN gym_pos_system.users AS Users
+    ON TrainerClasses.trainerId = Users.id;
+  `;
 
     const classes = await db.query(query, [userId]);
 

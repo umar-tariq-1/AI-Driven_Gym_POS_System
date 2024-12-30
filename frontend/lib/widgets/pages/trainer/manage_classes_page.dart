@@ -51,11 +51,6 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
             'auth-token': authToken,
           });
       if (response.statusCode == 200) {
-        // setState(() {
-        //   classesData = List<Map<String, dynamic>>.from(
-        //     json.decode(response.body)['data'],
-        //   );
-        // });
         trainerClassesController
             .setClassesData(jsonDecode(response.body)['data']);
         SecureStorage()

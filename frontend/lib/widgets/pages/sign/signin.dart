@@ -56,50 +56,51 @@ class _SigninState extends State<Signin> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 TextFormField(
-                    keyboardType: TextInputType.emailAddress,
-                    controller: controllers['email'],
-                    decoration: InputDecoration(
-                      label: const Text('Email'),
-                      labelStyle: const TextStyle(
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      hintText: 'Email',
-                      hintStyle: const TextStyle(
-                        color: Colors.black26,
-                      ),
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Colors.black12,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Colors.black12,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      prefixIcon: const Icon(
-                        Icons.email_rounded,
-                        color: Colors.black54,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 16, horizontal: 16),
+                  keyboardType: TextInputType.emailAddress,
+                  controller: controllers['email'],
+                  autofillHints: const [AutofillHints.email],
+                  decoration: InputDecoration(
+                    label: const Text('Email'),
+                    labelStyle: const TextStyle(
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    validator: (value) {
-                      if (value == null ||
-                          value.isEmpty ||
-                          value.trim() == "") {
-                        return 'Email is required';
-                      }
-                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                          .hasMatch(value.trim())) {
-                        return 'Enter a valid email address';
-                      }
-                      return null;
-                    }),
+                    hintText: 'Email',
+                    hintStyle: const TextStyle(
+                      color: Colors.black26,
+                    ),
+                    border: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Colors.black12,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Colors.black12,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.email_rounded,
+                      color: Colors.black54,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 16),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty || value.trim() == "") {
+                      return 'Email is required';
+                    }
+                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                        .hasMatch(value.trim())) {
+                      return 'Enter a valid email address';
+                    }
+                    return null;
+                  },
+                ),
                 const SizedBox(height: 16.0),
                 TextFormField(
+                  autofillHints: const [AutofillHints.password],
                   keyboardType: TextInputType.visiblePassword,
                   controller: controllers['password'],
                   obscureText: _obscureText,

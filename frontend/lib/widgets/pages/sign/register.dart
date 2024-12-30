@@ -97,6 +97,7 @@ class _RegisterState extends State<Register> {
                       child: TextFormField(
                         keyboardType: TextInputType.name,
                         controller: controllers['firstName'],
+                        autofillHints: const [AutofillHints.givenName],
                         decoration: InputDecoration(
                           label: const Text('First Name'),
                           labelStyle: const TextStyle(
@@ -142,6 +143,7 @@ class _RegisterState extends State<Register> {
                       child: TextFormField(
                         keyboardType: TextInputType.name,
                         controller: controllers['lastName'],
+                        autofillHints: const [AutofillHints.familyName],
                         decoration: InputDecoration(
                           label: const Text('Last Name'),
                           labelStyle: const TextStyle(
@@ -290,50 +292,52 @@ class _RegisterState extends State<Register> {
                 ),
                 const SizedBox(height: 15.0),
                 TextFormField(
-                    keyboardType: TextInputType.emailAddress,
-                    controller: controllers['email'],
-                    decoration: InputDecoration(
-                      label: const Text('Email'),
-                      labelStyle: const TextStyle(
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      hintText: 'Email',
-                      hintStyle: const TextStyle(
-                        color: Colors.black26,
-                      ),
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Colors.black12,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Colors.black12,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      prefixIcon: const Icon(
-                        Icons.email_rounded,
-                        color: Colors.black54,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 16, horizontal: 16),
+                  keyboardType: TextInputType.emailAddress,
+                  controller: controllers['email'],
+                  autofillHints: const [AutofillHints.email],
+                  decoration: InputDecoration(
+                    label: const Text('Email'),
+                    labelStyle: const TextStyle(
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    validator: (value) {
-                      if (value == null ||
-                          value.isEmpty ||
-                          value.trim() == "") {
-                        return 'Email is required';
-                      }
-                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                          .hasMatch(value.trim())) {
-                        return 'Enter a valid email address';
-                      }
-                      return null;
-                    }),
+                    hintText: 'Email',
+                    hintStyle: const TextStyle(
+                      color: Colors.black26,
+                    ),
+                    border: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Colors.black12,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Colors.black12,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.email_rounded,
+                      color: Colors.black54,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 16),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty || value.trim() == "") {
+                      return 'Email is required';
+                    }
+                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                        .hasMatch(value.trim())) {
+                      return 'Enter a valid email address';
+                    }
+                    return null;
+                  },
+                ),
+
                 const SizedBox(height: 15.0),
                 TextFormField(
+                  autofillHints: const [AutofillHints.telephoneNumber],
                   keyboardType: TextInputType.phone,
                   controller: controllers['phone'],
                   onChanged: (_) {
@@ -409,6 +413,7 @@ class _RegisterState extends State<Register> {
                 ),
                 const SizedBox(height: 15.0),
                 TextFormField(
+                  autofillHints: const [AutofillHints.newPassword],
                   focusNode: _focusNode,
                   keyboardType: TextInputType.visiblePassword,
                   controller: controllers['password'],
@@ -480,6 +485,7 @@ class _RegisterState extends State<Register> {
                 ),
                 const SizedBox(height: 15.0),
                 TextFormField(
+                  autofillHints: const [AutofillHints.password],
                   keyboardType: TextInputType.visiblePassword,
                   controller: controllers['confirmPassword'],
                   obscureText: true,

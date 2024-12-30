@@ -39,7 +39,6 @@ trainer.post("/create", authorize, upload, async (req, res) => {
       classDescription,
       maxParticipants,
       classFee,
-      specialRequirements,
       classType,
       fitnessLevel,
       classGender,
@@ -60,7 +59,6 @@ trainer.post("/create", authorize, upload, async (req, res) => {
         classDescription,
         maxParticipants,
         classFee,
-        specialRequirements,
         classType,
         fitnessLevel,
         classGender,
@@ -73,7 +71,7 @@ trainer.post("/create", authorize, upload, async (req, res) => {
         trainerId,
         imageData
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
@@ -84,7 +82,6 @@ trainer.post("/create", authorize, upload, async (req, res) => {
       classDescription.trim(),
       maxParticipants.trim(),
       classFee.trim(),
-      specialRequirements.trim(),
       classType?.trim(),
       fitnessLevel?.trim(),
       classGender?.trim(),
@@ -110,7 +107,6 @@ trainer.post("/create", authorize, upload, async (req, res) => {
         classDescription,
         maxParticipants,
         classFee,
-        specialRequirements,
         classType,
         fitnessLevel,
         classGender,
@@ -145,7 +141,15 @@ trainer.get("/", authorize, async (req, res) => {
 
   try {
     const query = `
-      SELECT * FROM TrainerClasses WHERE trainerId = ?;
+      SELECT 
+        TrainerClasses.*, 
+        (TrainerClasses.maxParticipants - 
+          (SELECT COUNT(*) 
+           FROM registeredclasses 
+           WHERE registeredclasses.classId = TrainerClasses.id)
+        ) AS remainingSeats
+      FROM TrainerClasses
+      WHERE trainerId = ?;
     `;
     const classes = await db.query(query, [userData.id]);
 

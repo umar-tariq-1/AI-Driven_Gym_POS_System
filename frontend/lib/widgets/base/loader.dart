@@ -37,7 +37,7 @@ class Loader extends StatelessWidget {
             children: [
               LoadingAnimationWidget.threeArchedCircle(
                 color: loaderColor ?? colorScheme.inversePrimary,
-                size: 58,
+                size: 50,
               ),
               Container(
                 margin: const EdgeInsets.only(top: 14.5),
@@ -45,7 +45,7 @@ class Loader extends StatelessWidget {
                 child: Text("Loading...",
                     style: TextStyle(
                         color: loaderColor ?? colorScheme.inversePrimary,
-                        fontSize: 15.5,
+                        fontSize: 15,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1.1)),
               ),
