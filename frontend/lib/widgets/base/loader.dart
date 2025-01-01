@@ -46,7 +46,7 @@ class Loader extends StatelessWidget {
                     style: TextStyle(
                         color: loaderColor ?? colorScheme.inversePrimary,
                         fontSize: 15,
-                        fontWeight: FontWeight.bold,
+                        // fontWeight: FontWeight.bold,
                         letterSpacing: 1.1)),
               ),
             ],

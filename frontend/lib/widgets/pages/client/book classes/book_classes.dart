@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:frontend/states/client.dart';
 import 'package:frontend/states/server_address.dart';
 import 'package:frontend/widgets/base/snackbar.dart';
@@ -11,7 +12,7 @@ import 'package:frontend/widgets/base/app_bar.dart';
 import 'package:frontend/widgets/base/card.dart';
 import 'package:frontend/widgets/base/navigation_drawer.dart';
 
-import '../../../../theme/theme.dart';
+import '../../../../../theme/theme.dart';
 
 class BookClassesPage extends StatefulWidget {
   const BookClassesPage({super.key});
@@ -75,18 +76,25 @@ class _BookClassesPageState extends State<BookClassesPage> {
         backgroundColor: colorScheme.surface,
         body: GetBuilder<ClientController>(
           builder: (controller) {
-            return ListView(
-              children: controller.classesData.map((classData) {
-                return CustomCard(
-                  imageUrl:
-                      "https://ik.imagekit.io/umartariq/trainerClassImages/${classData['imageData']['name'] ?? ''}",
-                  cost: classData['classFee'] ?? '',
-                  location: classData['gymLocation'] ?? '',
-                  className: classData['className'] ?? '',
-                  classGender: classData['classGender'] ?? '',
-                  classData: classData,
-                );
-              }).toList(),
+            return RefreshIndicator(
+              onRefresh: () async {
+                HapticFeedback.mediumImpact();
+                fetchClassesData();
+              },
+              backgroundColor: Colors.white,
+              child: ListView(
+                children: controller.classesData.map((classData) {
+                  return CustomCard(
+                    imageUrl:
+                        "https://ik.imagekit.io/umartariq/trainerClassImages/${classData['imageData']['name'] ?? ''}",
+                    cost: classData['classFee'] ?? '',
+                    location: classData['gymLocation'] ?? '',
+                    className: classData['className'] ?? '',
+                    classGender: classData['classGender'] ?? '',
+                    classData: classData,
+                  );
+                }).toList(),
+              ),
             );
           },
         ));

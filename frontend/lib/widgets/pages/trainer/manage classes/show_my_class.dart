@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/main.dart';
@@ -8,6 +9,9 @@ import 'package:frontend/widgets/base/app_bar.dart';
 import 'package:frontend/widgets/base/custom_elevated_button.dart';
 import 'package:frontend/widgets/base/custom_outlined_button.dart';
 import 'package:frontend/widgets/base/form_elements.dart';
+import 'package:frontend/widgets/base/snackbar.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:dio/dio.dart';
 
 class ShowMyClassPage extends StatefulWidget {
   Map<String, dynamic> classData = {};
@@ -52,6 +56,75 @@ class _ShowMyClassPageState extends State<ShowMyClassPage> {
     return activeDays.join(', ');
   }
 
+  void showImageDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.all(0),
+            child: GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              child: Container(
+                width: double.infinity,
+                height: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.8),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Center(
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: InteractiveViewer(
+                      panEnabled: true,
+                      scaleEnabled: true,
+                      child: Image(
+                        image: CachedNetworkImageProvider(
+                            "https://ik.imagekit.io/umartariq/trainerClassImages/${widget.classData['imageData']['name'] ?? ''}"),
+                        width: double.infinity,
+                        // height: 300,
+                        fit: BoxFit.scaleDown,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+                          return Container(
+                            // width: MediaQuery.of(context).size.width * 0.4,
+                            height: 230,
+                            color: Colors.transparent,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        (loadingProgress.expectedTotalBytes ??
+                                            1)
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          // width: MediaQuery.of(context).size.width * 0.4,
+                          height: 230,
+                          color: Colors.transparent,
+                          child: Center(
+                              child: Icon(
+                            Icons.error,
+                            color: colorScheme.error,
+                            size: 60,
+                          )),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,6 +133,103 @@ class _ShowMyClassPageState extends State<ShowMyClassPage> {
         backgroundColor: appBarColor,
         foregroundColor: appBarTextColor,
         showBackButton: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert_rounded),
+            iconSize: 28.5,
+            onPressed: () {
+              showMenu(
+                context: context,
+                position: const RelativeRect.fromLTRB(1, /* 95 */ 75, 0, 0),
+                items: [
+                  PopupMenuItem(
+                    child: ListTile(
+                      leading: Icon(Icons.image_rounded, color: appBarColor),
+                      title: Text(
+                        'View Image',
+                        style: TextStyle(color: appBarColor),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        showImageDialog();
+                      },
+                    ),
+                  ),
+                  PopupMenuItem(
+                    child: ListTile(
+                      leading: Icon(Icons.download_rounded, color: appBarColor),
+                      title: Text(
+                        'Download Image',
+                        style: TextStyle(color: appBarColor),
+                      ),
+                      onTap: () async {
+                        Navigator.pop(context);
+                        // URL of the image
+                        final imageUrl =
+                            "https://ik.imagekit.io/umartariq/trainerClassImages/${widget.classData['imageData']['name'] ?? ''}";
+
+                        try {
+                          final extension = imageUrl.split('.').last;
+                          final validExtension = [
+                            'jpg',
+                            'jpeg',
+                            'png',
+                            'gif',
+                            'webp',
+                            'bmp'
+                          ].contains(extension.toLowerCase())
+                              ? extension
+                              : 'jpg';
+
+                          final directory =
+                              await getApplicationDocumentsDirectory();
+                          final filePath =
+                              '${directory.path}/${widget.classData['className']}.$validExtension';
+
+                          final dio = Dio();
+                          await dio.download(imageUrl, filePath);
+
+                          CustomSnackbar.showSuccessSnackbar(context,
+                              "Success!", "Image downloaded successfully");
+                        } catch (e) {
+                          CustomSnackbar.showFailureSnackbar(context, "Oops!",
+                              "Sorry! Failed to download image");
+                        }
+                      },
+                    ),
+                  ),
+                  PopupMenuItem(
+                    child: ListTile(
+                      leading: Icon(Icons.edit, color: appBarColor),
+                      title: Text(
+                        'Edit Class',
+                        style: TextStyle(color: appBarColor),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        // Add edit action here
+                      },
+                    ),
+                  ),
+                  PopupMenuItem(
+                    child: ListTile(
+                      leading:
+                          Icon(Icons.delete_rounded, color: colorScheme.error),
+                      title: Text(
+                        'Delete Class',
+                        style: TextStyle(color: colorScheme.error),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        // Add delete action here
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
+          )
+        ],
       ),
       backgroundColor: colorScheme.surface,
       body: GestureDetector(
@@ -72,35 +242,43 @@ class _ShowMyClassPageState extends State<ShowMyClassPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(15)),
-                  child: Image.network(
-                    "https://ik.imagekit.io/umartariq/trainerClassImages/${widget.classData['imageData']['name'] ?? ''}",
-                    width: double.infinity,
-                    // height: 300,
-                    fit: BoxFit.scaleDown,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    (loadingProgress.expectedTotalBytes ?? 1)
-                                : null,
-                          ),
-                        ),
-                      );
+                  child: GestureDetector(
+                    onTap: () {
+                      showImageDialog();
                     },
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      height: double.infinity,
-                      color: Colors.grey[300],
-                      child: Center(
-                          child: Icon(
-                        Icons.error,
-                        color: colorScheme.error,
-                        size: 50,
-                      )),
+                    child: Image(
+                      image: CachedNetworkImageProvider(
+                          "https://ik.imagekit.io/umartariq/trainerClassImages/${widget.classData['imageData']['name'] ?? ''}"),
+                      width: double.infinity,
+                      // height: 300,
+                      fit: BoxFit.scaleDown,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          // width: MediaQuery.of(context).size.width * 0.4,
+                          height: 230,
+                          color: Colors.grey[200],
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      (loadingProgress.expectedTotalBytes ?? 1)
+                                  : null,
+                            ),
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        // width: MediaQuery.of(context).size.width * 0.4,
+                        height: 230,
+                        color: Colors.grey[300],
+                        child: Center(
+                            child: Icon(
+                          Icons.error,
+                          color: colorScheme.error,
+                          size: 50,
+                        )),
+                      ),
                     ),
                   ),
                 ),

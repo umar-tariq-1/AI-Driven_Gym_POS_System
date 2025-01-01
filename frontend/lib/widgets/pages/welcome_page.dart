@@ -136,6 +136,7 @@ class _WelcomePageState extends State<WelcomePage> {
                           color: Colors.transparent,
                           textColor: colorScheme.primary,
                           onClick: () async {
+                            HapticFeedback.mediumImpact();
                             final secureStorage = SecureStorage();
                             final isLoggedIn =
                                 await secureStorage.getItem('isLoggedIn') ==
@@ -163,6 +164,7 @@ class _WelcomePageState extends State<WelcomePage> {
                           color: colorScheme.primary,
                           textColor: colorScheme.onPrimary,
                           onClick: () {
+                            HapticFeedback.mediumImpact();
                             Navigator.of(context)
                                 .pushNamed(RegisterPage.routePath);
                           },

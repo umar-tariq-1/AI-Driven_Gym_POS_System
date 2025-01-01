@@ -5,14 +5,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Color backgroundColor;
   final Color foregroundColor;
   final bool showBackButton;
+  final List<Widget>? actions;
 
-  const CustomAppBar({
-    super.key,
-    required this.title,
-    required this.backgroundColor,
-    required this.foregroundColor,
-    this.showBackButton = false,
-  });
+  const CustomAppBar(
+      {super.key,
+      required this.title,
+      required this.backgroundColor,
+      required this.foregroundColor,
+      this.showBackButton = false,
+      this.actions});
 
   @override
   Size get preferredSize => const Size.fromHeight(68);
@@ -57,6 +58,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               );
             },
           ),
+          actions: actions,
           title: Text(
             ' $title',
             style: const TextStyle(

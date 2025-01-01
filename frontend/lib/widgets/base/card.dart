@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/theme/theme.dart';
 import 'package:animations/animations.dart';
-import 'package:frontend/widgets/pages/client/show_class.dart';
-import 'package:frontend/widgets/pages/trainer/show_classes.dart';
+import 'package:frontend/widgets/pages/client/book%20classes/show_class.dart';
+import 'package:frontend/widgets/pages/trainer/manage%20classes/show_my_class.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class CustomCard extends StatefulWidget {

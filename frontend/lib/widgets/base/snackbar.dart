@@ -7,6 +7,7 @@ class CustomSnackbar {
     final snackBar = SnackBar(
       margin: const EdgeInsets.all(0),
       elevation: 0,
+      duration: const Duration(seconds: 3),
       behavior: SnackBarBehavior.floating,
       dismissDirection: DismissDirection.horizontal,
       backgroundColor: Colors.transparent,
@@ -27,6 +28,7 @@ class CustomSnackbar {
     final snackBar = SnackBar(
       margin: const EdgeInsets.all(0),
       elevation: 0,
+      duration: const Duration(seconds: 3),
       behavior: SnackBarBehavior.floating,
       dismissDirection: DismissDirection.horizontal,
       backgroundColor: Colors.transparent,
@@ -47,6 +49,7 @@ class CustomSnackbar {
     final snackBar = SnackBar(
       margin: const EdgeInsets.all(0),
       elevation: 0,
+      duration: const Duration(seconds: 3),
       behavior: SnackBarBehavior.floating,
       dismissDirection: DismissDirection.horizontal,
       backgroundColor: Colors.transparent,
@@ -67,6 +70,7 @@ class CustomSnackbar {
     final snackBar = SnackBar(
       margin: const EdgeInsets.all(0),
       elevation: 0,
+      duration: const Duration(seconds: 3),
       behavior: SnackBarBehavior.floating,
       dismissDirection: DismissDirection.horizontal,
       backgroundColor: Colors.transparent,

@@ -370,20 +370,25 @@ class _CreateClassPageState extends State<CreateClassPage> {
                                                   BorderRadius.circular(15),
                                             ),
                                             child: Center(
-                                              child: InteractiveViewer(
-                                                panEnabled: true,
-                                                scaleEnabled: true,
-                                                child: Image.file(
-                                                  File(_selectedImage!.path),
-                                                  fit: BoxFit.contain,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      1,
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      1,
+                                              child: GestureDetector(
+                                                onTap: () {},
+                                                child: InteractiveViewer(
+                                                  panEnabled: true,
+                                                  scaleEnabled: true,
+                                                  child: Image.file(
+                                                    File(_selectedImage!.path),
+                                                    fit: BoxFit.contain,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            1,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            1,
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -397,6 +402,7 @@ class _CreateClassPageState extends State<CreateClassPage> {
                     const SizedBox(height: 14),
                     CustomOutlinedButton(
                         onClick: () {
+                          FocusScope.of(context).unfocus();
                           HapticFeedback.lightImpact();
                           showDialog(
                             context: context,
@@ -473,6 +479,7 @@ class _CreateClassPageState extends State<CreateClassPage> {
                           flex: 1,
                           child: CustomOutlinedButton(
                             onClick: () async {
+                              FocusScope.of(context).unfocus();
                               HapticFeedback.lightImpact();
                               final pickedDate = await pickDate(context);
                               if (pickedDate != null) {
@@ -502,6 +509,7 @@ class _CreateClassPageState extends State<CreateClassPage> {
                           flex: 1,
                           child: CustomOutlinedButton(
                               onClick: () async {
+                                FocusScope.of(context).unfocus();
                                 if (startDate != null) {
                                   HapticFeedback.lightImpact();
                                   final pickedDate = await pickDate(context,
@@ -526,6 +534,7 @@ class _CreateClassPageState extends State<CreateClassPage> {
                           flex: 1,
                           child: CustomOutlinedButton(
                               onClick: () async {
+                                FocusScope.of(context).unfocus();
                                 HapticFeedback.lightImpact();
                                 final pickedTime = await pickTime(context);
                                 if (pickedTime != null) {
@@ -554,6 +563,7 @@ class _CreateClassPageState extends State<CreateClassPage> {
                           flex: 1,
                           child: CustomOutlinedButton(
                               onClick: () async {
+                                FocusScope.of(context).unfocus();
                                 if (startTime != null) {
                                   HapticFeedback.lightImpact();
                                   final pickedTime = await pickTime(context,
@@ -575,6 +585,7 @@ class _CreateClassPageState extends State<CreateClassPage> {
                     const SizedBox(height: 32),
                     CustomElevatedButton(
                       onClick: () {
+                        FocusScope.of(context).unfocus();
                         HapticFeedback.lightImpact();
                         if (_formKey.currentState?.validate() == true) {
                           sendCreateRequest();

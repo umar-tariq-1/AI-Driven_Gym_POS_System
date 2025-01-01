@@ -11,7 +11,7 @@ import 'package:frontend/widgets/base/app_bar.dart';
 import 'package:frontend/widgets/base/card.dart';
 import 'package:frontend/widgets/base/navigation_drawer.dart';
 import 'package:frontend/widgets/base/snackbar.dart';
-import 'package:frontend/widgets/pages/trainer/create_class.dart';
+import 'package:frontend/widgets/pages/trainer/manage%20classes/create_class.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 
@@ -87,19 +87,26 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
           child: const Icon(Icons.add_rounded),
         ),
         body: GetBuilder<TrainerController>(builder: (controller) {
-          return ListView(
-            children: controller.classesData.map((classData) {
-              return CustomCard(
-                imageUrl:
-                    "https://ik.imagekit.io/umartariq/trainerClassImages/${classData['imageData']['name'] ?? ''}",
-                cost: classData['classFee'] ?? '',
-                location: classData['gymLocation'] ?? '',
-                className: classData['className'] ?? '',
-                classGender: classData['classGender'] ?? '',
-                classData: classData,
-                isTrainer: true,
-              );
-            }).toList(),
+          return RefreshIndicator(
+            onRefresh: () async {
+              HapticFeedback.mediumImpact();
+              fetchClassesData();
+            },
+            backgroundColor: Colors.white,
+            child: ListView(
+              children: controller.classesData.map((classData) {
+                return CustomCard(
+                  imageUrl:
+                      "https://ik.imagekit.io/umartariq/trainerClassImages/${classData['imageData']['name'] ?? ''}",
+                  cost: classData['classFee'] ?? '',
+                  location: classData['gymLocation'] ?? '',
+                  className: classData['className'] ?? '',
+                  classGender: classData['classGender'] ?? '',
+                  classData: classData,
+                  isTrainer: true,
+                );
+              }).toList(),
+            ),
           );
         }));
   }
