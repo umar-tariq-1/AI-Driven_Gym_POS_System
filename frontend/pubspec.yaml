@@ -51,8 +51,11 @@ dependencies:
   image_picker: ^1.1.2
   animations: ^2.0.11
   cached_network_image: ^3.4.1
-  path_provider: ^2.1.5
-  dio: ^5.7.0
+  image_downloader:
+    git:
+      url: https://github.com/VikasTailorbird/image_downloader
+  google_generative_ai: ^0.4.6
+  flutter_markdown: ^0.7.4+3
 
 dev_dependencies:
   flutter_test:

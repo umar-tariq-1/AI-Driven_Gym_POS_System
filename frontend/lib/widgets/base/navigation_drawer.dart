@@ -5,6 +5,7 @@ import 'package:frontend/data/secure_storage.dart';
 import 'package:frontend/widgets/base/list_tile.dart';
 import 'package:frontend/widgets/base/snackbar.dart';
 import 'package:frontend/widgets/pages/client/book%20classes/book_classes.dart';
+import 'package:frontend/widgets/pages/client/ai_buddy/ai_buddy_page.dart';
 import 'package:frontend/widgets/pages/trainer/manage%20classes/create_class.dart';
 import 'package:frontend/widgets/pages/trainer/dashboard_page.dart';
 import 'package:frontend/widgets/pages/trainer/manage%20classes/manage_classes_page.dart';
@@ -124,9 +125,21 @@ Widget buildClientMenuItems(BuildContext context, active) => Column(
               Navigator.of(context).pushNamed(BookClassesPage.routePath);
             }),
         CustomListTile(
+            active: active == "AI Buddy",
+            text: "AI Buddy",
+            iconData: Icons.settings_accessibility_rounded,
+            iconSize: 26.75,
+            onTap: () {
+              if (ModalRoute.of(context)?.settings.name !=
+                  AIBuddyPage.routePath) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    AIBuddyPage.routePath, (route) => false);
+              }
+            }),
+        CustomListTile(
             active: active == "Fitness Plans",
             text: "Fitness Plans",
-            iconData: Icons.settings_accessibility_rounded,
+            iconData: Icons.local_play_outlined,
             iconSize: 26.75,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name !=

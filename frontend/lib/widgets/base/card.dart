@@ -151,13 +151,18 @@ class _CustomCardState extends State<CustomCard> {
                             Row(
                               children: [
                                 Icon(
-                                  Icons.wc_rounded,
+                                  widget.isTrainer
+                                      ? Icons.people_rounded
+                                      : Icons.wc_rounded,
                                   color: Colors.grey.shade800,
                                   size: 24,
                                 ),
                                 const SizedBox(width: 12),
                                 Flexible(
-                                  child: Text(widget.classGender,
+                                  child: Text(
+                                      widget.isTrainer
+                                          ? '${widget.classData['maxParticipants'] - widget.classData['remainingSeats']}/${widget.classData['maxParticipants']}'
+                                          : widget.classGender,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       style: TextStyle(

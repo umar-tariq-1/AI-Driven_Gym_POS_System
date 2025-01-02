@@ -113,22 +113,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
-  dio:
-    dependency: "direct main"
-    description:
-      name: dio
-      sha256: "5598aa796bbf4699afd5c67c0f5f6e2ed542afc956884b9cd58c306966efc260"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.7.0"
-  dio_web_adapter:
-    dependency: transitive
-    description:
-      name: dio_web_adapter
-      sha256: "33259a9276d6cea88774a0000cfae0d861003497755969c92faa223108620dc8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -235,6 +219,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_markdown:
+    dependency: "direct main"
+    description:
+      name: flutter_markdown
+      sha256: "255b00afa1a7bad19727da6a7780cf3db6c3c12e68d302d85e0ff1fdf173db9e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.4+3"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -317,6 +309,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.6.6"
+  google_generative_ai:
+    dependency: "direct main"
+    description:
+      name: google_generative_ai
+      sha256: "81dae159c89e4d9bdc46955b6f4ee5ae0a291f9e8f990d76f43944e0d6041d4f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.6"
   google_identity_services_web:
     dependency: transitive
     description:
@@ -389,6 +389,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.0"
+  image_downloader:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "2f31d7cc59a984a54b7d9d12c5819387c9fb52c1"
+      url: "https://github.com/VikasTailorbird/image_downloader"
+    source: git
+    version: "0.32.0"
   image_picker:
     dependency: "direct main"
     description:
@@ -509,6 +518,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
+  markdown:
+    dependency: transitive
+    description:
+      name: markdown
+      sha256: ef2a1298144e3f985cc736b22e0ccdaf188b5b3970648f2d9dc13efd1d9df051
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.2.2"
   matcher:
     dependency: transitive
     description:
@@ -574,7 +591,7 @@ packages:
     source: hosted
     version: "1.0.1"
   path_provider:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: path_provider
       sha256: "50c5dd5b6e1aaf6fb3a78b33f6aa3afca52bf903a8a5298f53101fdaee55bbcd"

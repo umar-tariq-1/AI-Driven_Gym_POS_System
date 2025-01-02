@@ -88,6 +88,8 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
         ),
         body: GetBuilder<TrainerController>(builder: (controller) {
           return RefreshIndicator(
+            triggerMode: RefreshIndicatorTriggerMode.onEdge,
+            displacement: 60,
             onRefresh: () async {
               HapticFeedback.mediumImpact();
               fetchClassesData();

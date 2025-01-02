@@ -6,12 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:frontend/main.dart';
 import 'package:frontend/theme/theme.dart';
 import 'package:frontend/widgets/base/app_bar.dart';
-import 'package:frontend/widgets/base/custom_elevated_button.dart';
+import 'package:frontend/widgets/base/confirmation_dialog.dart';
 import 'package:frontend/widgets/base/custom_outlined_button.dart';
 import 'package:frontend/widgets/base/form_elements.dart';
 import 'package:frontend/widgets/base/snackbar.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:dio/dio.dart';
+import 'package:image_downloader/image_downloader.dart';
 
 class ShowMyClassPage extends StatefulWidget {
   Map<String, dynamic> classData = {};
@@ -164,37 +163,41 @@ class _ShowMyClassPageState extends State<ShowMyClassPage> {
                       ),
                       onTap: () async {
                         Navigator.pop(context);
-                        // URL of the image
-                        final imageUrl =
-                            "https://ik.imagekit.io/umartariq/trainerClassImages/${widget.classData['imageData']['name'] ?? ''}";
+                        CustomConfirmationDialog.show(
+                          context,
+                          title: "Confirm Download?",
+                          message:
+                              "Are you sure you want to download this class image?",
+                          yesText: "Download",
+                          noText: "Cancel",
+                          noCallback: () {
+                            Navigator.pop(context);
+                          },
+                          yesCallback: () async {
+                            Navigator.pop(context);
+                            final imageUrl =
+                                "https://ik.imagekit.io/umartariq/trainerClassImages/${widget.classData['imageData']['name'] ?? ''}";
 
-                        try {
-                          final extension = imageUrl.split('.').last;
-                          final validExtension = [
-                            'jpg',
-                            'jpeg',
-                            'png',
-                            'gif',
-                            'webp',
-                            'bmp'
-                          ].contains(extension.toLowerCase())
-                              ? extension
-                              : 'jpg';
+                            try {
+                              var imageId =
+                                  await ImageDownloader.downloadImage(imageUrl);
 
-                          final directory =
-                              await getApplicationDocumentsDirectory();
-                          final filePath =
-                              '${directory.path}/${widget.classData['className']}.$validExtension';
-
-                          final dio = Dio();
-                          await dio.download(imageUrl, filePath);
-
-                          CustomSnackbar.showSuccessSnackbar(context,
-                              "Success!", "Image downloaded successfully");
-                        } catch (e) {
-                          CustomSnackbar.showFailureSnackbar(context, "Oops!",
-                              "Sorry! Failed to download image");
-                        }
+                              if (imageId == null) {
+                                CustomSnackbar.showHelpSnackbar(context,
+                                    "Info!", "Couldn't get storage permission");
+                                return;
+                              }
+                              CustomSnackbar.showSuccessSnackbar(
+                                context,
+                                "Success!",
+                                "Image downloaded successfully",
+                              );
+                            } catch (e) {
+                              CustomSnackbar.showFailureSnackbar(context,
+                                  "Oops!", "Sorry! Failed to download image");
+                            }
+                          },
+                        );
                       },
                     ),
                   ),

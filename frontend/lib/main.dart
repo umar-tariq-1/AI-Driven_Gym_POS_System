@@ -2,6 +2,7 @@ import 'package:frontend/states/client.dart';
 import 'package:frontend/states/server_address.dart';
 import 'package:frontend/states/trainer.dart';
 import 'package:frontend/widgets/pages/client/book%20classes/book_classes.dart';
+import 'package:frontend/widgets/pages/client/ai_buddy/ai_buddy_page.dart';
 import 'package:frontend/widgets/pages/client/home_page.dart';
 import 'package:frontend/widgets/pages/landing_page.dart';
 import 'package:frontend/widgets/pages/sign/forget_passsword_page.dart';
@@ -63,7 +64,8 @@ class MyAppState extends State<MyApp> {
           ManageClassesPage.routePath: (context) => const ManageClassesPage(),
           TrainerDashboardPage.routePath: (context) =>
               const TrainerDashboardPage(),
-          BookClassesPage.routePath: (context) => const BookClassesPage()
+          BookClassesPage.routePath: (context) => const BookClassesPage(),
+          AIBuddyPage.routePath: (context) => const AIBuddyPage(),
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

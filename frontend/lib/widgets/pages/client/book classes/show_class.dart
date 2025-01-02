@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/data/secure_storage.dart';
@@ -9,6 +8,7 @@ import 'package:frontend/states/client.dart';
 import 'package:frontend/states/server_address.dart';
 import 'package:frontend/theme/theme.dart';
 import 'package:frontend/widgets/base/app_bar.dart';
+import 'package:frontend/widgets/base/confirmation_dialog.dart';
 import 'package:frontend/widgets/base/custom_elevated_button.dart';
 import 'package:frontend/widgets/base/custom_outlined_button.dart';
 import 'package:frontend/widgets/base/form_elements.dart';
@@ -16,7 +16,7 @@ import 'package:frontend/widgets/base/snackbar.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:image_downloader/image_downloader.dart';
 
 class ShowClassPage extends StatefulWidget {
   Map<String, dynamic> classData = {};
@@ -172,37 +172,44 @@ class _ShowClassPageState extends State<ShowClassPage> {
                         ),
                         onTap: () async {
                           Navigator.pop(context);
-                          // URL of the image
-                          final imageUrl =
-                              "https://ik.imagekit.io/umartariq/trainerClassImages/${widget.classData['imageData']['name'] ?? ''}";
+                          CustomConfirmationDialog.show(
+                            context,
+                            title: "Confirm Download?",
+                            message:
+                                "Are you sure you want to download this class image?",
+                            yesText: "Download",
+                            noText: "Cancel",
+                            noCallback: () {
+                              Navigator.pop(context);
+                            },
+                            yesCallback: () async {
+                              Navigator.pop(context);
+                              final imageUrl =
+                                  "https://ik.imagekit.io/umartariq/trainerClassImages/${widget.classData['imageData']['name'] ?? ''}";
 
-                          try {
-                            final extension = imageUrl.split('.').last;
-                            final validExtension = [
-                              'jpg',
-                              'jpeg',
-                              'png',
-                              'gif',
-                              'webp',
-                              'bmp'
-                            ].contains(extension.toLowerCase())
-                                ? extension
-                                : 'jpg';
+                              try {
+                                var imageId =
+                                    await ImageDownloader.downloadImage(
+                                        imageUrl);
 
-                            final directory =
-                                await getApplicationDocumentsDirectory();
-                            final filePath =
-                                '${directory.path}/${widget.classData['className']}.$validExtension';
-
-                            final dio = Dio();
-                            await dio.download(imageUrl, filePath);
-
-                            CustomSnackbar.showSuccessSnackbar(context,
-                                "Success!", "Image downloaded successfully");
-                          } catch (e) {
-                            CustomSnackbar.showFailureSnackbar(context, "Oops!",
-                                "Sorry! Failed to download image");
-                          }
+                                if (imageId == null) {
+                                  CustomSnackbar.showHelpSnackbar(
+                                      context,
+                                      "Info!",
+                                      "Couldn't get storage permission");
+                                  return;
+                                }
+                                CustomSnackbar.showSuccessSnackbar(
+                                  context,
+                                  "Success!",
+                                  "Image downloaded successfully",
+                                );
+                              } catch (e) {
+                                CustomSnackbar.showFailureSnackbar(context,
+                                    "Oops!", "Sorry! Failed to download image");
+                              }
+                            },
+                          );
                         },
                       ),
                     ),
@@ -457,6 +464,13 @@ class _ShowClassPageState extends State<ShowClassPage> {
                           child: CustomElevatedButton(
                               onClick: () async {
                                 HapticFeedback.lightImpact();
+                                if (widget.classData['remainingSeats'] <= 0) {
+                                  CustomSnackbar.showFailureSnackbar(
+                                      context,
+                                      "Oops!",
+                                      "Sorry! No seats available in this class");
+                                  return;
+                                }
                                 try {
                                   String authToken = await SecureStorage()
                                       .getItem('authToken');

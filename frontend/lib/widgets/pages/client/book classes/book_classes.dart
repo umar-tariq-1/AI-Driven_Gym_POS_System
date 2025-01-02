@@ -77,6 +77,8 @@ class _BookClassesPageState extends State<BookClassesPage> {
         body: GetBuilder<ClientController>(
           builder: (controller) {
             return RefreshIndicator(
+              triggerMode: RefreshIndicatorTriggerMode.onEdge,
+              displacement: 60,
               onRefresh: () async {
                 HapticFeedback.mediumImpact();
                 fetchClassesData();

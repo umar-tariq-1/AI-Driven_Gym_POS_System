@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 // import 'package:frontend/data/local_storage.dart';
 import 'package:frontend/data/secure_storage.dart';
@@ -379,7 +380,10 @@ class _OTPState extends State<OTP> {
                   width: screenWidth * 0.9,
                   child: CustomElevatedButton(
                     buttonText: "Request OTP",
-                    onClick: sendOtpRequest,
+                    onClick: () async {
+                      HapticFeedback.lightImpact();
+                      sendOtpRequest();
+                    },
                     disabled: _showTimer,
                   ),
                 ),
@@ -388,7 +392,10 @@ class _OTPState extends State<OTP> {
                     width: screenWidth * 0.9,
                     child: CustomOutlinedButton(
                       buttonText: "Verify",
-                      onClick: verifyOTPRequest,
+                      onClick: () async {
+                        HapticFeedback.lightImpact();
+                        verifyOTPRequest();
+                      },
                       maxWidthScreenFactor: 1,
                       disabled: (_isVerifyDisabled && !_enabled) || !_showTimer,
                     )),
