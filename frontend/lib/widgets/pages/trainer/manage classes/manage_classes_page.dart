@@ -77,7 +77,7 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
           active: 'Manage Classes',
           accType: "Trainer",
         ),
-        backgroundColor: colorScheme.surface,
+        backgroundColor: Colors.grey.shade100,
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             HapticFeedback.lightImpact();
@@ -95,20 +95,22 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
               fetchClassesData();
             },
             backgroundColor: Colors.white,
-            child: ListView(
-              children: controller.classesData.map((classData) {
-                return CustomCard(
-                  imageUrl:
-                      "https://ik.imagekit.io/umartariq/trainerClassImages/${classData['imageData']['name'] ?? ''}",
-                  cost: classData['classFee'] ?? '',
-                  location: classData['gymLocation'] ?? '',
-                  className: classData['className'] ?? '',
-                  classGender: classData['classGender'] ?? '',
-                  classData: classData,
-                  isTrainer: true,
-                );
-              }).toList(),
-            ),
+            child: ListView.builder(
+  itemCount: controller.classesData.length,
+  itemBuilder: (context, index) {
+    final classData = controller.classesData[index];
+    return CustomCard(
+      imageUrl:
+          "https://ik.imagekit.io/umartariq/trainerClassImages/${classData['imageData']['name'] ?? ''}",
+      cost: classData['classFee'] ?? '',
+      location: classData['gymLocation'] ?? '',
+      className: classData['className'] ?? '',
+      classGender: classData['classGender'] ?? '',
+      classData: classData,
+      isTrainer: true,
+    );
+  },
+);
           );
         }));
   }

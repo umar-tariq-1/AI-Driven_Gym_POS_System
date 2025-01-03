@@ -73,7 +73,7 @@ class _BookClassesPageState extends State<BookClassesPage> {
           active: 'Book Classes',
           accType: "Client",
         ),
-        backgroundColor: colorScheme.surface,
+        backgroundColor: Colors.grey.shade100,
         body: GetBuilder<ClientController>(
           builder: (controller) {
             return RefreshIndicator(
@@ -84,19 +84,21 @@ class _BookClassesPageState extends State<BookClassesPage> {
                 fetchClassesData();
               },
               backgroundColor: Colors.white,
-              child: ListView(
-                children: controller.classesData.map((classData) {
-                  return CustomCard(
-                    imageUrl:
-                        "https://ik.imagekit.io/umartariq/trainerClassImages/${classData['imageData']['name'] ?? ''}",
-                    cost: classData['classFee'] ?? '',
-                    location: classData['gymLocation'] ?? '',
-                    className: classData['className'] ?? '',
-                    classGender: classData['classGender'] ?? '',
-                    classData: classData,
-                  );
-                }).toList(),
-              ),
+              child: ListView.builder(
+  itemCount: controller.classesData.length,
+  itemBuilder: (context, index) {
+    final classData = controller.classesData[index];
+    return CustomCard(
+      imageUrl:
+          "https://ik.imagekit.io/umartariq/trainerClassImages/${classData['imageData']['name'] ?? ''}",
+      cost: classData['classFee'] ?? '',
+      location: classData['gymLocation'] ?? '',
+      className: classData['className'] ?? '',
+      classGender: classData['classGender'] ?? '',
+      classData: classData,
+    );
+  },
+),
             );
           },
         ));
