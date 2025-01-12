@@ -5,8 +5,9 @@ import 'package:animations/animations.dart';
 import 'package:frontend/widgets/pages/client/book%20classes/show_class.dart';
 import 'package:frontend/widgets/pages/trainer/manage%20classes/show_my_class.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:redacted/redacted.dart';
 
-class CustomCard extends StatefulWidget {
+class CustomCard extends StatelessWidget {
   final String imageUrl;
   final String cost;
   final String location;
@@ -27,11 +28,6 @@ class CustomCard extends StatefulWidget {
   });
 
   @override
-  State<CustomCard> createState() => _CustomCardState();
-}
-
-class _CustomCardState extends State<CustomCard> {
-  @override
   Widget build(BuildContext context) {
     return OpenContainer(
         transitionType: ContainerTransitionType.fade,
@@ -41,10 +37,12 @@ class _CustomCardState extends State<CustomCard> {
         middleColor: Colors.white,
         closedBuilder: (context, action) {
           return GestureDetector(
-            onTap: () {
-              HapticFeedback.mediumImpact();
-              action();
-            },
+            onTap: classData.isNotEmpty
+                ? () {
+                    HapticFeedback.mediumImpact();
+                    action();
+                  }
+                : () {},
             child: Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -63,7 +61,7 @@ class _CustomCardState extends State<CustomCard> {
                           borderRadius: const BorderRadius.horizontal(
                               left: Radius.circular(15)),
                           child: Image(
-                            image: CachedNetworkImageProvider(widget.imageUrl),
+                            image: CachedNetworkImageProvider(imageUrl),
                             // width: MediaQuery.of(context).size.width * 0.4,
                             height: double.infinity,
                             fit: BoxFit.cover,
@@ -97,7 +95,8 @@ class _CustomCardState extends State<CustomCard> {
                                 size: 30,
                               )),
                             ),
-                          ),
+                          ).redacted(
+                              context: context, redact: classData.isEmpty),
                         ),
                       ),
                     ),
@@ -119,12 +118,15 @@ class _CustomCardState extends State<CustomCard> {
                                 ),
                                 const SizedBox(width: 12),
                                 Flexible(
-                                  child: Text(widget.className,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey.shade800)),
+                                  child: Text(className,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.grey.shade800))
+                                      .redacted(
+                                          context: context,
+                                          redact: classData.isEmpty),
                                 ),
                               ],
                             ),
@@ -138,12 +140,15 @@ class _CustomCardState extends State<CustomCard> {
                                 ),
                                 const SizedBox(width: 12),
                                 Flexible(
-                                  child: Text(widget.location,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey.shade800)),
+                                  child: Text(location,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.grey.shade800))
+                                      .redacted(
+                                          context: context,
+                                          redact: classData.isEmpty),
                                 ),
                               ],
                             ),
@@ -151,7 +156,7 @@ class _CustomCardState extends State<CustomCard> {
                             Row(
                               children: [
                                 Icon(
-                                  widget.isTrainer
+                                  isTrainer
                                       ? Icons.people_rounded
                                       : Icons.wc_rounded,
                                   color: Colors.grey.shade800,
@@ -160,14 +165,17 @@ class _CustomCardState extends State<CustomCard> {
                                 const SizedBox(width: 12),
                                 Flexible(
                                   child: Text(
-                                      widget.isTrainer
-                                          ? '${widget.classData['maxParticipants'] - widget.classData['remainingSeats']}/${widget.classData['maxParticipants']}'
-                                          : widget.classGender,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey.shade800)),
+                                          isTrainer
+                                              ? '${classData['maxParticipants'] - classData['remainingSeats']}/${classData['maxParticipants']}'
+                                              : classGender,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.grey.shade800))
+                                      .redacted(
+                                          context: context,
+                                          redact: classData.isEmpty),
                                 ),
                               ],
                             ),
@@ -181,12 +189,15 @@ class _CustomCardState extends State<CustomCard> {
                                 ),
                                 const SizedBox(width: 14),
                                 Flexible(
-                                  child: Text(widget.cost,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey.shade800)),
+                                  child: Text(cost,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.grey.shade800))
+                                      .redacted(
+                                          context: context,
+                                          redact: classData.isEmpty),
                                 ),
                               ],
                             ),
@@ -201,12 +212,12 @@ class _CustomCardState extends State<CustomCard> {
           );
         },
         openBuilder: (context, action) {
-          return widget.isTrainer
+          return isTrainer
               ? ShowMyClassPage(
-                  classData: widget.classData,
+                  classData: classData,
                 )
               : ShowClassPage(
-                  classData: widget.classData,
+                  classData: classData,
                 );
         });
   }

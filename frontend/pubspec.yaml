@@ -56,6 +56,7 @@ dependencies:
       url: https://github.com/VikasTailorbird/image_downloader
   google_generative_ai: ^0.4.6
   flutter_markdown: ^0.7.4+3
+  redacted: ^1.0.13
 
 dev_dependencies:
   flutter_test:
