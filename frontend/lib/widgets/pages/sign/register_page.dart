@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import './register.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -26,7 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
           child: Stack(
             children: [
               Container(
-                margin: EdgeInsets.only(top: 12 + statusBarHeight, left: 3),
+                margin: EdgeInsets.only(top: 10 + statusBarHeight, left: 3),
                 child: Align(
                     alignment: Alignment.topLeft,
                     child: IconButton(

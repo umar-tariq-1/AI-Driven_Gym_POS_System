@@ -36,8 +36,10 @@ class _SigninState extends State<Signin> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Container(
-      padding: const EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 0.0),
+      padding: EdgeInsets.fromLTRB(
+          screenWidth * 0.065, 0.0, screenWidth * 0.065, 0.0),
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(

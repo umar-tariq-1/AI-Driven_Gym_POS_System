@@ -6,6 +6,8 @@ import 'package:frontend/widgets/base/list_tile.dart';
 import 'package:frontend/widgets/base/snackbar.dart';
 import 'package:frontend/widgets/pages/client/book%20classes/book_classes.dart';
 import 'package:frontend/widgets/pages/client/ai_buddy/ai_buddy_page.dart';
+import 'package:frontend/widgets/pages/client/live_classes/live_classes.dart';
+import 'package:frontend/widgets/pages/trainer/live_classes/live_classes.dart';
 import 'package:frontend/widgets/pages/trainer/manage%20classes/create_class.dart';
 import 'package:frontend/widgets/pages/trainer/dashboard_page.dart';
 import 'package:frontend/widgets/pages/trainer/manage%20classes/manage_classes_page.dart';
@@ -154,11 +156,9 @@ Widget buildClientMenuItems(BuildContext context, active) => Column(
             iconData: Icons.live_tv_rounded,
             iconSize: 26.75,
             onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
-              }
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  ClientHomePage.routePath, (route) => false);
+              Navigator.of(context).pushNamed(ClientLiveClassesPage.routePath);
             }),
         CustomListTile(
             active: active == "Payment History",
@@ -256,16 +256,14 @@ Widget buildTrainerMenuItems(BuildContext context, active) => Column(
               Navigator.of(context).pushNamed(ManageClassesPage.routePath);
             }),
         CustomListTile(
-            active: active == "Client Progress",
-            text: "Client Progress",
-            iconData: Icons.settings_accessibility_rounded,
+            active: active == "Live Classes",
+            text: "Live Classes",
+            iconData: Icons.live_tv_rounded,
             iconSize: 26.75,
             onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  TrainerDashboardPage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    TrainerDashboardPage.routePath, (route) => false);
-              }
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  TrainerDashboardPage.routePath, (route) => false);
+              Navigator.of(context).pushNamed(TrainerLiveClassesPage.routePath);
             }),
         CustomListTile(
             active: active == "Schedule",
@@ -283,6 +281,18 @@ Widget buildTrainerMenuItems(BuildContext context, active) => Column(
             active: active == "Task Manager",
             text: "Task Manager",
             iconData: Icons.task_alt_rounded,
+            iconSize: 26.75,
+            onTap: () {
+              if (ModalRoute.of(context)?.settings.name !=
+                  TrainerDashboardPage.routePath) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    TrainerDashboardPage.routePath, (route) => false);
+              }
+            }),
+        CustomListTile(
+            active: active == "Client Progress",
+            text: "Client Progress",
+            iconData: Icons.settings_accessibility_rounded,
             iconSize: 26.75,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name !=

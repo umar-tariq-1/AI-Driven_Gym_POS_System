@@ -71,8 +71,10 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Container(
-      padding: const EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 0.0),
+      padding: EdgeInsets.fromLTRB(
+          screenWidth * 0.065, 0.0, screenWidth * 0.065, 0.0),
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -188,7 +190,7 @@ class _RegisterState extends State<Register> {
                 Row(
                   children: [
                     Expanded(
-                      flex: 3,
+                      flex: 5,
                       child: DropdownButtonFormField<String>(
                         dropdownColor: Colors.white,
                         items: ['Male', 'Female', 'Other']
@@ -239,13 +241,13 @@ class _RegisterState extends State<Register> {
                     ),
                     const SizedBox(width: 5),
                     Expanded(
-                      flex: 4,
+                      flex: 6,
                       child: DropdownButtonFormField<String>(
                         dropdownColor: Colors.white,
-                        items: ['Client', 'Trainer', 'Manager', 'Owner']
+                        items: ['Student', 'Trainer', 'Manager', 'Owner']
                             .map((account) => DropdownMenuItem(
                                   value: account,
-                                  child: Text('Gym $account'),
+                                  child: Text(account),
                                 ))
                             .toList(),
                         onChanged: (value) {
@@ -341,7 +343,7 @@ class _RegisterState extends State<Register> {
                   keyboardType: TextInputType.phone,
                   controller: controllers['phone'],
                   onChanged: (_) {
-                    HapticFeedback.lightImpact();
+                    // HapticFeedback.lightImpact();
                   },
                   decoration: InputDecoration(
                     label: const Text('Phone (optional)'),
@@ -529,6 +531,7 @@ class _RegisterState extends State<Register> {
                 ),
                 const SizedBox(height: 13.0),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Checkbox(
                       value: _agreePersonalData,
@@ -551,6 +554,9 @@ class _RegisterState extends State<Register> {
                         fontWeight: FontWeight.bold,
                         color: colorScheme.primary,
                       ),
+                    ),
+                    const SizedBox(
+                      width: 2.5,
                     ),
                   ],
                 ),

@@ -12,9 +12,6 @@ import 'package:frontend/main.dart';
 import 'package:frontend/widgets/base/app_bar.dart';
 import 'package:frontend/widgets/base/card.dart';
 import 'package:frontend/widgets/base/navigation_drawer.dart';
-import 'package:redacted/redacted.dart';
-
-import '../../../../../theme/theme.dart';
 
 class BookClassesPage extends StatefulWidget {
   const BookClassesPage({super.key});

@@ -17,7 +17,7 @@ class WelcomeButton extends StatelessWidget {
     return GestureDetector(
       onTap: onClick,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 40.0),
+        padding: const EdgeInsets.symmetric(vertical: 35),
         decoration: BoxDecoration(
           // border: Border.all(width: 1, color: colorScheme.primary),
           color: color!,

@@ -32,7 +32,7 @@ class _AIBuddyPageState extends State<AIBuddyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Your AI Buddy",
+        title: "AI Buddy",
         backgroundColor: appBarColor,
         foregroundColor: appBarTextColor,
       ),

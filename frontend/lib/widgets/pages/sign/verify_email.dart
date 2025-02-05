@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/widgets/compound/otp.dart';
 
+// ignore: must_be_immutable
 class VerifyEmailPage extends StatefulWidget {
   String email;
   VoidCallback onSuccess;
@@ -27,7 +28,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
           child: Stack(
             children: [
               Container(
-                margin: EdgeInsets.only(top: 12 + statusBarHeight, left: 3),
+                margin: EdgeInsets.only(top: 10 + statusBarHeight, left: 3),
                 child: Align(
                     alignment: Alignment.topLeft,
                     child: IconButton(

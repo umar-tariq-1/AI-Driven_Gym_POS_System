@@ -25,7 +25,7 @@ class _SigninPageState extends State<SigninPage> {
           child: Stack(
             children: [
               Container(
-                margin: EdgeInsets.only(top: 12 + statusBarHeight, left: 3),
+                margin: EdgeInsets.only(top: 10 + statusBarHeight, left: 3),
                 child: Align(
                     alignment: Alignment.topLeft,
                     child: IconButton(

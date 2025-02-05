@@ -4,10 +4,12 @@ import 'package:frontend/states/trainer.dart';
 import 'package:frontend/widgets/pages/client/book%20classes/book_classes.dart';
 import 'package:frontend/widgets/pages/client/ai_buddy/ai_buddy_page.dart';
 import 'package:frontend/widgets/pages/client/home_page.dart';
+import 'package:frontend/widgets/pages/client/live_classes/live_classes.dart';
 import 'package:frontend/widgets/pages/landing_page.dart';
 import 'package:frontend/widgets/pages/sign/forget_passsword_page.dart';
 import 'package:frontend/widgets/pages/sign/register_page.dart';
 import 'package:frontend/widgets/pages/sign/signin_page.dart';
+import 'package:frontend/widgets/pages/trainer/live_classes/live_classes.dart';
 import 'package:frontend/widgets/pages/trainer/manage%20classes/create_class.dart';
 import 'package:frontend/widgets/pages/trainer/dashboard_page.dart';
 import 'package:frontend/widgets/pages/trainer/manage%20classes/manage_classes_page.dart';
@@ -66,6 +68,10 @@ class MyAppState extends State<MyApp> {
               const TrainerDashboardPage(),
           BookClassesPage.routePath: (context) => const BookClassesPage(),
           AIBuddyPage.routePath: (context) => const AIBuddyPage(),
+          ClientLiveClassesPage.routePath: (context) =>
+              const ClientLiveClassesPage(),
+          TrainerLiveClassesPage.routePath: (context) =>
+              const TrainerLiveClassesPage(),
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

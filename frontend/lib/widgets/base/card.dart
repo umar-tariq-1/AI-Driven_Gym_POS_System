@@ -115,7 +115,9 @@ class CustomCard extends StatelessWidget {
                                   Icons.fitness_center_sharp,
                                   color: Colors.grey.shade800,
                                   size: 24,
-                                ),
+                                ).redacted(
+                                    context: context,
+                                    redact: classData.isEmpty),
                                 const SizedBox(width: 12),
                                 Flexible(
                                   child: Text(className,
@@ -137,7 +139,9 @@ class CustomCard extends StatelessWidget {
                                   Icons.location_on_sharp,
                                   color: Colors.grey.shade800,
                                   size: 24,
-                                ),
+                                ).redacted(
+                                    context: context,
+                                    redact: classData.isEmpty),
                                 const SizedBox(width: 12),
                                 Flexible(
                                   child: Text(location,
@@ -161,7 +165,9 @@ class CustomCard extends StatelessWidget {
                                       : Icons.wc_rounded,
                                   color: Colors.grey.shade800,
                                   size: 24,
-                                ),
+                                ).redacted(
+                                    context: context,
+                                    redact: classData.isEmpty),
                                 const SizedBox(width: 12),
                                 Flexible(
                                   child: Text(
@@ -186,7 +192,9 @@ class CustomCard extends StatelessWidget {
                                   Icons.attach_money_rounded,
                                   color: Colors.grey.shade800,
                                   size: 25,
-                                ),
+                                ).redacted(
+                                    context: context,
+                                    redact: classData.isEmpty),
                                 const SizedBox(width: 14),
                                 Flexible(
                                   child: Text(cost,

@@ -88,9 +88,11 @@ class _ShowClassPageState extends State<ShowClassPage> {
                       child: Image(
                         image: CachedNetworkImageProvider(
                             "https://ik.imagekit.io/umartariq/trainerClassImages/${widget.classData['imageData']['name'] ?? ''}"),
-                        width: double.infinity,
-                        // height: 300,
-                        fit: BoxFit.scaleDown,
+                        // width: double.infinity,
+                        // fit: BoxFit.scaleDown,
+                        fit: BoxFit.contain,
+                        width: MediaQuery.of(context).size.width * 1,
+                        height: MediaQuery.of(context).size.height * 1,
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) {
                             return child;

@@ -280,69 +280,72 @@ class _OTPState extends State<OTP> {
               children: [
                 Directionality(
                   textDirection: TextDirection.ltr,
-                  child: Pinput(
-                    closeKeyboardWhenCompleted: true,
-                    keyboardType: TextInputType.number,
-                    length: 6,
-                    controller: pinController,
-                    focusNode: focusNode,
-                    defaultPinTheme: defaultPinTheme.copyWith(
-                      decoration: defaultPinTheme.decoration!.copyWith(
-                        color: fillColor,
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(
-                            color: /* borderColor */ Colors.grey.shade300),
-                      ),
-                    ),
-                    errorBuilder: (_errorText, pin) {
-                      return Container(
-                        margin: const EdgeInsets.only(top: 10, bottom: 6),
-                        child: Center(
-                            child: Text(
-                          _errorText ?? "",
-                          style: TextStyle(color: colorScheme.error),
-                        )),
-                      );
-                    },
-                    onChanged: (value) {
-                      setState(() {
-                        _errorText = null;
-                      });
-                    },
-                    validator: (value) {
-                      return _errorText;
-                    },
-                    hapticFeedbackType: HapticFeedbackType.lightImpact,
-                    cursor: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 9),
-                          width: 22,
-                          height: 1,
-                          color: focusedBorderColor,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                    child: Pinput(
+                      closeKeyboardWhenCompleted: true,
+                      keyboardType: TextInputType.number,
+                      length: 6,
+                      controller: pinController,
+                      focusNode: focusNode,
+                      defaultPinTheme: defaultPinTheme.copyWith(
+                        decoration: defaultPinTheme.decoration!.copyWith(
+                          color: fillColor,
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                              color: /* borderColor */ Colors.grey.shade300),
                         ),
-                      ],
-                    ),
-                    focusedPinTheme: defaultPinTheme.copyWith(
-                      decoration: defaultPinTheme.decoration!.copyWith(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: focusedBorderColor),
                       ),
-                    ),
-                    submittedPinTheme: defaultPinTheme.copyWith(
-                      decoration: defaultPinTheme.decoration!.copyWith(
-                        color: submittedFillColor,
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(
-                            color: /* focusedBorderColor */
-                                Colors.grey.shade300),
+                      errorBuilder: (_errorText, pin) {
+                        return Container(
+                          margin: const EdgeInsets.only(top: 10, bottom: 6),
+                          child: Center(
+                              child: Text(
+                            _errorText ?? "",
+                            style: TextStyle(color: colorScheme.error),
+                          )),
+                        );
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          _errorText = null;
+                        });
+                      },
+                      validator: (value) {
+                        return _errorText;
+                      },
+                      hapticFeedbackType: HapticFeedbackType.lightImpact,
+                      cursor: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(bottom: 9),
+                            width: 22,
+                            height: 1,
+                            color: focusedBorderColor,
+                          ),
+                        ],
                       ),
+                      focusedPinTheme: defaultPinTheme.copyWith(
+                        decoration: defaultPinTheme.decoration!.copyWith(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: focusedBorderColor),
+                        ),
+                      ),
+                      submittedPinTheme: defaultPinTheme.copyWith(
+                        decoration: defaultPinTheme.decoration!.copyWith(
+                          color: submittedFillColor,
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                              color: /* focusedBorderColor */
+                                  Colors.grey.shade300),
+                        ),
+                      ),
+                      errorPinTheme: defaultPinTheme.copyBorderWith(
+                        border: Border.all(color: colorScheme.error),
+                      ),
+                      enabled: _enabled,
                     ),
-                    errorPinTheme: defaultPinTheme.copyBorderWith(
-                      border: Border.all(color: colorScheme.error),
-                    ),
-                    enabled: _enabled,
                   ),
                 ),
                 _showTimer
