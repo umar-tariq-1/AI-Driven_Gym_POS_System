@@ -34,6 +34,10 @@ class _ClientLiveClassesPageState extends State<ClientLiveClassesPage> {
           accType: "Client",
         ),
         backgroundColor: Colors.grey.shade100,
-        body: AudiencePage());
+        body: Audience(
+          liveId: '',
+          userId: '',
+          userName: '',
+        ));
   }
 }

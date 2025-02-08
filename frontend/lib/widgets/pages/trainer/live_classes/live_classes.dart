@@ -32,6 +32,10 @@ class _TrainerLiveClassesPageState extends State<TrainerLiveClassesPage> {
           accType: "Trainer",
         ),
         backgroundColor: Colors.grey.shade100,
-        body: BroadcasterPage());
+        body: Broadcaster(
+          liveId: '',
+          userId: '',
+          userName: '',
+        ));
   }
 }
