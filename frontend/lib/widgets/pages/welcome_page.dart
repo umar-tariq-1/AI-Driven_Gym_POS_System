@@ -212,7 +212,7 @@ class ChangeServerIPDialog extends StatelessWidget {
               children: [
                 TextFormField(
                   keyboardType: TextInputType.number,
-                  onChanged: (_) => HapticFeedback.lightImpact(),
+                  // onChanged: (_) => HapticFeedback.lightImpact(),
                   controller: controller,
                   decoration: InputDecoration(
                     label: const Text('IP Address'),

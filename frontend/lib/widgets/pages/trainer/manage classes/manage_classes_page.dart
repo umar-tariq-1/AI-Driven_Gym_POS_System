@@ -9,7 +9,7 @@ import 'package:frontend/states/server_address.dart';
 import 'package:frontend/states/trainer.dart';
 import 'package:frontend/theme/theme.dart';
 import 'package:frontend/widgets/base/app_bar.dart';
-import 'package:frontend/widgets/base/card.dart';
+import 'package:frontend/widgets/compound/card.dart';
 import 'package:frontend/widgets/base/navigation_drawer.dart';
 import 'package:frontend/widgets/base/snackbar.dart';
 import 'package:frontend/widgets/pages/trainer/manage%20classes/create_class.dart';
@@ -45,12 +45,12 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
   void initState() {
     super.initState();
     dummyCards = List.generate(12, (index) {
-      return CustomCard(
+      return ClassesCard(
         imageUrl:
             "https://storage.googleapis.com/cms-storage-bucket/a9d6ce81aee44ae017ee.png",
         cost: '00.00',
-        location: _generateRandomString(12, 16),
-        className: _generateRandomString(10, 16),
+        location: _generateRandomString(10, 13),
+        className: _generateRandomString(10, 13),
         classGender: index % 2 == 0 ? 'Female' : 'Male',
         classData: const {},
       );
@@ -128,7 +128,7 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
                     itemCount: controller.classesData.length,
                     itemBuilder: (context, index) {
                       final classData = controller.classesData[index];
-                      return CustomCard(
+                      return ClassesCard(
                         imageUrl:
                             "https://ik.imagekit.io/umartariq/trainerClassImages/${classData['imageData']['name'] ?? ''}",
                         cost: classData['classFee'] ?? '',

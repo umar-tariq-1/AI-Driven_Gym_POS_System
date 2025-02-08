@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zego_uikit_prebuilt_live_streaming/zego_uikit_prebuilt_live_streaming.dart';
-
-const appId = 242112313;
-const appSign =
-    '6a70670df1768cabfc6a2b8877687b26a37ec62a8ab4d41349d9baa2354ebca7';
+import '../../data/constants.dart';
 
 class Broadcaster extends StatelessWidget {
   String userId;
@@ -25,8 +22,8 @@ class Broadcaster extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: ZegoUIKitPrebuiltLiveStreaming(
-        appID: appId,
-        appSign: appSign,
+        appID: ZegoCloud_LiveStreaming_AppId,
+        appSign: ZegoCloud_LiveStreaming_AppSign,
         userID: userId,
         userName: userName,
         liveID: liveId,

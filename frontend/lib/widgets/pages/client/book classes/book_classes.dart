@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:frontend/data/secure_storage.dart';
 import 'package:frontend/main.dart';
 import 'package:frontend/widgets/base/app_bar.dart';
-import 'package:frontend/widgets/base/card.dart';
+import 'package:frontend/widgets/compound/card.dart';
 import 'package:frontend/widgets/base/navigation_drawer.dart';
 
 class BookClassesPage extends StatefulWidget {
@@ -43,7 +43,7 @@ class _BookClassesPageState extends State<BookClassesPage> {
   void initState() {
     super.initState();
     dummyCards = List.generate(12, (index) {
-      return CustomCard(
+      return ClassesCard(
         imageUrl:
             "https://storage.googleapis.com/cms-storage-bucket/a9d6ce81aee44ae017ee.png",
         cost: '00.00',
@@ -116,7 +116,7 @@ class _BookClassesPageState extends State<BookClassesPage> {
                       itemCount: controller.classesData.length,
                       itemBuilder: (context, index) {
                         final classData = controller.classesData[index];
-                        return CustomCard(
+                        return ClassesCard(
                           imageUrl:
                               "https://ik.imagekit.io/umartariq/trainerClassImages/${classData['imageData']['name'] ?? ''}",
                           cost: classData['classFee'] ?? '',

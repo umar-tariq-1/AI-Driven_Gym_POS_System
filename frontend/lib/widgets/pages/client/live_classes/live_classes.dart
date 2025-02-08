@@ -34,10 +34,19 @@ class _ClientLiveClassesPageState extends State<ClientLiveClassesPage> {
           accType: "Client",
         ),
         backgroundColor: Colors.grey.shade100,
-        body: Audience(
+        body: Card(
+          elevation: 5,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: SizedBox(
+            height: 100,
+            width: double.infinity,
+          ),
+        ) /* Audience(
           liveId: '',
           userId: '',
           userName: '',
-        ));
+        ) */
+        );
   }
 }
