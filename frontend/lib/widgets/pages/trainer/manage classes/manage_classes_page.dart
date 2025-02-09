@@ -80,7 +80,7 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
             .setClassesData(jsonDecode(response.body)['data']);
         SecureStorage()
             .setItem('trainerClassesData', jsonDecode(response.body)['data']);
-        SecureStorage().setItem('clientClassesDataUserId', userData['id']);
+        SecureStorage().setItem('trainerClassesDataUserId', userData['id']);
       } else {
         CustomSnackbar.showFailureSnackbar(
             context, "Oops!", json.decode(response.body)['message']);

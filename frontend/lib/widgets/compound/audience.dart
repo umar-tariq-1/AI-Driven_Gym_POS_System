@@ -1,17 +1,24 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:frontend/data/secure_storage.dart';
 import 'package:frontend/main.dart';
+import 'package:frontend/states/server_address.dart';
+import 'package:frontend/widgets/base/confirmation_dialog.dart';
 import 'package:zego_uikit_prebuilt_live_streaming/zego_uikit_prebuilt_live_streaming.dart';
 import '../../data/constants.dart';
+import 'package:http/http.dart' as http;
 
 class Audience extends StatelessWidget {
   String userId;
   String userName;
   String liveId;
-  Audience(
-      {super.key,
-      required this.userId,
-      required this.userName,
-      required this.liveId});
+  Audience({
+    super.key,
+    required this.userId,
+    required this.userName,
+    required this.liveId,
+  });
 
   // void initState() {
   //   setup();

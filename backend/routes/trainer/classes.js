@@ -162,7 +162,7 @@ trainer.get("/", authorize, async (req, res) => {
   }
 });
 
-trainer.put("/update-streaming" /* , authorize */, async (req, res) => {
+trainer.put("/update-streaming", authorize, async (req, res) => {
   const db = req.db;
   const { classId, isStreaming } = req.body;
 
@@ -199,7 +199,7 @@ trainer.put("/update-streaming" /* , authorize */, async (req, res) => {
   }
 });
 
-trainer.get("/is-streaming/:classId" /* , authorize */, async (req, res) => {
+trainer.get("/is-streaming/:classId", authorize, async (req, res) => {
   const db = req.db;
   const { classId } = req.params;
 

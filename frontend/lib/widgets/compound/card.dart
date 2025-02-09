@@ -5,7 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:frontend/theme/theme.dart';
 import 'package:animations/animations.dart';
+import 'package:frontend/widgets/base/confirmation_dialog.dart';
 import 'package:frontend/widgets/base/custom_outlined_button.dart';
+import 'package:frontend/widgets/compound/audience.dart';
 import 'package:frontend/widgets/compound/broadcaster.dart';
 import 'package:frontend/widgets/pages/client/book%20classes/show_class.dart';
 import 'package:frontend/widgets/pages/trainer/manage%20classes/show_my_class.dart';
@@ -240,6 +242,7 @@ class LiveStreamingCard extends StatelessWidget {
   final String imageUrl;
   final String className;
   final String userName;
+  final String userId;
   final Map<String, dynamic> classData;
 
   bool isTrainer;
@@ -249,6 +252,7 @@ class LiveStreamingCard extends StatelessWidget {
     required this.className,
     required this.classData,
     required this.userName,
+    required this.userId,
     this.isTrainer = false,
     super.key,
   });
@@ -444,15 +448,37 @@ class LiveStreamingCard extends StatelessWidget {
                           disabled: classData.isEmpty,
                           onClick: () {
                             HapticFeedback.mediumImpact();
-                            // isLoadingTrue!();
-                            // isLoadingFalse!();
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => Broadcaster(
-                                    userId: classData['trainerId'].toString(),
-                                    userName: userName,
-                                    liveId:
-                                        '${className}_${classData['id'].toString()}'
-                                            .replaceAll(' ', '_'))));
+                            if (isTrainer) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => Broadcaster(
+                                      userId: '${userName}_$userId'
+                                          .replaceAll(' ', '_'),
+                                      userName: userName,
+                                      liveId:
+                                          '${className}_${classData['id'].toString()}'
+                                              .replaceAll(' ', '_'))));
+                            } else {
+                              CustomConfirmationDialog.show(
+                                context,
+                                yesText: "Join",
+                                noText: "Cancel",
+                                title: "Confirm Join",
+                                message:
+                                    "Are you sure you want to join the live stream?",
+                                yesCallback: () {
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => Audience(
+                                          userId: '${userName}_$userId'
+                                              .replaceAll(' ', '_'),
+                                          userName: userName,
+                                          liveId:
+                                              '${className}_${classData['id'].toString()}'
+                                                  .replaceAll(' ', '_'))));
+                                },
+                                noCallback: () => Navigator.of(context).pop(),
+                              );
+                            }
                           }),
                     ),
                   ],

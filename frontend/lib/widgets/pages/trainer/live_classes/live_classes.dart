@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/data/secure_storage.dart';
@@ -8,10 +7,8 @@ import 'package:frontend/main.dart';
 import 'package:frontend/states/server_address.dart';
 import 'package:frontend/states/trainer.dart';
 import 'package:frontend/widgets/base/app_bar.dart';
-import 'package:frontend/widgets/base/loader.dart';
 import 'package:frontend/widgets/base/navigation_drawer.dart';
 import 'package:frontend/widgets/base/snackbar.dart';
-import 'package:frontend/widgets/compound/broadcaster.dart';
 import 'package:frontend/widgets/compound/card.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
@@ -50,6 +47,7 @@ class _TrainerLiveClassesPageState extends State<TrainerLiveClassesPage> {
         className: _generateRandomString(10, 13),
         classData: const {},
         isTrainer: true,
+        userId: '',
         userName: '',
       );
     });
@@ -78,9 +76,8 @@ class _TrainerLiveClassesPageState extends State<TrainerLiveClassesPage> {
             .setClassesData(jsonDecode(response.body)['data']);
         SecureStorage()
             .setItem('trainerClassesData', jsonDecode(response.body)['data']);
-        SecureStorage().setItem('clientClassesDataUserId', userData['id']);
+        SecureStorage().setItem('trainerClassesDataUserId', userData['id']);
         // print(jsonDecode(response.body)['data'][0]);
-        print(userData);
       } else {
         CustomSnackbar.showFailureSnackbar(
             context, "Oops!", json.decode(response.body)['message']);
@@ -125,6 +122,7 @@ class _TrainerLiveClassesPageState extends State<TrainerLiveClassesPage> {
                             "https://ik.imagekit.io/umartariq/trainerClassImages/${classData['imageData']['name'] ?? ''}",
                         className: classData['className'],
                         classData: classData,
+                        userId: userData['id'].toString(),
                         userName:
                             '${userData['firstName']} ${userData['lastName']}',
                         isTrainer: true,

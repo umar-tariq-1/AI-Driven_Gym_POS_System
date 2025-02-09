@@ -71,4 +71,31 @@ client.post("/register", authorize, async (req, res) => {
   }
 });
 
+client.get("/registered-classes", authorize, async (req, res) => {
+  const db = req.db;
+  const userData = req.userData;
+
+  try {
+    const userId = userData.id;
+
+    const query = `
+      SELECT 
+        *
+      FROM TrainerClasses
+      JOIN registeredclasses 
+        ON TrainerClasses.id = registeredclasses.classId
+      WHERE registeredclasses.clientId = ?;
+    `;
+
+    const classes = await db.query(query, [userId]);
+
+    return res.status(200).send({ success: true, data: classes[0] });
+  } catch (error) {
+    console.error(error?.message);
+    return res
+      .status(500)
+      .send({ success: false, message: "Internal Server Error" });
+  }
+});
+
 module.exports = client;

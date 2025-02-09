@@ -18,6 +18,8 @@ class CustomConfirmationDialog {
         return SizedBox(
           width: MediaQuery.of(context).size.width * 0.9,
           child: AlertDialog(
+            actionsPadding:
+                const EdgeInsets.only(left: 24.0, right: 18.0, bottom: 14.0),
             insetPadding: EdgeInsets.zero,
             backgroundColor: colorScheme.surface,
             title: Text(
@@ -42,12 +44,12 @@ class CustomConfirmationDialog {
                 transitionColor: true,
                 color: colorScheme.error,
                 fontSize: 14.7,
-                height: 10.5,
+                height: 0,
               ),
               CustomElevatedButton(
                 buttonText: yesText,
                 fontSize: 14.7,
-                height: 10.7,
+                height: 2,
                 minWidth: 118,
                 onClick: yesCallback ?? () => {},
               ),
