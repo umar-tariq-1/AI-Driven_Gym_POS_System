@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/main.dart';
 import 'package:zego_uikit_prebuilt_live_streaming/zego_uikit_prebuilt_live_streaming.dart';
 import '../../data/constants.dart';
 
@@ -20,14 +21,17 @@ class Audience extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: ZegoUIKitPrebuiltLiveStreaming(
-        appID: ZegoCloud_LiveStreaming_AppId,
-        appSign: ZegoCloud_LiveStreaming_AppSign,
-        userID: userId,
-        userName: userName,
-        liveID: liveId,
-        config: ZegoUIKitPrebuiltLiveStreamingConfig.audience(),
+    return Scaffold(
+      backgroundColor: statusBarColor,
+      body: SafeArea(
+        child: ZegoUIKitPrebuiltLiveStreaming(
+          appID: ZegoCloud_LiveStreaming_AppId,
+          appSign: ZegoCloud_LiveStreaming_AppSign,
+          userID: userId,
+          userName: userName,
+          liveID: liveId,
+          config: ZegoUIKitPrebuiltLiveStreamingConfig.audience(),
+        ),
       ),
     );
   }

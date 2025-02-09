@@ -8,6 +8,7 @@ import 'package:frontend/main.dart';
 import 'package:frontend/states/server_address.dart';
 import 'package:frontend/states/trainer.dart';
 import 'package:frontend/widgets/base/app_bar.dart';
+import 'package:frontend/widgets/base/loader.dart';
 import 'package:frontend/widgets/base/navigation_drawer.dart';
 import 'package:frontend/widgets/base/snackbar.dart';
 import 'package:frontend/widgets/compound/broadcaster.dart';
@@ -43,23 +44,13 @@ class _TrainerLiveClassesPageState extends State<TrainerLiveClassesPage> {
   void initState() {
     super.initState();
     dummyCards = List.generate(12, (index) {
-      return /* ClassesCard(
-        imageUrl:
-            "https://storage.googleapis.com/cms-storage-bucket/a9d6ce81aee44ae017ee.png",
-        cost: '00.00',
-        location: _generateRandomString(10, 13),
-        className: _generateRandomString(10, 13),
-        classGender: index % 2 == 0 ? 'Female' : 'Male',
-        classData: const {},
-      ); */
-          LiveStreamingCard(
+      return LiveStreamingCard(
         imageUrl:
             "https://storage.googleapis.com/cms-storage-bucket/a9d6ce81aee44ae017ee.png",
         className: _generateRandomString(10, 13),
         classData: const {},
-        endTime: '12:00',
-        startTime: '12:00',
-        selectedDays: const [true, true, true, true, true, true, true],
+        isTrainer: true,
+        userName: '',
       );
     });
     getUserData();
@@ -88,7 +79,8 @@ class _TrainerLiveClassesPageState extends State<TrainerLiveClassesPage> {
         SecureStorage()
             .setItem('trainerClassesData', jsonDecode(response.body)['data']);
         SecureStorage().setItem('clientClassesDataUserId', userData['id']);
-        print(jsonDecode(response.body)['data']);
+        // print(jsonDecode(response.body)['data'][0]);
+        print(userData);
       } else {
         CustomSnackbar.showFailureSnackbar(
             context, "Oops!", json.decode(response.body)['message']);
@@ -129,14 +121,12 @@ class _TrainerLiveClassesPageState extends State<TrainerLiveClassesPage> {
                     itemBuilder: (context, index) {
                       final classData = controller.classesData[index];
                       return LiveStreamingCard(
-                        selectedDays:
-                            jsonDecode(classData['selectedDays']) ?? [],
-                        startTime: classData['startTime'] ?? '12:00',
-                        endTime: classData['endTime'] ?? '12:00',
                         imageUrl:
                             "https://ik.imagekit.io/umartariq/trainerClassImages/${classData['imageData']['name'] ?? ''}",
-                        className: classData['className'] ?? '',
+                        className: classData['className'],
                         classData: classData,
+                        userName:
+                            '${userData['firstName']} ${userData['lastName']}',
                         isTrainer: true,
                       );
                     },
