@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:frontend/data/secure_storage.dart';
+import 'package:frontend/states/server_address.dart';
 import 'package:frontend/theme/theme.dart';
 import 'package:animations/animations.dart';
 import 'package:frontend/widgets/base/confirmation_dialog.dart';
@@ -13,6 +15,7 @@ import 'package:frontend/widgets/pages/client/book%20classes/show_class.dart';
 import 'package:frontend/widgets/pages/trainer/manage%20classes/show_my_class.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:redacted/redacted.dart';
+import 'package:http/http.dart' as http;
 
 class ClassesCard extends StatelessWidget {
   final String imageUrl;
@@ -244,8 +247,8 @@ class LiveStreamingCard extends StatelessWidget {
   final String userName;
   final String userId;
   final Map<String, dynamic> classData;
-
   bool isTrainer;
+  final void Function(bool)? setLoading;
 
   LiveStreamingCard({
     required this.imageUrl,
@@ -254,6 +257,7 @@ class LiveStreamingCard extends StatelessWidget {
     required this.userName,
     required this.userId,
     this.isTrainer = false,
+    this.setLoading,
     super.key,
   });
 
@@ -446,7 +450,7 @@ class LiveStreamingCard extends StatelessWidget {
                           transitionColor: true,
                           fontSize: 16,
                           disabled: classData.isEmpty,
-                          onClick: () {
+                          onClick: () async {
                             HapticFeedback.mediumImpact();
                             if (isTrainer) {
                               Navigator.of(context).push(MaterialPageRoute(
@@ -458,13 +462,25 @@ class LiveStreamingCard extends StatelessWidget {
                                           '${className}_${classData['id'].toString()}'
                                               .replaceAll(' ', '_'))));
                             } else {
+                              setLoading?.call(true);
+                              final authToken =
+                                  await SecureStorage().getItem('authToken');
+                              final response = await http.get(
+                                  Uri.parse(
+                                      'http://${ServerAddressController().IP}:3001/client/classes/is-streaming/${classData['id']}'),
+                                  headers: {
+                                    'auth-token': authToken,
+                                  });
+                              final responseBody = jsonDecode(response.body);
+                              setLoading?.call(false);
                               CustomConfirmationDialog.show(
                                 context,
                                 yesText: "Join",
                                 noText: "Cancel",
                                 title: "Confirm Join",
-                                message:
-                                    "Are you sure you want to join the live stream?",
+                                message: responseBody['isStreaming']
+                                    ? "Are you sure you want to join the live class?"
+                                    : "Trainer has not started live class yet. Do you still want to join and wait?",
                                 yesCallback: () {
                                   Navigator.of(context).pop();
                                   Navigator.of(context).push(MaterialPageRoute(

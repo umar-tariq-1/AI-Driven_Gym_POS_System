@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart';
+import 'package:frontend/widgets/base/loader.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:frontend/data/secure_storage.dart';
@@ -35,6 +36,7 @@ class _ClientLiveClassesPageState extends State<ClientLiveClassesPage> {
   String authToken = '';
   bool showRedacted = false;
   List<Widget> dummyCards = [];
+  bool isLoading = false;
 
   final serverAddressController = Get.find<ServerAddressController>();
   final clientClassesController = Get.find<ClientController>();
@@ -55,6 +57,12 @@ class _ClientLiveClassesPageState extends State<ClientLiveClassesPage> {
     });
     getUserData();
     fetchClassesData();
+  }
+
+  void setLoading(bool value) {
+    setState(() {
+      isLoading = value;
+    });
   }
 
   void getUserData() async {
@@ -79,7 +87,7 @@ class _ClientLiveClassesPageState extends State<ClientLiveClassesPage> {
         SecureStorage()
             .setItem('clientClassesData', jsonDecode(response.body)['data']);
         SecureStorage().setItem('clientClassesDataUserId', userData['id']);
-        print(jsonDecode(response.body)['data'][0]);
+        // print(jsonDecode(response.body)['data'][0]);
       } else {
         CustomSnackbar.showFailureSnackbar(
             context, "Oops!", json.decode(response.body)['message']);
@@ -106,37 +114,43 @@ class _ClientLiveClassesPageState extends State<ClientLiveClassesPage> {
         ),
         backgroundColor: Colors.grey.shade100,
         body: GetBuilder<ClientController>(builder: (controller) {
-          return RefreshIndicator(
-            triggerMode: RefreshIndicatorTriggerMode.onEdge,
-            displacement: 60,
-            onRefresh: () async {
-              HapticFeedback.mediumImpact();
-              fetchClassesData();
-            },
-            backgroundColor: Colors.white,
-            child: !showRedacted
-                ? ListView.builder(
-                    itemCount: controller.classesData.length,
-                    itemBuilder: (context, index) {
-                      final classData = controller.classesData[index];
-                      return LiveStreamingCard(
-                        imageUrl:
-                            "https://ik.imagekit.io/umartariq/trainerClassImages/${classData['imageData']['name'] ?? ''}",
-                        className: classData['className'],
-                        classData: classData,
-                        userId: userData['id'].toString(),
-                        userName:
-                            '${userData['firstName']} ${userData['lastName']}',
-                        isTrainer: false,
-                      );
-                    },
-                  )
-                : ListView.builder(
-                    itemCount: dummyCards.length,
-                    itemBuilder: (context, index) {
-                      return dummyCards[index];
-                    },
-                  ),
+          return Stack(
+            children: [
+              RefreshIndicator(
+                triggerMode: RefreshIndicatorTriggerMode.onEdge,
+                displacement: 60,
+                onRefresh: () async {
+                  HapticFeedback.mediumImpact();
+                  fetchClassesData();
+                },
+                backgroundColor: Colors.white,
+                child: !showRedacted
+                    ? ListView.builder(
+                        itemCount: controller.classesData.length,
+                        itemBuilder: (context, index) {
+                          final classData = controller.classesData[index];
+                          return LiveStreamingCard(
+                            imageUrl:
+                                "https://ik.imagekit.io/umartariq/trainerClassImages/${classData['imageData']['name'] ?? ''}",
+                            className: classData['className'],
+                            classData: classData,
+                            userId: userData['id'].toString(),
+                            userName:
+                                '${userData['firstName']} ${userData['lastName']}',
+                            isTrainer: false,
+                            setLoading: setLoading,
+                          );
+                        },
+                      )
+                    : ListView.builder(
+                        itemCount: dummyCards.length,
+                        itemBuilder: (context, index) {
+                          return dummyCards[index];
+                        },
+                      ),
+              ),
+              Loader(isLoading: isLoading)
+            ],
           );
         }));
   }

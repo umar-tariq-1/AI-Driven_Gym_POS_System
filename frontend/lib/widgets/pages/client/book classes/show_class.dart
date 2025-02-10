@@ -67,6 +67,7 @@ class _ShowClassPageState extends State<ShowClassPage> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
+          final screenProps = MediaQuery.of(context);
           return Dialog(
             backgroundColor: Colors.transparent,
             insetPadding: const EdgeInsets.all(0),
@@ -81,52 +82,72 @@ class _ShowClassPageState extends State<ShowClassPage> {
                 ),
                 child: Center(
                   child: GestureDetector(
-                    onTap: () {},
-                    child: InteractiveViewer(
-                      panEnabled: true,
-                      scaleEnabled: true,
-                      child: Image(
-                        image: CachedNetworkImageProvider(
-                            "https://ik.imagekit.io/umartariq/trainerClassImages/${widget.classData['imageData']['name'] ?? ''}"),
-                        // width: double.infinity,
-                        // fit: BoxFit.scaleDown,
-                        fit: BoxFit.contain,
-                        width: MediaQuery.of(context).size.width * 1,
-                        height: MediaQuery.of(context).size.height * 1,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) {
-                            return child;
-                          }
-                          return Container(
-                            // width: MediaQuery.of(context).size.width * 0.4,
-                            height: 230,
-                            color: Colors.transparent,
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                value: loadingProgress.expectedTotalBytes !=
-                                        null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                        (loadingProgress.expectedTotalBytes ??
-                                            1)
-                                    : null,
+                      onTap: () {},
+                      child: Stack(
+                        children: [
+                          InteractiveViewer(
+                            panEnabled: true,
+                            scaleEnabled: true,
+                            child: Image(
+                              image: CachedNetworkImageProvider(
+                                  "https://ik.imagekit.io/umartariq/trainerClassImages/${widget.classData['imageData']['name'] ?? ''}"),
+                              fit: BoxFit.contain,
+                              width: screenProps.size.width,
+                              height: screenProps.size.height,
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
+                                if (loadingProgress == null) {
+                                  return child;
+                                }
+                                return Container(
+                                  height: 230,
+                                  color: Colors.transparent,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      value:
+                                          loadingProgress.expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  (loadingProgress
+                                                          .expectedTotalBytes ??
+                                                      1)
+                                              : null,
+                                    ),
+                                  ),
+                                );
+                              },
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(
+                                height: 230,
+                                color: Colors.transparent,
+                                child: Center(
+                                    child: Icon(
+                                  Icons.error,
+                                  color: Theme.of(context).colorScheme.error,
+                                  size: 60,
+                                )),
                               ),
                             ),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          // width: MediaQuery.of(context).size.width * 0.4,
-                          height: 230,
-                          color: Colors.transparent,
-                          child: Center(
-                              child: Icon(
-                            Icons.error,
-                            color: colorScheme.error,
-                            size: 60,
-                          )),
-                        ),
-                      ),
-                    ),
-                  ),
+                          ),
+                          Positioned(
+                            top: screenProps.viewPadding.top + 17,
+                            right: 10,
+                            child: GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.black.withOpacity(0.6),
+                                ),
+                                child: const Icon(Icons.close,
+                                    color: Colors.white, size: 24),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )),
                 ),
               ),
             ),
@@ -260,7 +281,7 @@ class _ShowClassPageState extends State<ShowClassPage> {
                           loadingBuilder: (context, child, loadingProgress) {
                             if (loadingProgress == null) return child;
                             return Container(
-                              // width: MediaQuery.of(context).size.width * 0.4,
+                              // width: screenProps.size.width * 0.4,
                               height: 230,
                               color: Colors.grey[200],
                               child: Center(
@@ -277,7 +298,7 @@ class _ShowClassPageState extends State<ShowClassPage> {
                           },
                           errorBuilder: (context, error, stackTrace) =>
                               Container(
-                            // width: MediaQuery.of(context).size.width * 0.4,
+                            // width: screenProps.size.width * 0.4,
                             height: 230,
                             color: Colors.grey[300],
                             child: Center(

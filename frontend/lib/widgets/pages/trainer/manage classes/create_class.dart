@@ -354,6 +354,8 @@ class _CreateClassPageState extends State<CreateClassPage> {
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
+                                      final screenProps =
+                                          MediaQuery.of(context);
                                       return Dialog(
                                         backgroundColor: Colors.transparent,
                                         insetPadding: const EdgeInsets.all(0),
@@ -372,23 +374,53 @@ class _CreateClassPageState extends State<CreateClassPage> {
                                             child: Center(
                                               child: GestureDetector(
                                                 onTap: () {},
-                                                child: InteractiveViewer(
-                                                  panEnabled: true,
-                                                  scaleEnabled: true,
-                                                  child: Image.file(
-                                                    File(_selectedImage!.path),
-                                                    fit: BoxFit.contain,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
+                                                child: Stack(
+                                                  children: [
+                                                    InteractiveViewer(
+                                                      panEnabled: true,
+                                                      scaleEnabled: true,
+                                                      child: Image.file(
+                                                        File(_selectedImage!
+                                                            .path),
+                                                        fit: BoxFit.contain,
+                                                        width: screenProps
+                                                                .size.width *
                                                             1,
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
+                                                        height: screenProps
+                                                                .size.height *
                                                             1,
-                                                  ),
+                                                      ),
+                                                    ),
+                                                    Positioned(
+                                                      top: screenProps
+                                                              .viewPadding.top +
+                                                          17,
+                                                      right: 10,
+                                                      child: GestureDetector(
+                                                        onTap: () =>
+                                                            Navigator.pop(
+                                                                context),
+                                                        child: Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(6),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            shape:
+                                                                BoxShape.circle,
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.6),
+                                                          ),
+                                                          child: const Icon(
+                                                              Icons.close,
+                                                              color:
+                                                                  Colors.white,
+                                                              size: 24),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ),

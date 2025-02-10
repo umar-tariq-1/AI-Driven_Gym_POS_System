@@ -22,12 +22,17 @@ class CustomConfirmationDialog {
                 const EdgeInsets.only(left: 24.0, right: 18.0, bottom: 14.0),
             insetPadding: EdgeInsets.zero,
             backgroundColor: colorScheme.surface,
-            title: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+            title: Column(
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Divider()
+              ],
             ),
             content: SizedBox(
               width: MediaQuery.of(context).size.width * 0.8,

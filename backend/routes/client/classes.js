@@ -98,4 +98,39 @@ client.get("/registered-classes", authorize, async (req, res) => {
   }
 });
 
+client.get("/is-streaming/:classId", authorize, async (req, res) => {
+  const db = req.db;
+  const { classId } = req.params;
+
+  if (!classId) {
+    return res
+      .status(400)
+      .send({ success: false, message: "classId is required" });
+  }
+
+  try {
+    const query = `
+      SELECT isStreaming 
+      FROM TrainerClasses 
+      WHERE id = ?;
+    `;
+    const result = await db.query(query, [classId]);
+
+    if (result[0].length === 0) {
+      return res
+        .status(404)
+        .send({ success: false, message: "Class not found" });
+    }
+
+    return res
+      .status(200)
+      .send({ success: true, isStreaming: result[0][0].isStreaming == 1 });
+  } catch (error) {
+    console.error(error?.message);
+    return res
+      .status(500)
+      .send({ success: false, message: "Internal Server Error" });
+  }
+});
+
 module.exports = client;
