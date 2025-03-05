@@ -100,12 +100,14 @@ trainer.post("/create", authorize, upload, async (req, res) => {
     res.status(200).send({
       message: "Class created successfully",
       data: {
+        id: result[0]["insertId"],
         className,
         gymName,
         gymLocation,
         trainerName,
         classDescription,
-        maxParticipants,
+        maxParticipants: parseInt(maxParticipants),
+        remainingSeats: parseInt(maxParticipants),
         classFee,
         classType,
         fitnessLevel,
@@ -117,6 +119,8 @@ trainer.post("/create", authorize, upload, async (req, res) => {
         startDate,
         endDate,
         imageData: image || null,
+        trainerId: userData.id,
+        isStreaming: 0,
       },
     });
   } catch (error) {
@@ -155,6 +159,71 @@ trainer.get("/", authorize, async (req, res) => {
 
     return res.status(200).send({ success: true, data: classes[0] });
   } catch (error) {
+    console.error(error?.message);
+    return res
+      .status(500)
+      .send({ success: false, message: "Internal Server Error" });
+  }
+});
+
+trainer.delete("/delete/:classId", authorize, async (req, res) => {
+  const db = req.db;
+  const { classId } = req.params;
+
+  if (!classId) {
+    return res
+      .status(400)
+      .send({ success: false, message: "classId is required" });
+  }
+
+  try {
+    await db.beginTransaction();
+
+    const checkQuery = `SELECT imageData FROM TrainerClasses WHERE id = ? AND trainerId = ?;`;
+    const [checkResult] = await db.query(checkQuery, [
+      classId,
+      req.userData.id,
+    ]);
+
+    if (checkResult.length === 0) {
+      await db.rollback();
+      return res
+        .status(404)
+        .send({ success: false, message: "Class not found or unauthorized" });
+    }
+
+    const imageData = checkResult[0].imageData
+      ? checkResult[0].imageData
+      : null;
+
+    const deleteQuery = `DELETE FROM TrainerClasses WHERE id = ?;`;
+    const [deleteResult] = await db.query(deleteQuery, [classId]);
+
+    if (deleteResult.affectedRows === 0) {
+      await db.rollback();
+      return res
+        .status(500)
+        .send({ success: false, message: "Failed to delete class" });
+    }
+
+    if (imageData?.id) {
+      try {
+        await imagekit.deleteFile(imageData.id);
+      } catch (deleteError) {
+        await db.rollback();
+        console.log("Error deleting image from ImageKit:", deleteError.message);
+        return res
+          .status(500)
+          .send({ success: false, message: "Failed to delete class image" });
+      }
+    }
+
+    await db.commit();
+    return res
+      .status(200)
+      .send({ success: true, message: "Class deleted successfully" });
+  } catch (error) {
+    await db.rollback();
     console.error(error?.message);
     return res
       .status(500)
