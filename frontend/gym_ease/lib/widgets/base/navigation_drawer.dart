@@ -7,6 +7,9 @@ import 'package:gym_ease/widgets/base/snackbar.dart';
 import 'package:gym_ease/widgets/pages/client/book%20classes/book_classes.dart';
 import 'package:gym_ease/widgets/pages/client/ai_buddy/ai_buddy_page.dart';
 import 'package:gym_ease/widgets/pages/client/live_classes/live_classes.dart';
+import 'package:gym_ease/widgets/pages/owner,manager/manager/home_page.dart';
+import 'package:gym_ease/widgets/pages/owner,manager/owner/home_page.dart';
+import 'package:gym_ease/widgets/pages/owner,manager/point_of_sales/point_of_sales.dart';
 import 'package:gym_ease/widgets/pages/trainer/live_classes/live_classes.dart';
 import 'package:gym_ease/widgets/pages/trainer/manage%20classes/create_class.dart';
 import 'package:gym_ease/widgets/pages/trainer/dashboard_page.dart';
@@ -34,11 +37,13 @@ class CustomNavigationDrawer extends StatelessWidget {
                     ? buildClientMenuItems(context, active)
                     : accType == "Trainer"
                         ? buildTrainerMenuItems(context, active)
-                        : (accType == "Owner" || accType == "Manager")
+                        : (accType == "Owner")
                             ? buildOwnerMenuItems(context, active)
-                            : accType == "Admin"
-                                ? buildAdminMenuItems(context, active)
-                                : const SizedBox()
+                            : (accType == "Manager")
+                                ? buildManagerMenuItems(context, active)
+                                : accType == "Admin"
+                                    ? buildAdminMenuItems(context, active)
+                                    : const SizedBox()
               ]),
         ),
       ));
@@ -366,21 +371,22 @@ Widget buildOwnerMenuItems(BuildContext context, active) => Column(
             iconSize: 26.75,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
+                  OwnerHomePage.routePath) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
+                    OwnerHomePage.routePath, (route) => false);
               }
             }),
         CustomListTile(
-            active: active == "Book Classes",
-            text: "Book Classes",
-            iconData: Icons.receipt_outlined,
+            active: active == "Point of Sales",
+            text: "Point of Sales",
+            iconData: Icons.point_of_sale,
             iconSize: 26.75,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
+                  PointOfSalesPage.routePath) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
+                    OwnerHomePage.routePath, (route) => false);
+                Navigator.of(context).pushNamed(PointOfSalesPage.routePath);
               }
             }),
         CustomListTile(
@@ -390,9 +396,9 @@ Widget buildOwnerMenuItems(BuildContext context, active) => Column(
             iconSize: 26.75,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
+                  OwnerHomePage.routePath) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
+                    OwnerHomePage.routePath, (route) => false);
               }
             }),
         CustomListTile(
@@ -402,9 +408,9 @@ Widget buildOwnerMenuItems(BuildContext context, active) => Column(
             iconSize: 26.75,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
+                  OwnerHomePage.routePath) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
+                    OwnerHomePage.routePath, (route) => false);
               }
             }),
         CustomListTile(
@@ -414,9 +420,9 @@ Widget buildOwnerMenuItems(BuildContext context, active) => Column(
             iconSize: 26.75,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
+                  OwnerHomePage.routePath) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
+                    OwnerHomePage.routePath, (route) => false);
               }
             }),
         CustomListTile(
@@ -426,9 +432,9 @@ Widget buildOwnerMenuItems(BuildContext context, active) => Column(
             iconSize: 26.75,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
+                  OwnerHomePage.routePath) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
+                    OwnerHomePage.routePath, (route) => false);
               }
             }),
         CustomListTile(
@@ -438,9 +444,9 @@ Widget buildOwnerMenuItems(BuildContext context, active) => Column(
             iconSize: 26.75,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
+                  OwnerHomePage.routePath) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
+                    OwnerHomePage.routePath, (route) => false);
               }
             }),
         Divider(
@@ -453,9 +459,128 @@ Widget buildOwnerMenuItems(BuildContext context, active) => Column(
             iconSize: 26.75,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
+                  OwnerHomePage.routePath) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
+                    OwnerHomePage.routePath, (route) => false);
+              }
+            }),
+        CustomListTile(
+            active: active == "Logout",
+            text: "Logout",
+            iconData: Icons.logout_outlined,
+            onTap: () {
+              final secureStorage = SecureStorage();
+              secureStorage.setItems(
+                  ["isLoggedIn", "tokenExpirationTime", "authToken"],
+                  [false, 0, ""]);
+              CustomSnackbar.showSuccessSnackbar(
+                  context, "Success!", "Logged out Successfully");
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  WelcomePage.routePath, (route) => false);
+            }),
+      ],
+    );
+
+Widget buildManagerMenuItems(BuildContext context, active) => Column(
+      children: [
+        CustomListTile(
+            active: active == "Home",
+            text: "Home",
+            iconData: Icons.home_outlined,
+            iconSize: 26.75,
+            onTap: () {
+              if (ModalRoute.of(context)?.settings.name !=
+                  ManagerHomePage.routePath) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    ManagerHomePage.routePath, (route) => false);
+              }
+            }),
+        CustomListTile(
+            active: active == "Point of Sales",
+            text: "Point of Sales",
+            iconData: Icons.point_of_sale,
+            iconSize: 26.75,
+            onTap: () {
+              if (ModalRoute.of(context)?.settings.name !=
+                  PointOfSalesPage.routePath) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    ManagerHomePage.routePath, (route) => false);
+                Navigator.of(context).pushNamed(PointOfSalesPage.routePath);
+              }
+            }),
+        CustomListTile(
+            active: active == "Fitness Plans",
+            text: "Fitness Plans",
+            iconData: Icons.settings_accessibility_rounded,
+            iconSize: 26.75,
+            onTap: () {
+              if (ModalRoute.of(context)?.settings.name !=
+                  ManagerHomePage.routePath) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    ManagerHomePage.routePath, (route) => false);
+              }
+            }),
+        CustomListTile(
+            active: active == "Live Classes",
+            text: "Live Classes",
+            iconData: Icons.live_tv_rounded,
+            iconSize: 26.75,
+            onTap: () {
+              if (ModalRoute.of(context)?.settings.name !=
+                  ManagerHomePage.routePath) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    ManagerHomePage.routePath, (route) => false);
+              }
+            }),
+        CustomListTile(
+            active: active == "Payment History",
+            text: "Payment History",
+            iconData: Icons.payments_outlined,
+            iconSize: 26.75,
+            onTap: () {
+              if (ModalRoute.of(context)?.settings.name !=
+                  ManagerHomePage.routePath) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    ManagerHomePage.routePath, (route) => false);
+              }
+            }),
+        CustomListTile(
+            active: active == "Notifications",
+            text: "Notifications",
+            iconData: Icons.notifications_rounded,
+            iconSize: 26.75,
+            onTap: () {
+              if (ModalRoute.of(context)?.settings.name !=
+                  ManagerHomePage.routePath) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    ManagerHomePage.routePath, (route) => false);
+              }
+            }),
+        CustomListTile(
+            active: active == "Profile",
+            text: "Profile",
+            iconData: Icons.account_circle_outlined,
+            iconSize: 26.75,
+            onTap: () {
+              if (ModalRoute.of(context)?.settings.name !=
+                  ManagerHomePage.routePath) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    ManagerHomePage.routePath, (route) => false);
+              }
+            }),
+        Divider(
+          color: Colors.grey.shade700,
+        ),
+        CustomListTile(
+            active: active == "Settings",
+            text: "Settings",
+            iconData: Icons.settings_sharp,
+            iconSize: 26.75,
+            onTap: () {
+              if (ModalRoute.of(context)?.settings.name !=
+                  ManagerHomePage.routePath) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    ManagerHomePage.routePath, (route) => false);
               }
             }),
         CustomListTile(
@@ -481,78 +606,6 @@ Widget buildAdminMenuItems(BuildContext context, active) => Column(
             active: active == "Home",
             text: "Home",
             iconData: Icons.home_outlined,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
-              }
-            }),
-        CustomListTile(
-            active: active == "Book Classes",
-            text: "Book Classes",
-            iconData: Icons.receipt_outlined,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
-              }
-            }),
-        CustomListTile(
-            active: active == "Fitness Plans",
-            text: "Fitness Plans",
-            iconData: Icons.settings_accessibility_rounded,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
-              }
-            }),
-        CustomListTile(
-            active: active == "Live Classes",
-            text: "Live Classes",
-            iconData: Icons.live_tv_rounded,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
-              }
-            }),
-        CustomListTile(
-            active: active == "Payment History",
-            text: "Payment History",
-            iconData: Icons.payments_outlined,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
-              }
-            }),
-        CustomListTile(
-            active: active == "Notifications",
-            text: "Notifications",
-            iconData: Icons.notifications_rounded,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
-              }
-            }),
-        CustomListTile(
-            active: active == "Profile",
-            text: "Profile",
-            iconData: Icons.account_circle_outlined,
             iconSize: 26.75,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name !=

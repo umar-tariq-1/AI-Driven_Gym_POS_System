@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gym_ease/data/secure_storage.dart';
 import 'package:gym_ease/widgets/pages/client/home_page.dart';
+import 'package:gym_ease/widgets/pages/owner,manager/manager/home_page.dart';
+import 'package:gym_ease/widgets/pages/owner,manager/owner/home_page.dart';
 import 'package:gym_ease/widgets/pages/trainer/dashboard_page.dart';
 import 'package:gym_ease/widgets/pages/welcome_page.dart';
 
@@ -78,7 +80,13 @@ class _LandingPageState extends State<LandingPage> {
                     Navigator.of(context).pushNamedAndRemoveUntil(
                         userData['accType'] == "Trainer"
                             ? TrainerDashboardPage.routePath
-                            : ClientHomePage.routePath,
+                            : userData['accType'] == "Client"
+                                ? ClientHomePage.routePath
+                                : userData['accType'] == "Owner"
+                                    ? OwnerHomePage.routePath
+                                    : userData['accType'] == "Manager"
+                                        ? ManagerHomePage.routePath
+                                        : WelcomePage.routePath,
                         (route) => false);
                   } else {
                     Navigator.of(context).pushNamedAndRemoveUntil(

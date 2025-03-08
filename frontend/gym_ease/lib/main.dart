@@ -6,6 +6,9 @@ import 'package:gym_ease/widgets/pages/client/ai_buddy/ai_buddy_page.dart';
 import 'package:gym_ease/widgets/pages/client/home_page.dart';
 import 'package:gym_ease/widgets/pages/client/live_classes/live_classes.dart';
 import 'package:gym_ease/widgets/pages/landing_page.dart';
+import 'package:gym_ease/widgets/pages/owner,manager/manager/home_page.dart';
+import 'package:gym_ease/widgets/pages/owner,manager/owner/home_page.dart';
+import 'package:gym_ease/widgets/pages/owner,manager/point_of_sales/point_of_sales.dart';
 import 'package:gym_ease/widgets/pages/sign/forget_passsword_page.dart';
 import 'package:gym_ease/widgets/pages/sign/register_page.dart';
 import 'package:gym_ease/widgets/pages/sign/signin_page.dart';
@@ -72,6 +75,9 @@ class MyAppState extends State<MyApp> {
               const ClientLiveClassesPage(),
           TrainerLiveClassesPage.routePath: (context) =>
               const TrainerLiveClassesPage(),
+          OwnerHomePage.routePath: (context) => const OwnerHomePage(),
+          PointOfSalesPage.routePath: (context) => const PointOfSalesPage(),
+          ManagerHomePage.routePath: (context) => const ManagerHomePage(),
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

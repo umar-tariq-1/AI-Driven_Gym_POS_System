@@ -8,6 +8,8 @@ import 'package:gym_ease/states/server_address.dart';
 import 'package:gym_ease/widgets/base/custom_elevated_button.dart';
 import 'package:gym_ease/widgets/base/snackbar.dart';
 import 'package:gym_ease/widgets/pages/client/home_page.dart';
+import 'package:gym_ease/widgets/pages/owner,manager/manager/home_page.dart';
+import 'package:gym_ease/widgets/pages/owner,manager/owner/home_page.dart';
 import 'package:gym_ease/widgets/pages/sign/forget_passsword_page.dart';
 import 'package:gym_ease/widgets/pages/sign/register_page.dart';
 import 'package:gym_ease/widgets/pages/trainer/dashboard_page.dart';
@@ -246,7 +248,16 @@ class _SigninState extends State<Signin> {
                             Navigator.of(context).pushNamedAndRemoveUntil(
                                 responseBody["data"]['accType'] == 'Trainer'
                                     ? TrainerDashboardPage.routePath
-                                    : ClientHomePage.routePath,
+                                    : responseBody["data"]['accType'] ==
+                                            'Client'
+                                        ? ClientHomePage.routePath
+                                        : responseBody["data"]['accType'] ==
+                                                'Owner'
+                                            ? OwnerHomePage.routePath
+                                            : responseBody["data"]['accType'] ==
+                                                    'Manager'
+                                                ? ManagerHomePage.routePath
+                                                : '',
                                 (route) => false);
                             // print(json.decode(response.body));
                           } else {

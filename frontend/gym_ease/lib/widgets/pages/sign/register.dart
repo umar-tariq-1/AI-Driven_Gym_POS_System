@@ -5,6 +5,8 @@ import 'package:gym_ease/states/server_address.dart';
 import 'package:gym_ease/widgets/base/custom_elevated_button.dart';
 import 'package:gym_ease/widgets/base/snackbar.dart';
 import 'package:gym_ease/widgets/pages/client/home_page.dart';
+import 'package:gym_ease/widgets/pages/owner,manager/manager/home_page.dart';
+import 'package:gym_ease/widgets/pages/owner,manager/owner/home_page.dart';
 import 'package:gym_ease/widgets/pages/sign/signin_page.dart';
 import 'package:gym_ease/widgets/pages/trainer/dashboard_page.dart';
 import 'package:get/get.dart';
@@ -670,8 +672,20 @@ class _RegisterState extends State<Register> {
                                                                     'Trainer'
                                                                 ? TrainerDashboardPage
                                                                     .routePath
-                                                                : ClientHomePage
-                                                                    .routePath,
+                                                                : responseBody["data"]
+                                                                            [
+                                                                            'accType'] ==
+                                                                        'Client'
+                                                                    ? ClientHomePage
+                                                                        .routePath
+                                                                    : responseBody["data"]['accType'] ==
+                                                                            'Owner'
+                                                                        ? OwnerHomePage
+                                                                            .routePath
+                                                                        : responseBody["data"]['accType'] ==
+                                                                                'Manager'
+                                                                            ? ManagerHomePage.routePath
+                                                                            : '',
                                                             (route) => false);
                                                   } else {
                                                     CustomSnackbar
