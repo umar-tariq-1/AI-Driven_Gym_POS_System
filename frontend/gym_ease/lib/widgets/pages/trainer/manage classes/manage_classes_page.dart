@@ -91,6 +91,7 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
     } catch (e) {
       CustomSnackbar.showFailureSnackbar(
           context, "Oops!", "Sorry, couldn't request to server");
+      print(e);
     }
   }
 

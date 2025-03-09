@@ -40,7 +40,6 @@ class _CreateClassPageState extends State<CreateClassPage> {
     'classDescription': TextEditingController(),
     'maxParticipants': TextEditingController(),
     'classFee': TextEditingController(),
-    'specialRequirements': TextEditingController(),
   };
 
   String? classType;
@@ -140,8 +139,6 @@ class _CreateClassPageState extends State<CreateClassPage> {
       if (response.statusCode == 200) {
         final trainerClassesController = Get.find<TrainerController>();
 
-        // Map<String, dynamic> newData = responseJson['data'];
-        // newData.addAll({'remainingSeats': newData['maxParticipants']});
         trainerClassesController.addClassData(responseJson['data']);
 
         CustomSnackbar.showSuccessSnackbar(
@@ -259,6 +256,7 @@ class _CreateClassPageState extends State<CreateClassPage> {
                       label: 'Class Description',
                       hint: 'Enter description',
                       multiline: true,
+                      keyboardType: TextInputType.multiline,
                     ),
                     const SizedBox(height: 15),
                     Row(

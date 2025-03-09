@@ -10,6 +10,7 @@ const editUser = require("./routes/User/edit");
 const OTP = require("./routes/User/otp");
 const trainer = require("./routes/trainer/classes");
 const client = require("./routes/client/classes");
+const owner = require("./routes/owner/pos");
 
 const app = express();
 
@@ -44,6 +45,9 @@ app.use(express.urlencoded({ extended: true }));
 
     // Client routes
     app.use("/client/classes", client);
+
+    //Owner routes
+    app.use("/owner/pos", owner);
 
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {

@@ -1,14 +1,16 @@
 import 'package:gym_ease/states/client.dart';
 import 'package:gym_ease/states/server_address.dart';
 import 'package:gym_ease/states/trainer.dart';
+import 'widgets/pages/routes.dart';
 import 'package:gym_ease/widgets/pages/client/book%20classes/book_classes.dart';
 import 'package:gym_ease/widgets/pages/client/ai_buddy/ai_buddy_page.dart';
 import 'package:gym_ease/widgets/pages/client/home_page.dart';
 import 'package:gym_ease/widgets/pages/client/live_classes/live_classes.dart';
 import 'package:gym_ease/widgets/pages/landing_page.dart';
-import 'package:gym_ease/widgets/pages/owner,manager/manager/home_page.dart';
-import 'package:gym_ease/widgets/pages/owner,manager/owner/home_page.dart';
-import 'package:gym_ease/widgets/pages/owner,manager/point_of_sales/point_of_sales.dart';
+import 'package:gym_ease/widgets/pages/manager/home_page.dart';
+import 'package:gym_ease/widgets/pages/manager/point_of_sales/point_of_sales.dart';
+import 'package:gym_ease/widgets/pages/owner/home_page.dart';
+import 'package:gym_ease/widgets/pages/owner/point_of_sales/point_of_sales_page.dart';
 import 'package:gym_ease/widgets/pages/sign/forget_passsword_page.dart';
 import 'package:gym_ease/widgets/pages/sign/register_page.dart';
 import 'package:gym_ease/widgets/pages/sign/signin_page.dart';
@@ -57,28 +59,7 @@ class MyAppState extends State<MyApp> {
 
     return GetMaterialApp(
         initialRoute: MyApp.routePath,
-        routes: {
-          WelcomePage.routePath: (context) => const WelcomePage(),
-          RegisterPage.routePath: (context) => const RegisterPage(),
-          SigninPage.routePath: (context) => const SigninPage(),
-          ForgetPasswordPage.routePath: (context) =>
-              ForgetPasswordPage(email: "No Email Entered"),
-          ClientHomePage.routePath: (context) => const ClientHomePage(),
-          LandingPage.routePath: (context) => const LandingPage(),
-          CreateClassPage.routePath: (context) => const CreateClassPage(),
-          ManageClassesPage.routePath: (context) => const ManageClassesPage(),
-          TrainerDashboardPage.routePath: (context) =>
-              const TrainerDashboardPage(),
-          BookClassesPage.routePath: (context) => const BookClassesPage(),
-          AIBuddyPage.routePath: (context) => const AIBuddyPage(),
-          ClientLiveClassesPage.routePath: (context) =>
-              const ClientLiveClassesPage(),
-          TrainerLiveClassesPage.routePath: (context) =>
-              const TrainerLiveClassesPage(),
-          OwnerHomePage.routePath: (context) => const OwnerHomePage(),
-          PointOfSalesPage.routePath: (context) => const PointOfSalesPage(),
-          ManagerHomePage.routePath: (context) => const ManagerHomePage(),
-        },
+        routes: appRoutes,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           fontFamily: 'RalewayMedium',

@@ -7,9 +7,10 @@ import 'package:gym_ease/widgets/base/snackbar.dart';
 import 'package:gym_ease/widgets/pages/client/book%20classes/book_classes.dart';
 import 'package:gym_ease/widgets/pages/client/ai_buddy/ai_buddy_page.dart';
 import 'package:gym_ease/widgets/pages/client/live_classes/live_classes.dart';
-import 'package:gym_ease/widgets/pages/owner,manager/manager/home_page.dart';
-import 'package:gym_ease/widgets/pages/owner,manager/owner/home_page.dart';
-import 'package:gym_ease/widgets/pages/owner,manager/point_of_sales/point_of_sales.dart';
+import 'package:gym_ease/widgets/pages/manager/home_page.dart';
+import 'package:gym_ease/widgets/pages/manager/point_of_sales/point_of_sales.dart';
+import 'package:gym_ease/widgets/pages/owner/home_page.dart';
+import 'package:gym_ease/widgets/pages/owner/point_of_sales/point_of_sales_page.dart';
 import 'package:gym_ease/widgets/pages/trainer/live_classes/live_classes.dart';
 import 'package:gym_ease/widgets/pages/trainer/manage%20classes/create_class.dart';
 import 'package:gym_ease/widgets/pages/trainer/dashboard_page.dart';
@@ -383,10 +384,11 @@ Widget buildOwnerMenuItems(BuildContext context, active) => Column(
             iconSize: 26.75,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name !=
-                  PointOfSalesPage.routePath) {
+                  OwnerPointOfSalesPage.routePath) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
                     OwnerHomePage.routePath, (route) => false);
-                Navigator.of(context).pushNamed(PointOfSalesPage.routePath);
+                Navigator.of(context)
+                    .pushNamed(OwnerPointOfSalesPage.routePath);
               }
             }),
         CustomListTile(
@@ -502,10 +504,11 @@ Widget buildManagerMenuItems(BuildContext context, active) => Column(
             iconSize: 26.75,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name !=
-                  PointOfSalesPage.routePath) {
+                  ManagerPointOfSalesPage.routePath) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
                     ManagerHomePage.routePath, (route) => false);
-                Navigator.of(context).pushNamed(PointOfSalesPage.routePath);
+                Navigator.of(context)
+                    .pushNamed(ManagerPointOfSalesPage.routePath);
               }
             }),
         CustomListTile(

@@ -17,18 +17,20 @@ const upload = multer({ storage }).single("image");
 trainer.post("/create", authorize, upload, async (req, res) => {
   const db = req.db;
   const userData = req.userData;
-  let image;
+  let imageId;
+  let imageName;
 
   try {
     if (req?.file) {
       const response = await imagekit.upload({
         file: req.file.buffer,
-        fileName: Math.round(Math.random() * 1e9).toString(),
+        fileName: Math.round(Math.random() * 1e12).toString(),
         folder: "trainerClassImages",
         useUniqueFileName: false,
       });
 
-      image = { name: response.name, id: response.fileId };
+      imageId = response.fileId;
+      imageName = response.name;
     }
 
     const {
@@ -69,9 +71,10 @@ trainer.post("/create", authorize, upload, async (req, res) => {
         startDate,
         endDate,
         trainerId,
-        imageData
+        imageId,
+        imageName
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
@@ -92,7 +95,8 @@ trainer.post("/create", authorize, upload, async (req, res) => {
       startDate?.trim(),
       endDate?.trim(),
       userData.id,
-      image ? JSON.stringify(image) : null,
+      imageId || null,
+      imageName || null,
     ];
 
     const result = await db.query(query, values);
@@ -118,15 +122,15 @@ trainer.post("/create", authorize, upload, async (req, res) => {
         endTime,
         startDate,
         endDate,
-        imageData: image || null,
+        imageData: { id: imageId, name: imageName } || null,
         trainerId: userData.id,
         isStreaming: 0,
       },
     });
   } catch (error) {
-    if (image) {
+    if (imageId) {
       try {
-        await imagekit.deleteFile(image.id);
+        await imagekit.deleteFile(imageId);
       } catch (deleteError) {
         console.log("Error deleting image from ImageKit:", deleteError.message);
       }
@@ -156,8 +160,13 @@ trainer.get("/", authorize, async (req, res) => {
       WHERE trainerId = ?;
     `;
     const classes = await db.query(query, [userData.id]);
-
-    return res.status(200).send({ success: true, data: classes[0] });
+    var data = classes[0];
+    data.forEach((obj) => {
+      obj.imageData = { id: obj.imageId, name: obj.imageName };
+      delete obj.imageId;
+      delete obj.imageName;
+    });
+    return res.status(200).send({ success: true, data });
   } catch (error) {
     console.error(error?.message);
     return res
@@ -179,7 +188,7 @@ trainer.delete("/delete/:classId", authorize, async (req, res) => {
   try {
     await db.beginTransaction();
 
-    const checkQuery = `SELECT imageData FROM TrainerClasses WHERE id = ? AND trainerId = ?;`;
+    const checkQuery = `SELECT imageId FROM TrainerClasses WHERE id = ? AND trainerId = ?;`;
     const [checkResult] = await db.query(checkQuery, [
       classId,
       req.userData.id,
@@ -192,9 +201,7 @@ trainer.delete("/delete/:classId", authorize, async (req, res) => {
         .send({ success: false, message: "Class not found or unauthorized" });
     }
 
-    const imageData = checkResult[0].imageData
-      ? checkResult[0].imageData
-      : null;
+    const imageId = checkResult[0].imageId ? checkResult[0].imageId : null;
 
     const deleteQuery = `DELETE FROM TrainerClasses WHERE id = ?;`;
     const [deleteResult] = await db.query(deleteQuery, [classId]);
@@ -206,9 +213,9 @@ trainer.delete("/delete/:classId", authorize, async (req, res) => {
         .send({ success: false, message: "Failed to delete class" });
     }
 
-    if (imageData?.id) {
+    if (imageId) {
       try {
-        await imagekit.deleteFile(imageData.id);
+        await imagekit.deleteFile(imageId);
       } catch (deleteError) {
         await db.rollback();
         console.log("Error deleting image from ImageKit:", deleteError.message);

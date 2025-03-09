@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gym_ease/data/secure_storage.dart';
 import 'package:gym_ease/widgets/pages/client/home_page.dart';
-import 'package:gym_ease/widgets/pages/owner,manager/manager/home_page.dart';
-import 'package:gym_ease/widgets/pages/owner,manager/owner/home_page.dart';
+import 'package:gym_ease/widgets/pages/manager/home_page.dart';
+import 'package:gym_ease/widgets/pages/owner/home_page.dart';
 import 'package:gym_ease/widgets/pages/trainer/dashboard_page.dart';
 import 'package:gym_ease/widgets/pages/welcome_page.dart';
 

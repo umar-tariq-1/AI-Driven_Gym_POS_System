@@ -34,8 +34,14 @@ client.get("/", authorize, async (req, res) => {
   `;
 
     const classes = await db.query(query, [userId]);
+    var data = classes[0];
+    data.forEach((obj) => {
+      obj.imageData = { id: obj.imageId, name: obj.imageName };
+      delete obj.imageId;
+      delete obj.imageName;
+    });
 
-    return res.status(200).send({ success: true, data: classes[0] });
+    return res.status(200).send({ success: true, data });
   } catch (error) {
     console.error(error?.message);
     return res
