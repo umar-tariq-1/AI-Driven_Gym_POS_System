@@ -7,7 +7,7 @@ import 'package:gym_ease/widgets/base/navigation_drawer.dart';
 class ManagerPointOfSalesPage extends StatefulWidget {
   const ManagerPointOfSalesPage({super.key});
 
-  static const String routePath = '/manager/point_of_sales';
+  static const String routePath = '/manager/point-of-sales';
 
   @override
   State<ManagerPointOfSalesPage> createState() =>

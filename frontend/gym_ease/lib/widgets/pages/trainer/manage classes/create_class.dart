@@ -91,6 +91,7 @@ class _CreateClassPageState extends State<CreateClassPage> {
         'http://${serverAddressController.IP}:3001/trainer/classes/create');
     final request = http.MultipartRequest('POST', uri);
     request.headers['auth-token'] = authToken;
+
     // Add text fields
     controllers.forEach((key, controller) {
       request.fields[key] = controller.text.trim();
@@ -102,30 +103,57 @@ class _CreateClassPageState extends State<CreateClassPage> {
     if (classGender != null) request.fields['classGender'] = classGender!;
     if (classCategory != null) request.fields['classCategory'] = classCategory!;
 
-    // Add selected days
-    request.fields['selectedDays'] = jsonEncode(selectedDays);
-
-    // Add times and dates
-    if (startTime != null) {
-      request.fields['startTime'] =
-          '${startTime!.hour}:${startTime!.minute.toString().padLeft(2, '0')}';
-    }
-    if (endTime != null) {
-      request.fields['endTime'] =
-          '${endTime!.hour}:${endTime!.minute.toString().padLeft(2, '0')}';
-    }
-    if (startDate != null) {
-      request.fields['startDate'] = DateFormat('yyyy-MM-dd').format(startDate!);
-    }
-    if (endDate != null) {
-      request.fields['endDate'] = DateFormat('yyyy-MM-dd').format(endDate!);
-    }
-
+    // Add image
     if (_selectedImage != null) {
       request.files.add(await http.MultipartFile.fromPath(
         'image',
         _selectedImage!.path,
       ));
+    } else {
+      CustomSnackbar.showFailureSnackbar(
+          context, "Oops!", "Please select an image");
+      return;
+    }
+
+    // Add selected days
+    if (selectedDays.contains(true)) {
+      request.fields['selectedDays'] = jsonEncode(selectedDays);
+    } else {
+      CustomSnackbar.showFailureSnackbar(
+          context, "Oops!", "Please select class day/s");
+      return;
+    }
+
+    // Add times and dates
+    if (startDate != null) {
+      request.fields['startDate'] = DateFormat('yyyy-MM-dd').format(startDate!);
+    } else {
+      CustomSnackbar.showFailureSnackbar(
+          context, "Oops!", "Please select a start date");
+      return;
+    }
+    if (endDate != null) {
+      request.fields['endDate'] = DateFormat('yyyy-MM-dd').format(endDate!);
+    } else {
+      CustomSnackbar.showFailureSnackbar(
+          context, "Oops!", "Please select an end date");
+      return;
+    }
+    if (startTime != null) {
+      request.fields['startTime'] =
+          '${startTime!.hour}:${startTime!.minute.toString().padLeft(2, '0')}';
+    } else {
+      CustomSnackbar.showFailureSnackbar(
+          context, "Oops!", "Please select a start time");
+      return;
+    }
+    if (endTime != null) {
+      request.fields['endTime'] =
+          '${endTime!.hour}:${endTime!.minute.toString().padLeft(2, '0')}';
+    } else {
+      CustomSnackbar.showFailureSnackbar(
+          context, "Oops!", "Please select an end time");
+      return;
     }
 
     try {

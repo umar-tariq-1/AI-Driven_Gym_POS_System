@@ -1,24 +1,10 @@
 import 'package:gym_ease/states/client.dart';
+import 'package:gym_ease/states/manager.dart';
+import 'package:gym_ease/states/owner.dart';
 import 'package:gym_ease/states/server_address.dart';
 import 'package:gym_ease/states/trainer.dart';
 import 'widgets/pages/routes.dart';
-import 'package:gym_ease/widgets/pages/client/book%20classes/book_classes.dart';
-import 'package:gym_ease/widgets/pages/client/ai_buddy/ai_buddy_page.dart';
-import 'package:gym_ease/widgets/pages/client/home_page.dart';
-import 'package:gym_ease/widgets/pages/client/live_classes/live_classes.dart';
 import 'package:gym_ease/widgets/pages/landing_page.dart';
-import 'package:gym_ease/widgets/pages/manager/home_page.dart';
-import 'package:gym_ease/widgets/pages/manager/point_of_sales/point_of_sales.dart';
-import 'package:gym_ease/widgets/pages/owner/home_page.dart';
-import 'package:gym_ease/widgets/pages/owner/point_of_sales/point_of_sales_page.dart';
-import 'package:gym_ease/widgets/pages/sign/forget_passsword_page.dart';
-import 'package:gym_ease/widgets/pages/sign/register_page.dart';
-import 'package:gym_ease/widgets/pages/sign/signin_page.dart';
-import 'package:gym_ease/widgets/pages/trainer/live_classes/live_classes.dart';
-import 'package:gym_ease/widgets/pages/trainer/manage%20classes/create_class.dart';
-import 'package:gym_ease/widgets/pages/trainer/dashboard_page.dart';
-import 'package:gym_ease/widgets/pages/trainer/manage%20classes/manage_classes_page.dart';
-import 'package:gym_ease/widgets/pages/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -33,6 +19,9 @@ void main() {
   Get.put(ServerAddressController());
   Get.put(ClientController());
   Get.put(TrainerController());
+  Get.put(OwnerController());
+  Get.put(ManagerController());
+
   runApp(const MyApp());
 }
 

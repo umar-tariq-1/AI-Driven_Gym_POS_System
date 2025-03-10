@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:gym_ease/data/secure_storage.dart';
 import 'package:gym_ease/main.dart';
 import 'package:gym_ease/states/server_address.dart';
 import 'package:gym_ease/theme/theme.dart';
@@ -13,7 +15,9 @@ import 'package:gym_ease/widgets/base/form_elements.dart';
 import 'package:gym_ease/widgets/base/loader.dart';
 import 'package:gym_ease/widgets/base/navigation_drawer.dart';
 import 'package:gym_ease/widgets/base/snackbar.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:pinput/pinput.dart';
 
 class CreatePOSProductPage extends StatefulWidget {
   const CreatePOSProductPage({super.key});
@@ -33,6 +37,7 @@ class _CreatePOSProductPageState extends State<CreatePOSProductPage> {
   final Map<String, TextEditingController> controllers = {
     'productName': TextEditingController(),
     'location': TextEditingController(),
+    'sellerName': TextEditingController(),
     'quantity': TextEditingController(),
     'description': TextEditingController(),
     'price': TextEditingController(),
@@ -40,6 +45,72 @@ class _CreatePOSProductPageState extends State<CreatePOSProductPage> {
 
   final ImagePicker _picker = ImagePicker();
   final serverAddressController = Get.find<ServerAddressController>();
+
+  Future<void> sendCreateRequest() async {
+    final String authToken = await SecureStorage().getItem('authToken');
+    final uri = Uri.parse(
+        'http://${serverAddressController.IP}:3001/owner/pos/create-product');
+    final request = http.MultipartRequest('POST', uri);
+    request.headers['auth-token'] = authToken;
+
+    controllers.forEach((key, controller) {
+      request.fields[key] = controller.text.trim();
+    });
+
+    request.fields['condition'] = condition!;
+
+    if (_selectedImage != null) {
+      request.files.add(await http.MultipartFile.fromPath(
+        'image',
+        _selectedImage!.path,
+      ));
+    } else {
+      CustomSnackbar.showFailureSnackbar(
+          context, "Oops!", "Please select an image");
+      return;
+    }
+
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      final response = await request.send();
+
+      final responseBody = await response.stream.bytesToString();
+      final Map<String, dynamic> responseJson = jsonDecode(responseBody);
+      if (response.statusCode == 200) {
+        // final trainerClassesController = Get.find<TrainerController>();
+
+        // trainerClassesController.addClassData(responseJson['data']);
+        CustomSnackbar.showSuccessSnackbar(
+            context, "Success", responseJson['message']);
+        Navigator.of(context).pop();
+      } else {
+        CustomSnackbar.showFailureSnackbar(
+            context, "Oops!", responseJson['message']);
+      }
+    } catch (e) {
+      print(e);
+      CustomSnackbar.showFailureSnackbar(
+          context, "Oops!", "Sorry, couldn't request to server");
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserData();
+  }
+
+  void getUserData() async {
+    Map userData = await SecureStorage().getItem("userData");
+    controllers['sellerName']!
+        .setText("${userData['firstName']} ${userData['lastName']}");
+  }
 
   @override
   void dispose() {
@@ -108,6 +179,13 @@ class _CreatePOSProductPageState extends State<CreatePOSProductPage> {
                       keyboardType: TextInputType.multiline,
                       label: 'Description',
                       hint: 'Enter description',
+                    ),
+                    const SizedBox(height: 15),
+                    CustomTextFormField(
+                      controller: controllers['sellerName']!,
+                      readOnly: true,
+                      label: 'Seller\'s Name',
+                      hint: 'Enter seller\'s name',
                     ),
                     const SizedBox(height: 15),
                     CustomTextFormField(
@@ -245,10 +323,10 @@ class _CreatePOSProductPageState extends State<CreatePOSProductPage> {
                         FocusScope.of(context).unfocus();
                         HapticFeedback.lightImpact();
                         if (_formKey.currentState?.validate() == true) {
-                          //   sendCreateRequest();
+                          sendCreateRequest();
                         }
                       },
-                      buttonText: 'Create Item',
+                      buttonText: 'Create Product',
                     ),
                     const SizedBox(height: 25),
                   ],

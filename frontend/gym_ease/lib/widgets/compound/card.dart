@@ -16,6 +16,7 @@ import 'package:gym_ease/widgets/pages/trainer/manage%20classes/show_my_class.da
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:redacted/redacted.dart';
 import 'package:http/http.dart' as http;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ClassesCard extends StatelessWidget {
   final String imageUrl;
@@ -388,31 +389,6 @@ class LiveStreamingCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    //   children: List.generate(7, (index) {
-                    //     bool isActive = selectedDays[index] == true;
-                    //     List<String> dayLabels = [
-                    //       "M",
-                    //       "Tu",
-                    //       "W",
-                    //       "Th",
-                    //       "F",
-                    //       "Sa",
-                    //       "Su"
-                    //     ];
-                    //     return Text(
-                    //       dayLabels[index],
-                    //       style: TextStyle(
-                    //         color: isActive
-                    //             ? Theme.of(context).primaryColor
-                    //             : Colors.grey,
-                    //         fontSize: 15.4,
-                    //         fontWeight: FontWeight.bold,
-                    //       ),
-                    //     );
-                    //   }),
-                    // ),
                     const SizedBox(height: 14),
                     Row(
                       children: [
@@ -505,5 +481,225 @@ class LiveStreamingCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class POSProductCard extends StatelessWidget {
+  final String imageUrl;
+  final String cost;
+  final String location;
+  final String productName;
+  final String quantity;
+  final Map<String, dynamic> productData;
+  bool isSeller;
+
+  POSProductCard({
+    required this.imageUrl,
+    required this.cost,
+    required this.location,
+    required this.productName,
+    required this.quantity,
+    required this.productData,
+    this.isSeller = true,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return OpenContainer(
+        transitionType: ContainerTransitionType.fade,
+        transitionDuration: const Duration(milliseconds: 600),
+        openColor: Colors.white,
+        closedColor: Colors.white,
+        middleColor: Colors.white,
+        closedBuilder: (context, action) {
+          return GestureDetector(
+            onTap: productData.isNotEmpty
+                ? () {
+                    HapticFeedback.mediumImpact();
+                    action();
+                  }
+                : () {},
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 6,
+              child: SizedBox(
+                // width: MediaQuery.of(context).size.width * 1,
+                height: 180,
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.horizontal(
+                              left: Radius.circular(15)),
+                          child: Image(
+                            image: CachedNetworkImageProvider(imageUrl),
+                            // width: MediaQuery.of(context).size.width * 0.4,
+                            height: double.infinity,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return SizedBox(
+                                // width: MediaQuery.of(context).size.width * 0.4,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    value: loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                .cumulativeBytesLoaded /
+                                            (loadingProgress
+                                                    .expectedTotalBytes ??
+                                                1)
+                                        : null,
+                                  ),
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) =>
+                                Container(
+                              // width: MediaQuery.of(context).size.width * 0.4,
+                              height: double.infinity,
+                              color: Colors.grey[300],
+                              child: Center(
+                                  child: Icon(
+                                Icons.error,
+                                color: colorScheme.error,
+                                size: 30,
+                              )),
+                            ),
+                          ).redacted(
+                              context: context, redact: productData.isEmpty),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      flex: 6,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.boxOpen,
+                                  color: Colors.grey.shade800,
+                                  size: 19.75,
+                                ).redacted(
+                                    context: context,
+                                    redact: productData.isEmpty),
+                                const SizedBox(width: 13),
+                                Flexible(
+                                  child: Text(productName,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.grey.shade800))
+                                      .redacted(
+                                          context: context,
+                                          redact: productData.isEmpty),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 14),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.location_on_sharp,
+                                  color: Colors.grey.shade800,
+                                  size: 24,
+                                ).redacted(
+                                    context: context,
+                                    redact: productData.isEmpty),
+                                const SizedBox(width: 11),
+                                Flexible(
+                                  child: Text(location,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.grey.shade800))
+                                      .redacted(
+                                          context: context,
+                                          redact: productData.isEmpty),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 14),
+                            Row(
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.cartShopping,
+                                  color: Colors.grey.shade800,
+                                  size: 19.6,
+                                ).redacted(
+                                    context: context,
+                                    redact: productData.isEmpty),
+                                const SizedBox(width: 14.75),
+                                Flexible(
+                                  child: Text(quantity,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.grey.shade800))
+                                      .redacted(
+                                          context: context,
+                                          redact: productData.isEmpty),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 14),
+                            Row(
+                              children: [
+                                const SizedBox(width: 6.75),
+                                FaIcon(
+                                  FontAwesomeIcons.dollarSign,
+                                  color: Colors.grey.shade800,
+                                  size: 19.6,
+                                ).redacted(
+                                    context: context,
+                                    redact: productData.isEmpty),
+                                const SizedBox(width: 15.6),
+                                Flexible(
+                                  child: Text(cost,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.grey.shade800))
+                                      .redacted(
+                                          context: context,
+                                          redact: productData.isEmpty),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+        openBuilder: (context, action) {
+          return isSeller
+              ? ShowMyClassPage(
+                  classData: productData,
+                )
+              : ShowClassPage(
+                  classData: productData,
+                );
+        });
   }
 }

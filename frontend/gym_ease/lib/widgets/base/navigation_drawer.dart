@@ -8,7 +8,7 @@ import 'package:gym_ease/widgets/pages/client/book%20classes/book_classes.dart';
 import 'package:gym_ease/widgets/pages/client/ai_buddy/ai_buddy_page.dart';
 import 'package:gym_ease/widgets/pages/client/live_classes/live_classes.dart';
 import 'package:gym_ease/widgets/pages/manager/home_page.dart';
-import 'package:gym_ease/widgets/pages/manager/point_of_sales/point_of_sales.dart';
+import 'package:gym_ease/widgets/pages/manager/point_of_sales/point_of_sales_page.dart';
 import 'package:gym_ease/widgets/pages/owner/home_page.dart';
 import 'package:gym_ease/widgets/pages/owner/point_of_sales/point_of_sales_page.dart';
 import 'package:gym_ease/widgets/pages/trainer/live_classes/live_classes.dart';

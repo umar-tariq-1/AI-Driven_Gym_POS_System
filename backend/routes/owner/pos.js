@@ -19,22 +19,101 @@ owner.get("/", authorize, async (req, res) => {
   const userData = req.userData;
 
   try {
-    const query = `SELECT * FROM posProducts WHERE userId = ?;`;
-    const result = await db.query(query, [userData.userId]);
-    res.status(200).send({ success: true, data: result[0] });
+    const query = `SELECT * FROM posProducts WHERE creatorId = ?;`;
+    const result = await db.query(query, [userData.id]);
+    var data = result[0];
+    data.forEach((obj) => {
+      obj.imageData = { id: obj.imageId, name: obj.imageName };
+      delete obj.imageId;
+      delete obj.imageName;
+    });
+
+    res.status(200).send({ success: true, data });
   } catch (err) {
     console.log(err?.message);
     res.status(500).send({ success: false, message: "Internal Server Error" });
   }
 });
 
-owner.post("/create-product", authorize, async (req, res) => {
+owner.post("/create-product", authorize, upload, async (req, res) => {
   const db = req.db;
   const userData = req.userData;
 
-  console.log(req.body);
+  let imageId;
+  let imageName;
 
-  res.send("Owner POS");
+  try {
+    if (req?.file) {
+      const response = await imagekit.upload({
+        file: req.file.buffer,
+        fileName: Math.round(Math.random() * 1e12).toString(),
+        folder: "posProductImages",
+        useUniqueFileName: false,
+      });
+
+      imageId = response.fileId;
+      imageName = response.name;
+    }
+
+    const { productName, location, quantity, description, price, condition } =
+      req.body;
+
+    const query = `
+      INSERT INTO POSProducts (
+        creatorId,
+        productName,
+        location,
+        quantity,
+        description,
+        price,
+        \`condition\`,
+        imageId,
+        imageName
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const values = [
+      userData.id,
+      productName.trim(),
+      location.trim(),
+      quantity.trim(),
+      description.trim(),
+      price.trim(),
+      condition.trim(),
+      imageId || null,
+      imageName || null,
+    ];
+
+    const result = await db.query(query, values);
+
+    res.status(200).send({
+      message: "Product created successfully",
+      data: {
+        id: result[0]["insertId"],
+        productName: productName.trim(),
+        location: location.trim(),
+        quantity: quantity.trim(),
+        description: description.trim(),
+        price: price.trim(),
+        condition: condition.trim(),
+        imageData: { id: imageId, name: imageName } || null,
+      },
+    });
+  } catch (error) {
+    if (imageId) {
+      try {
+        await imagekit.deleteFile(imageId);
+      } catch (deleteError) {
+        console.log("Error deleting image from ImageKit:", deleteError.message);
+      }
+    }
+
+    console.log(error?.message);
+    return res.status(500).send({
+      message: "An error occurred while creating the product.",
+    });
+  }
 });
 
 module.exports = owner;
