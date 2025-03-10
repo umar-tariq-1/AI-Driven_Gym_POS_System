@@ -1,9 +1,9 @@
 const express = require("express");
 const { authorize } = require("../../middlewares/authorize");
 
-const client = express.Router();
+const clientClasses = express.Router();
 
-client.get("/", authorize, async (req, res) => {
+clientClasses.get("/", authorize, async (req, res) => {
   const db = req.db;
   const userData = req.userData;
 
@@ -50,7 +50,7 @@ client.get("/", authorize, async (req, res) => {
   }
 });
 
-client.post("/register", authorize, async (req, res) => {
+clientClasses.post("/register", authorize, async (req, res) => {
   const db = req.db;
   const userData = req.userData;
 
@@ -77,7 +77,7 @@ client.post("/register", authorize, async (req, res) => {
   }
 });
 
-client.get("/registered-classes", authorize, async (req, res) => {
+clientClasses.get("/registered-classes", authorize, async (req, res) => {
   const db = req.db;
   const userData = req.userData;
 
@@ -94,8 +94,14 @@ client.get("/registered-classes", authorize, async (req, res) => {
     `;
 
     const classes = await db.query(query, [userId]);
+    var data = classes[0];
+    data.forEach((obj) => {
+      obj.imageData = { id: obj.imageId, name: obj.imageName };
+      delete obj.imageId;
+      delete obj.imageName;
+    });
 
-    return res.status(200).send({ success: true, data: classes[0] });
+    return res.status(200).send({ success: true, data });
   } catch (error) {
     console.error(error?.message);
     return res
@@ -104,7 +110,7 @@ client.get("/registered-classes", authorize, async (req, res) => {
   }
 });
 
-client.get("/is-streaming/:classId", authorize, async (req, res) => {
+clientClasses.get("/is-streaming/:classId", authorize, async (req, res) => {
   const db = req.db;
   const { classId } = req.params;
 
@@ -139,4 +145,4 @@ client.get("/is-streaming/:classId", authorize, async (req, res) => {
   }
 });
 
-module.exports = client;
+module.exports = clientClasses;

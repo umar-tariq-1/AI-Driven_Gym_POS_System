@@ -12,6 +12,8 @@ import 'package:gym_ease/widgets/base/custom_outlined_button.dart';
 import 'package:gym_ease/widgets/compound/audience.dart';
 import 'package:gym_ease/widgets/compound/broadcaster.dart';
 import 'package:gym_ease/widgets/pages/client/book%20classes/show_class.dart';
+import 'package:gym_ease/widgets/pages/client/shop_products/show_product.dart';
+import 'package:gym_ease/widgets/pages/owner/point_of_sales/show_my_product.dart';
 import 'package:gym_ease/widgets/pages/trainer/manage%20classes/show_my_class.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:redacted/redacted.dart';
@@ -694,12 +696,10 @@ class POSProductCard extends StatelessWidget {
         },
         openBuilder: (context, action) {
           return isSeller
-              ? ShowMyClassPage(
-                  classData: productData,
+              ? ShowMyPOSProductPage(
+                  productData: productData,
                 )
-              : ShowClassPage(
-                  classData: productData,
-                );
+              : ShowShopProductPage(productData: productData);
         });
   }
 }

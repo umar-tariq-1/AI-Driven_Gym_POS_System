@@ -8,9 +8,11 @@ const signin = require("./routes/User/signin");
 const deleteUser = require("./routes/User/delete");
 const editUser = require("./routes/User/edit");
 const OTP = require("./routes/User/otp");
-const trainer = require("./routes/trainer/classes");
-const client = require("./routes/client/classes");
-const owner = require("./routes/owner/pos");
+const trainerClasses = require("./routes/trainer/classes");
+const clientClasses = require("./routes/client/classes");
+const ownerPOSProducts = require("./routes/owner/pos");
+const clientShopProducts = require("./routes/client/shop_products");
+const trainerShopProducts = require("./routes/trainer/shop_products");
 
 const app = express();
 
@@ -41,13 +43,15 @@ app.use(express.urlencoded({ extended: true }));
     app.use("/otp", OTP);
 
     // Trainer routes
-    app.use("/trainer/classes", trainer);
+    app.use("/trainer/classes", trainerClasses);
+    app.use("/trainer/shop-products", trainerShopProducts);
 
     // Client routes
-    app.use("/client/classes", client);
+    app.use("/client/classes", clientClasses);
+    app.use("/client/shop-products", clientShopProducts);
 
     //Owner routes
-    app.use("/owner/pos", owner);
+    app.use("/owner/pos", ownerPOSProducts);
 
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {

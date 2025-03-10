@@ -3,7 +3,7 @@ const multer = require("multer");
 const { authorize } = require("../../middlewares/authorize");
 const ImageKit = require("imagekit");
 
-const owner = express.Router();
+const ownerPOSProducts = express.Router();
 
 var imagekit = new ImageKit({
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
@@ -14,7 +14,7 @@ var imagekit = new ImageKit({
 const storage = multer.memoryStorage();
 const upload = multer({ storage }).single("image");
 
-owner.get("/", authorize, async (req, res) => {
+ownerPOSProducts.get("/", authorize, async (req, res) => {
   const db = req.db;
   const userData = req.userData;
 
@@ -35,30 +35,34 @@ owner.get("/", authorize, async (req, res) => {
   }
 });
 
-owner.post("/create-product", authorize, upload, async (req, res) => {
-  const db = req.db;
-  const userData = req.userData;
+ownerPOSProducts.post(
+  "/create-product",
+  authorize,
+  upload,
+  async (req, res) => {
+    const db = req.db;
+    const userData = req.userData;
 
-  let imageId;
-  let imageName;
+    let imageId;
+    let imageName;
 
-  try {
-    if (req?.file) {
-      const response = await imagekit.upload({
-        file: req.file.buffer,
-        fileName: Math.round(Math.random() * 1e12).toString(),
-        folder: "posProductImages",
-        useUniqueFileName: false,
-      });
+    try {
+      if (req?.file) {
+        const response = await imagekit.upload({
+          file: req.file.buffer,
+          fileName: Math.round(Math.random() * 1e12).toString(),
+          folder: "posProductImages",
+          useUniqueFileName: false,
+        });
 
-      imageId = response.fileId;
-      imageName = response.name;
-    }
+        imageId = response.fileId;
+        imageName = response.name;
+      }
 
-    const { productName, location, quantity, description, price, condition } =
-      req.body;
+      const { productName, location, quantity, description, price, condition } =
+        req.body;
 
-    const query = `
+      const query = `
       INSERT INTO POSProducts (
         creatorId,
         productName,
@@ -73,47 +77,114 @@ owner.post("/create-product", authorize, upload, async (req, res) => {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    const values = [
-      userData.id,
-      productName.trim(),
-      location.trim(),
-      quantity.trim(),
-      description.trim(),
-      price.trim(),
-      condition.trim(),
-      imageId || null,
-      imageName || null,
-    ];
+      const values = [
+        userData.id,
+        productName.trim(),
+        location.trim(),
+        quantity.trim(),
+        description.trim(),
+        price.trim(),
+        condition.trim(),
+        imageId || null,
+        imageName || null,
+      ];
 
-    const result = await db.query(query, values);
+      const result = await db.query(query, values);
 
-    res.status(200).send({
-      message: "Product created successfully",
-      data: {
-        id: result[0]["insertId"],
-        productName: productName.trim(),
-        location: location.trim(),
-        quantity: quantity.trim(),
-        description: description.trim(),
-        price: price.trim(),
-        condition: condition.trim(),
-        imageData: { id: imageId, name: imageName } || null,
-      },
-    });
-  } catch (error) {
+      res.status(200).send({
+        message: "Product created successfully",
+        data: {
+          id: result[0]["insertId"],
+          productName: productName.trim(),
+          location: location.trim(),
+          quantity: quantity.trim(),
+          description: description.trim(),
+          price: price.trim(),
+          condition: condition.trim(),
+          imageData: { id: imageId, name: imageName } || null,
+        },
+      });
+    } catch (error) {
+      if (imageId) {
+        try {
+          await imagekit.deleteFile(imageId);
+        } catch (deleteError) {
+          console.log(
+            "Error deleting image from ImageKit:",
+            deleteError.message
+          );
+        }
+      }
+
+      console.log(error?.message);
+      return res.status(500).send({
+        message: "An error occurred while creating the product.",
+      });
+    }
+  }
+);
+
+ownerPOSProducts.delete("/delete/:productId", authorize, async (req, res) => {
+  const db = req.db;
+  const { productId } = req.params;
+
+  if (!productId) {
+    return res
+      .status(400)
+      .send({ success: false, message: "productId is required" });
+  }
+
+  try {
+    await db.beginTransaction();
+
+    const checkQuery = `SELECT imageId FROM POSProducts WHERE id = ? AND creatorId = ?;`;
+    const [checkResult] = await db.query(checkQuery, [
+      productId,
+      req.userData.id,
+    ]);
+
+    if (checkResult.length === 0) {
+      await db.rollback();
+      return res
+        .status(404)
+        .send({ success: false, message: "Product not found or unauthorized" });
+    }
+
+    const imageId = checkResult[0].imageId ? checkResult[0].imageId : null;
+
+    const deleteQuery = `DELETE FROM POSProducts WHERE id = ?;`;
+    const [deleteResult] = await db.query(deleteQuery, [productId]);
+
+    if (deleteResult.affectedRows === 0) {
+      await db.rollback();
+      return res
+        .status(500)
+        .send({ success: false, message: "Failed to delete product" });
+    }
+
     if (imageId) {
       try {
         await imagekit.deleteFile(imageId);
       } catch (deleteError) {
+        await db.rollback();
         console.log("Error deleting image from ImageKit:", deleteError.message);
+        return res
+          .status(500)
+          .send({ success: false, message: "Failed to delete product image" });
       }
     }
 
-    console.log(error?.message);
-    return res.status(500).send({
-      message: "An error occurred while creating the product.",
-    });
+    await db.commit();
+    return res
+      .status(200)
+      .send({ success: true, message: "Product deleted successfully" });
+  } catch (error) {
+    await db.rollback();
+    console.error(error?.message);
+    return res
+      .status(500)
+      .send({ success: false, message: "Internal Server Error" });
   }
 });
 
-module.exports = owner;
+module.exports = ownerPOSProducts;

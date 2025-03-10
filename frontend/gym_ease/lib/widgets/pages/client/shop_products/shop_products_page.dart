@@ -7,26 +7,33 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:gym_ease/data/secure_storage.dart';
 import 'package:gym_ease/main.dart';
+import 'package:gym_ease/states/client.dart';
 import 'package:gym_ease/states/owner.dart';
 import 'package:gym_ease/states/server_address.dart';
 import 'package:gym_ease/theme/theme.dart';
 import 'package:gym_ease/widgets/base/app_bar.dart';
+import 'package:gym_ease/widgets/base/custom_elevated_button.dart';
+import 'package:gym_ease/widgets/base/custom_outlined_button.dart';
+import 'package:gym_ease/widgets/base/form_elements.dart';
+import 'package:gym_ease/widgets/base/loader.dart';
 import 'package:gym_ease/widgets/base/navigation_drawer.dart';
 import 'package:gym_ease/widgets/base/snackbar.dart';
 import 'package:gym_ease/widgets/compound/card.dart';
 import 'package:gym_ease/widgets/pages/owner/point_of_sales/create_product.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
-class OwnerPointOfSalesPage extends StatefulWidget {
-  const OwnerPointOfSalesPage({super.key});
+class ShopProductsPage extends StatefulWidget {
+  const ShopProductsPage({super.key});
 
-  static const String routePath = '/owner/point-of-sales';
+  static const String routePath = '/client/shop-products';
 
   @override
-  State<OwnerPointOfSalesPage> createState() => _OwnerPointOfSalesPageState();
+  State<ShopProductsPage> createState() => _OwnerPointOfSalesPageState();
 }
 
-class _OwnerPointOfSalesPageState extends State<OwnerPointOfSalesPage> {
+class _OwnerPointOfSalesPageState extends State<ShopProductsPage> {
   final Random _random = Random();
   String _generateRandomString(int minLength, int maxLength) {
     int length = _random.nextInt(maxLength - minLength + 1) + minLength;
@@ -41,7 +48,7 @@ class _OwnerPointOfSalesPageState extends State<OwnerPointOfSalesPage> {
   List<Widget> dummyCards = [];
 
   final serverAddressController = Get.find<ServerAddressController>();
-  final ownerController = Get.find<OwnerController>();
+  final clientController = Get.find<ClientController>();
 
   @override
   void initState() {
@@ -72,15 +79,16 @@ class _OwnerPointOfSalesPageState extends State<OwnerPointOfSalesPage> {
       });
       authToken = await SecureStorage().getItem('authToken');
       final response = await http.get(
-          Uri.parse('http://${serverAddressController.IP}:3001/owner/pos/'),
+          Uri.parse(
+              'http://${serverAddressController.IP}:3001/client/shop-products/'),
           headers: {
             'auth-token': authToken,
           });
       if (response.statusCode == 200) {
-        ownerController.setPosProductsData(jsonDecode(response.body)['data']);
+        clientController.setShopProductsData(jsonDecode(response.body)['data']);
         SecureStorage()
-            .setItem('posProductsData', jsonDecode(response.body)['data']);
-        SecureStorage().setItem('posProductsDataUserId', userData['id']);
+            .setItem('shopProductsData', jsonDecode(response.body)['data']);
+        SecureStorage().setItem('shopProductsDataUserId', userData['id']);
       } else {
         CustomSnackbar.showFailureSnackbar(
             context, "Oops!", json.decode(response.body)['message']);
@@ -99,23 +107,15 @@ class _OwnerPointOfSalesPageState extends State<OwnerPointOfSalesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBar(
-            title: "POS",
+            title: "Shop Products",
             backgroundColor: appBarColor,
             foregroundColor: appBarTextColor),
         drawer: const CustomNavigationDrawer(
-          active: 'Point of Sales',
-          accType: "Owner",
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            HapticFeedback.lightImpact();
-            Navigator.of(context).pushNamed(CreatePOSProductPage.routePath);
-          },
-          backgroundColor: colorScheme.inversePrimary,
-          child: const Icon(Icons.add_rounded),
+          active: 'Shop Products',
+          accType: "Client",
         ),
         backgroundColor: colorScheme.surface,
-        body: GetBuilder<OwnerController>(builder: (controller) {
+        body: GetBuilder<ClientController>(builder: (controller) {
           return RefreshIndicator(
             triggerMode: RefreshIndicatorTriggerMode.onEdge,
             displacement: 60,
@@ -127,22 +127,23 @@ class _OwnerPointOfSalesPageState extends State<OwnerPointOfSalesPage> {
             // child: const SizedBox()
             child: !showRedacted
                 ? ListView.builder(
-                    itemCount: controller.posProductsData.length,
+                    itemCount: controller.shopProductsData.length,
                     itemBuilder: (context, index) {
-                      final posProductData = controller.posProductsData[index];
+                      final shopProductData =
+                          controller.shopProductsData[index];
                       return POSProductCard(
                         imageUrl:
-                            "https://ik.imagekit.io/umartariq/posProductImages/${posProductData['imageData']['name'] ?? ''}",
-                        cost: posProductData['price'] != null
-                            ? posProductData['price'].toString()
+                            "https://ik.imagekit.io/umartariq/posProductImages/${shopProductData['imageData']['name'] ?? ''}",
+                        cost: shopProductData['price'] != null
+                            ? shopProductData['price'].toString()
                             : '',
-                        location: posProductData['location'] ?? '',
-                        productName: posProductData['productName'] ?? '',
-                        quantity: posProductData['quantity'] != null
-                            ? posProductData['quantity'].toString()
+                        location: shopProductData['location'] ?? '',
+                        productName: shopProductData['productName'] ?? '',
+                        quantity: shopProductData['quantity'] != null
+                            ? shopProductData['quantity'].toString()
                             : '',
-                        productData: posProductData,
-                        isSeller: true,
+                        productData: shopProductData,
+                        isSeller: false,
                       );
                     },
                   )

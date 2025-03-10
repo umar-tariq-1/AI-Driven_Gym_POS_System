@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:gym_ease/data/secure_storage.dart';
 import 'package:gym_ease/main.dart';
+import 'package:gym_ease/states/owner.dart';
 import 'package:gym_ease/states/server_address.dart';
 import 'package:gym_ease/theme/theme.dart';
 import 'package:gym_ease/widgets/base/app_bar.dart';
@@ -45,6 +46,7 @@ class _CreatePOSProductPageState extends State<CreatePOSProductPage> {
 
   final ImagePicker _picker = ImagePicker();
   final serverAddressController = Get.find<ServerAddressController>();
+  final ownerController = Get.find<OwnerController>();
 
   Future<void> sendCreateRequest() async {
     final String authToken = await SecureStorage().getItem('authToken');
@@ -79,11 +81,10 @@ class _CreatePOSProductPageState extends State<CreatePOSProductPage> {
       final responseBody = await response.stream.bytesToString();
       final Map<String, dynamic> responseJson = jsonDecode(responseBody);
       if (response.statusCode == 200) {
-        // final trainerClassesController = Get.find<TrainerController>();
-
-        // trainerClassesController.addClassData(responseJson['data']);
+        ownerController.addPosProductsData(responseJson['data']);
         CustomSnackbar.showSuccessSnackbar(
             context, "Success", responseJson['message']);
+
         Navigator.of(context).pop();
       } else {
         CustomSnackbar.showFailureSnackbar(

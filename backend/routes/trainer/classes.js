@@ -3,7 +3,7 @@ const multer = require("multer");
 const ImageKit = require("imagekit");
 const { authorize } = require("../../middlewares/authorize");
 
-const trainer = express.Router();
+const trainerClasses = express.Router();
 
 var imagekit = new ImageKit({
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
@@ -14,7 +14,7 @@ var imagekit = new ImageKit({
 const storage = multer.memoryStorage();
 const upload = multer({ storage }).single("image");
 
-trainer.post("/create", authorize, upload, async (req, res) => {
+trainerClasses.post("/create", authorize, upload, async (req, res) => {
   const db = req.db;
   const userData = req.userData;
   let imageId;
@@ -143,7 +143,7 @@ trainer.post("/create", authorize, upload, async (req, res) => {
   }
 });
 
-trainer.get("/", authorize, async (req, res) => {
+trainerClasses.get("/", authorize, async (req, res) => {
   const db = req.db;
   const userData = req.userData;
 
@@ -175,7 +175,7 @@ trainer.get("/", authorize, async (req, res) => {
   }
 });
 
-trainer.delete("/delete/:classId", authorize, async (req, res) => {
+trainerClasses.delete("/delete/:classId", authorize, async (req, res) => {
   const db = req.db;
   const { classId } = req.params;
 
@@ -238,7 +238,7 @@ trainer.delete("/delete/:classId", authorize, async (req, res) => {
   }
 });
 
-trainer.put("/update-streaming", authorize, async (req, res) => {
+trainerClasses.put("/update-streaming", authorize, async (req, res) => {
   const db = req.db;
   const { classId, isStreaming } = req.body;
 
@@ -275,4 +275,4 @@ trainer.put("/update-streaming", authorize, async (req, res) => {
   }
 });
 
-module.exports = trainer;
+module.exports = trainerClasses;

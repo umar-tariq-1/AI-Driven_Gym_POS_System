@@ -7,6 +7,7 @@ import 'package:gym_ease/widgets/base/snackbar.dart';
 import 'package:gym_ease/widgets/pages/client/book%20classes/book_classes.dart';
 import 'package:gym_ease/widgets/pages/client/ai_buddy/ai_buddy_page.dart';
 import 'package:gym_ease/widgets/pages/client/live_classes/live_classes.dart';
+import 'package:gym_ease/widgets/pages/client/shop_products/shop_products_page.dart';
 import 'package:gym_ease/widgets/pages/manager/home_page.dart';
 import 'package:gym_ease/widgets/pages/manager/point_of_sales/point_of_sales_page.dart';
 import 'package:gym_ease/widgets/pages/owner/home_page.dart';
@@ -167,16 +168,14 @@ Widget buildClientMenuItems(BuildContext context, active) => Column(
               Navigator.of(context).pushNamed(ClientLiveClassesPage.routePath);
             }),
         CustomListTile(
-            active: active == "Payment History",
-            text: "Payment History",
-            iconData: Icons.payments_outlined,
+            active: active == "Shop Products",
+            text: "Shop Products",
+            iconData: Icons.shopping_cart_checkout,
             iconSize: 26.75,
             onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
-              }
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  ClientHomePage.routePath, (route) => false);
+              Navigator.of(context).pushNamed(ShopProductsPage.routePath);
             }),
         CustomListTile(
             active: active == "Notifications",
