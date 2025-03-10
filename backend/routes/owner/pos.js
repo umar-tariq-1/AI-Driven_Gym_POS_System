@@ -19,7 +19,13 @@ ownerPOSProducts.get("/", authorize, async (req, res) => {
   const userData = req.userData;
 
   try {
-    const query = `SELECT * FROM posProducts WHERE creatorId = ?;`;
+    const query = `
+    SELECT posProducts.*, 
+          CONCAT(users.firstName, ' ', users.lastName) AS sellerName
+    FROM posProducts
+    JOIN users ON posProducts.creatorId = users.id
+    WHERE posProducts.creatorId = ?;
+    `;
     const result = await db.query(query, [userData.id]);
     var data = result[0];
     data.forEach((obj) => {

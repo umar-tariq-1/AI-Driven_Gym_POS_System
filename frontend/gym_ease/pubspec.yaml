@@ -59,6 +59,7 @@ dependencies:
   zego_uikit_prebuilt_live_streaming: ^3.13.12
   permission_handler: ^11.3.1
   font_awesome_flutter: ^10.8.0
+  input_quantity: ^2.5.1
 
 dev_dependencies:
   flutter_test:

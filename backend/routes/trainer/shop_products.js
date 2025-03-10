@@ -7,7 +7,12 @@ shopProducts.get("/", authorize, async (req, res) => {
   const db = req.db;
 
   try {
-    const query = `SELECT * FROM posProducts;`;
+    const query = `
+    SELECT posProducts.*, 
+          CONCAT(users.firstName, ' ', users.lastName) AS sellerName
+    FROM posProducts
+    JOIN users ON posProducts.creatorId = users.id;
+    `;
     const result = await db.query(query);
     var data = result[0];
     data.forEach((obj) => {

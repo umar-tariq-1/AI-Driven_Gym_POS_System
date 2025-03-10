@@ -12,6 +12,7 @@ import 'package:gym_ease/widgets/base/app_bar.dart';
 import 'package:gym_ease/widgets/base/confirmation_dialog.dart';
 import 'package:gym_ease/widgets/base/form_elements.dart';
 import 'package:gym_ease/widgets/base/loader.dart';
+import 'package:intl/intl.dart';
 import 'package:gym_ease/widgets/base/snackbar.dart';
 import 'package:image_downloader/image_downloader.dart';
 import 'package:http/http.dart' as http;
@@ -378,6 +379,12 @@ class _ShowMyPOSProductPageState extends State<ShowMyPOSProductPage> {
                                     label: "Price (USD)")),
                           ],
                         ),
+                        const SizedBox(height: 15),
+                        CustomDataDisplayTextField(
+                            value: DateFormat("MMM dd, yyyy  HH:mm").format(
+                                DateTime.parse(widget.productData['createdAt'])
+                                    .toLocal()),
+                            label: "Created On"),
                         const SizedBox(height: 5),
                       ],
                     ),

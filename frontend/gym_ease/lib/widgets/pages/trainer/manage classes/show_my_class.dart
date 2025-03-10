@@ -17,6 +17,7 @@ import 'package:gym_ease/widgets/base/loader.dart';
 import 'package:gym_ease/widgets/base/snackbar.dart';
 import 'package:image_downloader/image_downloader.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class ShowMyClassPage extends StatefulWidget {
   Map<String, dynamic> classData = {};
@@ -534,16 +535,12 @@ class _ShowMyClassPageState extends State<ShowMyClassPage> {
                             ),
                           ],
                         ),
-                        // const SizedBox(height: 32),
-                        // Center(
-                        //   child: CustomElevatedButton(
-                        //       onClick: () {
-                        //         HapticFeedback.lightImpact();
-                        //       },
-                        //       minWidth: MediaQuery.of(context).size.width - 32,
-                        //       fontSize: 16.5,
-                        //       buttonText: ('Register for Class')),
-                        // ),
+                        const SizedBox(height: 15),
+                        CustomDataDisplayTextField(
+                            value: DateFormat("MMM dd, yyyy  HH:mm").format(
+                                DateTime.parse(widget.classData['createdAt'])
+                                    .toLocal()),
+                            label: "Created On"),
                         const SizedBox(height: 5),
                       ],
                     ),

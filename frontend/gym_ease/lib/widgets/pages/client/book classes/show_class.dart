@@ -15,6 +15,7 @@ import 'package:gym_ease/widgets/base/form_elements.dart';
 import 'package:gym_ease/widgets/base/snackbar.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_downloader/image_downloader.dart';
 
@@ -482,6 +483,12 @@ class _ShowClassPageState extends State<ShowClassPage> {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 15),
+                        CustomDataDisplayTextField(
+                            value: DateFormat("MMM dd, yyyy  HH:mm").format(
+                                DateTime.parse(widget.classData['createdAt'])
+                                    .toLocal()),
+                            label: "Created On"),
                         const SizedBox(height: 32),
                         Center(
                           child: CustomElevatedButton(

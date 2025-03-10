@@ -1,1 +1,1 @@
-# AI-Driven Gym Point of Sales System
+# GymEase: AI-Driven Gym Point of Sales System
