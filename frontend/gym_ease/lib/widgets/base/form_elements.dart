@@ -100,9 +100,14 @@ class CustomDataDisplayTextField extends StatelessWidget {
   final String value;
   final String label;
   final TextEditingController? controller;
+  bool multiline;
 
-  const CustomDataDisplayTextField(
-      {super.key, required this.value, required this.label, this.controller});
+  CustomDataDisplayTextField(
+      {super.key,
+      required this.value,
+      required this.label,
+      this.controller,
+      this.multiline = false});
 
   @override
   Widget build(BuildContext context) {
@@ -110,6 +115,7 @@ class CustomDataDisplayTextField extends StatelessWidget {
       initialValue: controller == null ? value : null,
       controller: controller,
       readOnly: true,
+      maxLines: multiline ? null : 1,
       decoration: InputDecoration(
         label: Text(label),
         labelStyle: const TextStyle(

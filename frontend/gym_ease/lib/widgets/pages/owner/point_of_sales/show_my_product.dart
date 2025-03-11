@@ -348,6 +348,7 @@ class _ShowMyPOSProductPageState extends State<ShowMyPOSProductPage> {
                         const SizedBox(height: 15),
                         CustomDataDisplayTextField(
                             value: widget.productData['description'].toString(),
+                            multiline: true,
                             label: "Description"),
                         const SizedBox(height: 15),
                         CustomDataDisplayTextField(

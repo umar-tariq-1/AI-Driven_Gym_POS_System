@@ -275,6 +275,7 @@ class _ShowShopProductPageState extends State<ShowShopProductPage> {
                         const SizedBox(height: 15),
                         CustomDataDisplayTextField(
                             value: widget.productData['description'].toString(),
+                            multiline: true,
                             label: "Description"),
                         const SizedBox(height: 15),
                         CustomDataDisplayTextField(

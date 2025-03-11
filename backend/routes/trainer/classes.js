@@ -101,31 +101,31 @@ trainerClasses.post("/create", authorize, upload, async (req, res) => {
 
     const result = await db.query(query, values);
 
+    const query2 = `
+      SELECT 
+        TrainerClasses.*, 
+        (TrainerClasses.maxParticipants - 
+          (SELECT COUNT(*) 
+           FROM registeredclasses 
+           WHERE registeredclasses.classId = TrainerClasses.id)
+        ) AS remainingSeats
+      FROM TrainerClasses
+      WHERE trainerId = ? AND id = ?;
+    `;
+
+    const classes = await db.query(query2, [
+      userData.id,
+      result[0]["insertId"],
+    ]);
+
+    var data = classes[0][0];
+    data.imageData = { id: data.imageId, name: data.imageName };
+    delete data.imageId;
+    delete data.imageName;
+
     res.status(200).send({
       message: "Class created successfully",
-      data: {
-        id: result[0]["insertId"],
-        className,
-        gymName,
-        gymLocation,
-        trainerName,
-        classDescription,
-        maxParticipants: parseInt(maxParticipants),
-        remainingSeats: parseInt(maxParticipants),
-        classFee,
-        classType,
-        fitnessLevel,
-        classGender,
-        classCategory,
-        selectedDays,
-        startTime,
-        endTime,
-        startDate,
-        endDate,
-        imageData: { id: imageId, name: imageName } || null,
-        trainerId: userData.id,
-        isStreaming: 0,
-      },
+      data,
     });
   } catch (error) {
     if (imageId) {

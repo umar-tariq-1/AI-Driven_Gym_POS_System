@@ -80,7 +80,7 @@ ownerPOSProducts.post(
         imageId,
         imageName
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
     `;
 
       const values = [
@@ -97,18 +97,25 @@ ownerPOSProducts.post(
 
       const result = await db.query(query, values);
 
+      const query2 = `
+      SELECT posProducts.*, 
+            CONCAT(users.firstName, ' ', users.lastName) AS sellerName
+      FROM posProducts
+      JOIN users ON posProducts.creatorId = users.id
+      WHERE posProducts.creatorId = ? AND posProducts.id = ?;
+      `;
+      const result2 = await db.query(query2, [
+        userData.id,
+        result[0]["insertId"],
+      ]);
+      var data = result2[0][0];
+      data.imageData = { id: data.imageId, name: data.imageName };
+      delete data.imageId;
+      delete data.imageName;
+
       res.status(200).send({
         message: "Product created successfully",
-        data: {
-          id: result[0]["insertId"],
-          productName: productName.trim(),
-          location: location.trim(),
-          quantity: quantity.trim(),
-          description: description.trim(),
-          price: price.trim(),
-          condition: condition.trim(),
-          imageData: { id: imageId, name: imageName } || null,
-        },
+        data,
       });
     } catch (error) {
       if (imageId) {

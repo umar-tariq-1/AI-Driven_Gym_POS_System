@@ -337,6 +337,7 @@ class _ShowClassPageState extends State<ShowClassPage> {
                         CustomDataDisplayTextField(
                             value:
                                 widget.classData['classDescription'].toString(),
+                            multiline: true,
                             label: "Class Description"),
                         const SizedBox(height: 15),
                         Row(
