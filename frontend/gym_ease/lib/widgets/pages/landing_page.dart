@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:gym_ease/data/secure_storage.dart';
+import 'package:gym_ease/states/server_address.dart';
 import 'package:gym_ease/widgets/pages/client/home_page.dart';
 import 'package:gym_ease/widgets/pages/manager/home_page.dart';
 import 'package:gym_ease/widgets/pages/owner/home_page.dart';
@@ -35,6 +37,11 @@ class _LandingPageState extends State<LandingPage> {
       _tokenExpirationTime =
           await _secureStorage.getItem('tokenExpirationTime');
       userData = await _secureStorage.getItem('userData');
+      String? serverAddress = await _secureStorage.getItem('serverAddress');
+      if (serverAddress != null) {
+        final serverAddressController = Get.find<ServerAddressController>();
+        serverAddressController.setIP(serverAddress);
+      }
     }
   }
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gym_ease/data/local_storage.dart';
 import 'package:gym_ease/data/secure_storage.dart';
 import 'package:gym_ease/main.dart';
 import 'package:gym_ease/states/server_address.dart';
@@ -240,7 +239,9 @@ class ChangeServerIPDialog extends StatelessWidget {
             TextButton(
               child: const Text('Update', style: TextStyle(fontSize: 18)),
               onPressed: () {
+                SecureStorage().setItem('serverAddress', controller.text);
                 serverAddressController.setIP(controller.text);
+                print(serverAddressController.IP);
                 Navigator.of(context).pop();
               },
             ),

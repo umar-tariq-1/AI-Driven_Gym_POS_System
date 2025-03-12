@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:gym_ease/data/secure_storage.dart';
 import 'package:gym_ease/main.dart';
 import 'package:gym_ease/states/server_address.dart';
-import 'package:gym_ease/widgets/base/confirmation_dialog.dart';
 import 'package:zego_uikit_prebuilt_live_streaming/zego_uikit_prebuilt_live_streaming.dart';
 import '../../data/constants.dart';
 import 'package:http/http.dart' as http;
@@ -13,6 +13,7 @@ class Broadcaster extends StatelessWidget {
   String userId;
   String userName;
   String liveId;
+  final serverAddressController = Get.find<ServerAddressController>();
   Broadcaster({
     super.key,
     required this.userId,
@@ -44,7 +45,7 @@ class Broadcaster extends StatelessWidget {
               if (state == ZegoLiveStreamingState.living) {
                 final response = await http.put(
                     Uri.parse(
-                        'http://${ServerAddressController().IP}:3001/trainer/classes/update-streaming'),
+                        'http://${serverAddressController.IP}:3001/trainer/classes/update-streaming'),
                     headers: {
                       'auth-token': authToken,
                       'Content-Type': 'application/json',
@@ -58,7 +59,7 @@ class Broadcaster extends StatelessWidget {
               if (state == ZegoLiveStreamingState.ended) {
                 final response = await http.put(
                     Uri.parse(
-                        'http://${ServerAddressController().IP}:3001/trainer/classes/update-streaming'),
+                        'http://${serverAddressController.IP}:3001/trainer/classes/update-streaming'),
                     headers: {
                       'auth-token': authToken,
                       'Content-Type': 'application/json',

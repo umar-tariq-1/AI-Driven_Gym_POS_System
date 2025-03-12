@@ -237,9 +237,11 @@ class _ShowMyPOSProductPageState extends State<ShowMyPOSProductPage> {
                             Navigator.pop(context);
                             final authToken =
                                 await SecureStorage().getItem('authToken');
+                            final serverAddressController =
+                                Get.find<ServerAddressController>();
                             final response = await http.delete(
                                 Uri.parse(
-                                    'http://${ServerAddressController().IP}:3001/owner/pos/delete/${widget.productData['id']}'),
+                                    'http://${serverAddressController.IP}:3001/owner/pos/delete/${widget.productData['id']}'),
                                 headers: {
                                   'auth-token': authToken,
                                 });

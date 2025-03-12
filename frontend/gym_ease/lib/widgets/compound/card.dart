@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 import 'package:gym_ease/data/secure_storage.dart';
 import 'package:gym_ease/states/server_address.dart';
 import 'package:gym_ease/theme/theme.dart';
@@ -443,9 +444,11 @@ class LiveStreamingCard extends StatelessWidget {
                               setLoading?.call(true);
                               final authToken =
                                   await SecureStorage().getItem('authToken');
+                              final serverAddressController =
+                                  Get.find<ServerAddressController>();
                               final response = await http.get(
                                   Uri.parse(
-                                      'http://${ServerAddressController().IP}:3001/client/classes/is-streaming/${classData['id']}'),
+                                      'http://${serverAddressController.IP}:3001/client/classes/is-streaming/${classData['id']}'),
                                   headers: {
                                     'auth-token': authToken,
                                   });

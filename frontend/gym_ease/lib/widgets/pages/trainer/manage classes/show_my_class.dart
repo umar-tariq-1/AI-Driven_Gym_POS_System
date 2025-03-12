@@ -272,9 +272,11 @@ class _ShowMyClassPageState extends State<ShowMyClassPage> {
                             Navigator.pop(context);
                             final authToken =
                                 await SecureStorage().getItem('authToken');
+                            final serverAddressController =
+                                Get.find<ServerAddressController>();
                             final response = await http.delete(
                                 Uri.parse(
-                                    'http://${ServerAddressController().IP}:3001/trainer/classes/delete/${widget.classData['id']}'),
+                                    'http://${serverAddressController.IP}:3001/trainer/classes/delete/${widget.classData['id']}'),
                                 headers: {
                                   'auth-token': authToken,
                                 });
