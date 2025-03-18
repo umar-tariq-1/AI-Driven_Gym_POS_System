@@ -241,7 +241,6 @@ class ChangeServerIPDialog extends StatelessWidget {
               onPressed: () {
                 SecureStorage().setItem('serverAddress', controller.text);
                 serverAddressController.setIP(controller.text);
-                print(serverAddressController.IP);
                 Navigator.of(context).pop();
               },
             ),
