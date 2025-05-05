@@ -42,7 +42,7 @@ class MyAppState extends State<MyApp> {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       systemNavigationBarColor: Colors.transparent,
     ));
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky,
         overlays: List.empty());
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
