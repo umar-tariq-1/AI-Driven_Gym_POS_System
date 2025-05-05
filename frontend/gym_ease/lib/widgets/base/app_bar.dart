@@ -63,7 +63,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ' $title',
             style: const TextStyle(
               fontFamily: 'BeautifulPeople',
-              fontSize: 25,
+              fontSize: 24,
               letterSpacing: 0.9,
               wordSpacing: 0.6,
             ),

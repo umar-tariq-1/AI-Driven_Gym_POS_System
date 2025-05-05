@@ -96,7 +96,7 @@ Widget buildHeader(BuildContext context) => Column(
               style: TextStyle(
                 fontFamily: 'BeautifulPeople',
                 color: colorScheme.onPrimary,
-                fontSize: 23.25,
+                fontSize: 22.5,
                 letterSpacing: 1.8,
                 wordSpacing: 1,
               ),
@@ -127,11 +127,11 @@ Widget buildClientMenuItems(BuildContext context, active) => Column(
             iconSize: 26.75,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name !=
-                  CreateClassPage.routePath) {
+                  BookClassesPage.routePath) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
                     ClientHomePage.routePath, (route) => false);
+                Navigator.of(context).pushNamed(BookClassesPage.routePath);
               }
-              Navigator.of(context).pushNamed(BookClassesPage.routePath);
             }),
         CustomListTile(
             active: active == "AI Buddy",
@@ -142,7 +142,8 @@ Widget buildClientMenuItems(BuildContext context, active) => Column(
               if (ModalRoute.of(context)?.settings.name !=
                   AIBuddyPage.routePath) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                    AIBuddyPage.routePath, (route) => false);
+                    ClientHomePage.routePath, (route) => false);
+                Navigator.of(context).pushNamed(AIBuddyPage.routePath);
               }
             }),
         CustomListTile(
@@ -173,9 +174,12 @@ Widget buildClientMenuItems(BuildContext context, active) => Column(
             iconData: Icons.shopping_cart_checkout,
             iconSize: 26.75,
             onTap: () {
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                  ClientHomePage.routePath, (route) => false);
-              Navigator.of(context).pushNamed(ShopProductsPage.routePath);
+              if (ModalRoute.of(context)?.settings.name !=
+                  ShopProductsPage.routePath) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    ClientHomePage.routePath, (route) => false);
+                Navigator.of(context).pushNamed(ShopProductsPage.routePath);
+              }
             }),
         CustomListTile(
             active: active == "Notifications",
@@ -254,7 +258,7 @@ Widget buildTrainerMenuItems(BuildContext context, active) => Column(
             iconSize: 26.75,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name !=
-                  CreateClassPage.routePath) {
+                  ManageClassesPage.routePath) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
                     TrainerDashboardPage.routePath, (route) => false);
               }
@@ -266,9 +270,13 @@ Widget buildTrainerMenuItems(BuildContext context, active) => Column(
             iconData: Icons.live_tv_rounded,
             iconSize: 26.75,
             onTap: () {
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                  TrainerDashboardPage.routePath, (route) => false);
-              Navigator.of(context).pushNamed(TrainerLiveClassesPage.routePath);
+              if (ModalRoute.of(context)?.settings.name !=
+                  TrainerLiveClassesPage.routePath) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    TrainerDashboardPage.routePath, (route) => false);
+                Navigator.of(context)
+                    .pushNamed(TrainerLiveClassesPage.routePath);
+              }
             }),
         CustomListTile(
             active: active == "Schedule",
