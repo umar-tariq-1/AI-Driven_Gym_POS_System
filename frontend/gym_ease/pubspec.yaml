@@ -60,8 +60,6 @@ dependencies:
   permission_handler: ^11.3.1
   font_awesome_flutter: ^10.8.0
   input_quantity: ^2.5.1
-  syncfusion_flutter_charts: ^24.1.41
-  smooth_page_indicator: ^1.2.1
 
 dev_dependencies:
   flutter_test:
