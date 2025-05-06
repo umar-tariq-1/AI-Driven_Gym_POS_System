@@ -99,11 +99,11 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBar(
-            title: "Manage Classes",
+            title: "My Classes",
             backgroundColor: appBarColor,
             foregroundColor: appBarTextColor),
         drawer: const CustomNavigationDrawer(
-          active: 'Manage Classes',
+          active: 'My Classes',
           accType: "Trainer",
         ),
         backgroundColor: Colors.grey.shade100,

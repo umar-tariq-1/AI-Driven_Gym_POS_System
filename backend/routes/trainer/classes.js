@@ -175,6 +175,99 @@ trainerClasses.get("/", authorize, async (req, res) => {
   }
 });
 
+trainerClasses.get("/dashboard", authorize, async (req, res) => {
+  const db = req.db;
+  const userData = req.userData;
+
+  try {
+    const [classes, registered, attendance] = await Promise.all([
+      db.query(`SELECT * FROM TrainerClasses WHERE trainerId = ?`, [
+        userData.id,
+      ]),
+      db.query(
+        `
+        SELECT rc.classId, COUNT(*) AS totalStudents
+        FROM RegisteredClasses rc
+        JOIN TrainerClasses tc ON rc.classId = tc.id
+        WHERE tc.trainerId = ?
+        GROUP BY rc.classId
+      `,
+        [userData.id]
+      ),
+      db.query(
+        `
+        SELECT a.classId, a.attendanceDate AS date, COUNT(*) AS count
+        FROM Attendance a
+        JOIN TrainerClasses tc ON a.classId = tc.id
+        WHERE tc.trainerId = ? AND (a.status = 'present' OR a.status = 'late')
+        GROUP BY a.classId, a.attendanceDate
+      `,
+        [userData.id]
+      ),
+    ]);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const registeredMap = {};
+    registered[0].forEach((r) => {
+      registeredMap[r.classId] = r.totalStudents;
+    });
+
+    const attendanceMap = {};
+    attendance[0].forEach((att) => {
+      if (!attendanceMap[att.classId]) attendanceMap[att.classId] = {};
+      attendanceMap[att.classId][att.date.toISOString().split("T")[0]] =
+        att.count;
+    });
+
+    const data = classes[0].map((cls) => {
+      const startDate = new Date(cls.startDate);
+      const endDate = new Date(cls.endDate);
+
+      const totalClasses = Math.max(
+        0,
+        Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1
+      );
+      const totalHeldClasses = Math.max(
+        0,
+        Math.min(
+          Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1,
+          totalClasses
+        )
+      );
+
+      const lastSevenDaysAtt = [];
+      for (let i = 7; i >= 1; i--) {
+        const d = new Date(today);
+        d.setDate(today.getDate() - i);
+        const dateStr = d.toISOString().split("T")[0];
+        const day = d.toLocaleDateString("en-US", { weekday: "short" });
+        lastSevenDaysAtt.push({
+          day,
+          value: attendanceMap[cls.id]?.[dateStr] || 0,
+        });
+      }
+
+      return {
+        ...cls,
+        imageData: { id: cls.imageId, name: cls.imageName },
+        totalStudents: registeredMap[cls.id] || 0,
+        lastSevenDaysAtt,
+        totalClasses,
+        totalHeldClasses,
+      };
+    });
+
+    return res.status(200).send({ success: true, data });
+  } catch (error) {
+    console.error(error?.message);
+    return res
+      .status(500)
+      .send({ success: false, message: "Internal Server Error" });
+  }
+});
+
 trainerClasses.delete("/delete/:classId", authorize, async (req, res) => {
   const db = req.db;
   const { classId } = req.params;
