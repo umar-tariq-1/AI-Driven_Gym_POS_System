@@ -89,6 +89,7 @@ OTP.post("/verify", async (req, res) => {
       return res.status(400).send({ message: "Invalid OTP" });
     }
   } catch (error) {
+    console.log(error);
     res.status(500).send({ message: "An Unexpected Error Occurred" });
   }
 });

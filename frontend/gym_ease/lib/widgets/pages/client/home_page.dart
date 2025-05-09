@@ -134,79 +134,235 @@ class _ClientHomePageState extends State<ClientHomePage> {
           accType: "Client",
         ),
         backgroundColor: Colors.grey.shade200,
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(8, 10, 8, 15),
-            child: Column(
-              // crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                    margin: const EdgeInsets.fromLTRB(0, 15, 0, 22),
-                    child: Text(
-                      "Hi 👋, ${userData.isNotEmpty ? userData['firstName'] : ''} ${userData.isNotEmpty ? userData['lastName'] : ''}!",
-                      style: TextStyle(
-                          color: Colors.grey.shade800,
-                          fontSize: 22.5,
-                          fontFamily: 'RalewaySemiBold'),
-                    )),
-                Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
-                  elevation: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 17, horizontal: 10),
-                    child: Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            HapticFeedback.lightImpact();
-                            Navigator.of(context)
-                                .pushNamed(ClientLiveClassesPage.routePath);
-                          },
-                          child: DataBox(
-                            color: const Color.fromARGB(255, 23, 100, 163),
-                            title: 'Registered Classes',
-                            subtitle: registeredClasses,
+        body: RefreshIndicator(
+          triggerMode: RefreshIndicatorTriggerMode.onEdge,
+          displacement: 60,
+          onRefresh: () async {
+            HapticFeedback.mediumImpact();
+            getData();
+          },
+          backgroundColor: Colors.white,
+          // child: const SizedBox()
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(8, 10, 8, 15),
+              child: Column(
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                      margin: const EdgeInsets.fromLTRB(0, 15, 0, 22),
+                      child: Text(
+                        "Hi 👋, ${userData.isNotEmpty ? userData['firstName'] : ''} ${userData.isNotEmpty ? userData['lastName'] : ''}!",
+                        style: TextStyle(
+                            color: Colors.grey.shade800,
+                            fontSize: 22.5,
+                            fontFamily: 'RalewaySemiBold'),
+                      )),
+                  Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 17, horizontal: 10),
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              HapticFeedback.lightImpact();
+                              Navigator.of(context)
+                                  .pushNamed(ClientLiveClassesPage.routePath);
+                            },
+                            child: DataBox(
+                              color: const Color.fromARGB(255, 23, 100, 163),
+                              title: 'Registered Classes',
+                              subtitle: registeredClasses,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 17.5),
-                        GestureDetector(
-                          onTap: () {
-                            HapticFeedback.lightImpact();
-                            Navigator.of(context)
-                                .pushNamed(ClientLiveClassesPage.routePath);
-                          },
-                          child: DataBox(
-                            color: const Color.fromARGB(255, 51, 131, 54),
-                            title: 'Classes Today',
-                            subtitle: classesToday,
+                          const SizedBox(height: 17.5),
+                          GestureDetector(
+                            onTap: () {
+                              HapticFeedback.lightImpact();
+                              Navigator.of(context)
+                                  .pushNamed(ClientLiveClassesPage.routePath);
+                            },
+                            child: DataBox(
+                              color: const Color.fromARGB(255, 51, 131, 54),
+                              title: 'Classes Today',
+                              subtitle: classesToday,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 17.5),
-                        GestureDetector(
-                          onTap: () {
-                            HapticFeedback.lightImpact();
-                            Navigator.of(context)
-                                .pushNamed(ClientLiveClassesPage.routePath);
-                          },
-                          child: DataBox(
-                            color: Colors.purple,
-                            title:
-                                'Upcoming Class ${upcomingClass == 'No class' ? '' : 'In'}',
-                            subtitle: upcomingClass,
+                          const SizedBox(height: 17.5),
+                          GestureDetector(
+                            onTap: () {
+                              HapticFeedback.lightImpact();
+                              Navigator.of(context)
+                                  .pushNamed(ClientLiveClassesPage.routePath);
+                            },
+                            child: DataBox(
+                              color: Colors.purple,
+                              title:
+                                  'Upcoming Class ${upcomingClass == 'No class' ? '' : 'In'}',
+                              subtitle: upcomingClass,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
-                  elevation: 4,
-                  child: Container(
+                  const SizedBox(height: 10),
+                  Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
+                    elevation: 4,
+                    child: Container(
+                        height: 380,
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: isLoading
+                            ? Column(
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 12),
+                                    child: const Text(
+                                      'Attendance Status',
+                                      style: TextStyle(
+                                        fontSize: 22,
+                                        letterSpacing: 0.3,
+                                        fontFamily: 'RalewaySemiBold',
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          const SizedBox(
+                                            height: 35,
+                                            width: 35,
+                                            child: CircularProgressIndicator(
+                                                strokeWidth: 3),
+                                          ),
+                                          Container(
+                                            margin:
+                                                const EdgeInsets.only(top: 9),
+                                            child: const Text(
+                                              'Loading data...',
+                                              style: TextStyle(
+                                                color: Color.fromARGB(
+                                                    255, 63, 63, 63),
+                                                fontSize: 14,
+                                                fontFamily: 'RalewayMedium',
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : classesData.isNotEmpty
+                                ? SfCircularChart(
+                                    title: const ChartTitle(
+                                      text: 'Attendance Status',
+                                      textStyle: TextStyle(
+                                        fontSize: 17,
+                                        fontFamily: 'RalewaySemiBold',
+                                      ),
+                                    ),
+                                    legend: const Legend(
+                                      isVisible: true,
+                                      overflowMode: LegendItemOverflowMode.wrap,
+                                      orientation: LegendItemOrientation.auto,
+                                      shouldAlwaysShowScrollbar: true,
+                                      alignment: ChartAlignment.center,
+                                      position: LegendPosition.bottom,
+                                      isResponsive: true,
+                                    ),
+                                    series: <DoughnutSeries<ChartData, String>>[
+                                      DoughnutSeries<ChartData, String>(
+                                        dataSource: [
+                                          ChartData('Presents', totalPresent,
+                                              Colors.green),
+                                          ChartData('Lates', totalLate,
+                                              Colors.orange),
+                                          ChartData(
+                                              'Absents',
+                                              (totalHeldClasses -
+                                                  totalPresent -
+                                                  totalLate),
+                                              Colors.red),
+                                        ],
+                                        xValueMapper: (ChartData data, _) =>
+                                            data.category,
+                                        yValueMapper: (ChartData data, _) =>
+                                            data.value,
+                                        pointColorMapper: (ChartData data, _) =>
+                                            data.color,
+                                        innerRadius: '65%',
+                                        radius: '72.5%',
+                                        dataLabelSettings:
+                                            const DataLabelSettings(
+                                          isVisible: true,
+                                          labelPosition:
+                                              ChartDataLabelPosition.outside,
+                                          useSeriesColor: true,
+                                          labelIntersectAction:
+                                              LabelIntersectAction.shift,
+                                        ),
+                                        explode: true,
+                                        explodeIndex: 0,
+                                        explodeOffset: '7%',
+                                        enableTooltip: true,
+                                      ),
+                                    ],
+                                    tooltipBehavior: TooltipBehavior(
+                                      enable: true,
+                                      format: 'point.x\npoint.y',
+                                    ),
+                                  )
+                                : Column(
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.only(top: 12),
+                                        child: const Text(
+                                          'Attendance Status',
+                                          style: TextStyle(
+                                            fontSize: 22,
+                                            letterSpacing: 0.3,
+                                            fontFamily: 'RalewaySemiBold',
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Center(
+                                          child: Container(
+                                            margin:
+                                                const EdgeInsets.only(top: 9),
+                                            child: const Text(
+                                              'No data to display',
+                                              style: TextStyle(
+                                                color: Color.fromARGB(
+                                                    255, 63, 63, 63),
+                                                fontSize: 15,
+                                                fontFamily: 'RalewayMedium',
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                  ),
+                  const SizedBox(height: 10),
+                  Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
+                    elevation: 4,
+                    child: Container(
                       height: 380,
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: isLoading
@@ -215,7 +371,7 @@ class _ClientHomePageState extends State<ClientHomePage> {
                                 Container(
                                   margin: const EdgeInsets.only(top: 12),
                                   child: const Text(
-                                    'Attendance Status',
+                                    'Classes Completion Status',
                                     style: TextStyle(
                                       fontSize: 22,
                                       letterSpacing: 0.3,
@@ -257,69 +413,81 @@ class _ClientHomePageState extends State<ClientHomePage> {
                           : classesData.isNotEmpty
                               ? SfCircularChart(
                                   title: const ChartTitle(
-                                    text: 'Attendance Status',
+                                    text: 'Classes Completion Status',
                                     textStyle: TextStyle(
                                       fontSize: 17,
                                       fontFamily: 'RalewaySemiBold',
                                     ),
                                   ),
                                   legend: const Legend(
-                                    isVisible: true,
-                                    overflowMode: LegendItemOverflowMode.wrap,
-                                    orientation: LegendItemOrientation.auto,
-                                    shouldAlwaysShowScrollbar: true,
-                                    alignment: ChartAlignment.center,
-                                    position: LegendPosition.bottom,
-                                    isResponsive: true,
-                                  ),
-                                  series: <DoughnutSeries<ChartData, String>>[
-                                    DoughnutSeries<ChartData, String>(
-                                      dataSource: [
-                                        ChartData('Presents', totalPresent,
-                                            Colors.green),
-                                        ChartData(
-                                            'Lates', totalLate, Colors.orange),
-                                        ChartData(
-                                            'Absents',
-                                            (totalHeldClasses -
-                                                totalPresent -
-                                                totalLate),
-                                            Colors.red),
-                                      ],
+                                      isVisible: true,
+                                      overflowMode: LegendItemOverflowMode.wrap,
+                                      orientation: LegendItemOrientation.auto,
+                                      shouldAlwaysShowScrollbar: true,
+                                      position: LegendPosition.bottom,
+                                      isResponsive: true),
+                                  series: <RadialBarSeries<ChartData, String>>[
+                                    RadialBarSeries<ChartData, String>(
+                                      dataSource: List.generate(
+                                        classesData.length > 4
+                                            ? 4
+                                            : classesData.length,
+                                        (index) => ChartData(
+                                          classesData[index]['className'],
+                                          classesData[index]['heldClasses'] *
+                                              100 /
+                                              classesData[index]
+                                                  ['totalClasses'],
+                                          colors[index],
+                                        ),
+                                      ),
                                       xValueMapper: (ChartData data, _) =>
                                           data.category,
                                       yValueMapper: (ChartData data, _) =>
                                           data.value,
+                                      cornerStyle: CornerStyle.bothCurve,
+                                      gap: '11.5%',
+                                      maximumValue: 100,
                                       pointColorMapper: (ChartData data, _) =>
                                           data.color,
-                                      innerRadius: '65%',
-                                      radius: '72.5%',
                                       dataLabelSettings:
                                           const DataLabelSettings(
                                         isVisible: true,
                                         labelPosition:
                                             ChartDataLabelPosition.outside,
-                                        useSeriesColor: true,
-                                        labelIntersectAction:
-                                            LabelIntersectAction.shift,
+                                        textStyle: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                      explode: true,
-                                      explodeIndex: 0,
-                                      explodeOffset: '7%',
-                                      enableTooltip: true,
+                                      innerRadius: '38%',
+                                      radius: '95%',
                                     ),
                                   ],
-                                  tooltipBehavior: TooltipBehavior(
-                                    enable: true,
-                                    format: 'point.x\npoint.y',
-                                  ),
+                                  annotations: const <CircularChartAnnotation>[
+                                    CircularChartAnnotation(
+                                      widget: Text(
+                                        'Classes\nCompleted',
+                                        style: TextStyle(
+                                          color:
+                                              Color.fromARGB(255, 56, 56, 56),
+                                          fontSize: 13,
+                                          letterSpacing: 0.125,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ],
+                                  tooltipBehavior:
+                                      TooltipBehavior(enable: true),
                                 )
                               : Column(
                                   children: [
                                     Container(
                                       margin: const EdgeInsets.only(top: 12),
                                       child: const Text(
-                                        'Attendance Status',
+                                        'Classes Completion Status',
                                         style: TextStyle(
                                           fontSize: 22,
                                           letterSpacing: 0.3,
@@ -344,162 +512,11 @@ class _ClientHomePageState extends State<ClientHomePage> {
                                       ),
                                     ),
                                   ],
-                                )),
-                ),
-                const SizedBox(height: 10),
-                Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
-                  elevation: 4,
-                  child: Container(
-                    height: 380,
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: isLoading
-                        ? Column(
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(top: 12),
-                                child: const Text(
-                                  'Classes Completion Status',
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    letterSpacing: 0.3,
-                                    fontFamily: 'RalewaySemiBold',
-                                  ),
                                 ),
-                              ),
-                              Expanded(
-                                child: Center(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const SizedBox(
-                                        height: 35,
-                                        width: 35,
-                                        child: CircularProgressIndicator(
-                                            strokeWidth: 3),
-                                      ),
-                                      Container(
-                                        margin: const EdgeInsets.only(top: 9),
-                                        child: const Text(
-                                          'Loading data...',
-                                          style: TextStyle(
-                                            color:
-                                                Color.fromARGB(255, 63, 63, 63),
-                                            fontSize: 14,
-                                            fontFamily: 'RalewayMedium',
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        : classesData.isNotEmpty
-                            ? SfCircularChart(
-                                title: const ChartTitle(
-                                  text: 'Classes Completion Status',
-                                  textStyle: TextStyle(
-                                    fontSize: 17,
-                                    fontFamily: 'RalewaySemiBold',
-                                  ),
-                                ),
-                                legend: const Legend(
-                                    isVisible: true,
-                                    overflowMode: LegendItemOverflowMode.wrap,
-                                    orientation: LegendItemOrientation.auto,
-                                    shouldAlwaysShowScrollbar: true,
-                                    position: LegendPosition.bottom,
-                                    isResponsive: true),
-                                series: <RadialBarSeries<ChartData, String>>[
-                                  RadialBarSeries<ChartData, String>(
-                                    dataSource: List.generate(
-                                      classesData.length > 4
-                                          ? 4
-                                          : classesData.length,
-                                      (index) => ChartData(
-                                        classesData[index]['className'],
-                                        classesData[index]['heldClasses'] *
-                                            100 /
-                                            classesData[index]['totalClasses'],
-                                        colors[index],
-                                      ),
-                                    ),
-                                    xValueMapper: (ChartData data, _) =>
-                                        data.category,
-                                    yValueMapper: (ChartData data, _) =>
-                                        data.value,
-                                    cornerStyle: CornerStyle.bothCurve,
-                                    gap: '11.5%',
-                                    maximumValue: 100,
-                                    pointColorMapper: (ChartData data, _) =>
-                                        data.color,
-                                    dataLabelSettings: const DataLabelSettings(
-                                      isVisible: true,
-                                      labelPosition:
-                                          ChartDataLabelPosition.outside,
-                                      textStyle: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    innerRadius: '38%',
-                                    radius: '95%',
-                                  ),
-                                ],
-                                annotations: const <CircularChartAnnotation>[
-                                  CircularChartAnnotation(
-                                    widget: Text(
-                                      'Classes\nCompleted',
-                                      style: TextStyle(
-                                        color: Color.fromARGB(255, 56, 56, 56),
-                                        fontSize: 13,
-                                        letterSpacing: 0.125,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ],
-                                tooltipBehavior: TooltipBehavior(enable: true),
-                              )
-                            : Column(
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 12),
-                                    child: const Text(
-                                      'Classes Completion Status',
-                                      style: TextStyle(
-                                        fontSize: 22,
-                                        letterSpacing: 0.3,
-                                        fontFamily: 'RalewaySemiBold',
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Center(
-                                      child: Container(
-                                        margin: const EdgeInsets.only(top: 9),
-                                        child: const Text(
-                                          'No data to display',
-                                          style: TextStyle(
-                                            color:
-                                                Color.fromARGB(255, 63, 63, 63),
-                                            fontSize: 15,
-                                            fontFamily: 'RalewayMedium',
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                  ),
-                )
-              ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ));

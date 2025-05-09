@@ -13,6 +13,7 @@ const clientClasses = require("./routes/client/classes");
 const ownerPOSProducts = require("./routes/owner/pos");
 const clientShopProducts = require("./routes/client/shop_products");
 const trainerShopProducts = require("./routes/trainer/shop_products");
+const clientRetention = require("./routes/client/client_retention");
 
 const app = express();
 
@@ -49,6 +50,7 @@ app.use(express.urlencoded({ extended: true }));
     // Client routes
     app.use("/client/classes", clientClasses);
     app.use("/client/shop-products", clientShopProducts);
+    app.use("/client/client-retention", clientRetention);
 
     //Owner routes
     app.use("/owner/pos", ownerPOSProducts);

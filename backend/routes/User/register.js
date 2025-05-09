@@ -19,8 +19,10 @@ register.post("/", async (req, res) => {
       confirmPassword: req.body?.confirmPassword,
       accType: req.body?.accType.trim(),
       gender: req.body?.gender.trim(),
+      dob: req.body?.dob,
     };
-  } catch {
+  } catch (error) {
+    console.log("Error extracting user data: ", error);
     return res.status(403).send({ message: "Information is not complete" });
   }
 
@@ -35,7 +37,8 @@ register.post("/", async (req, res) => {
   }
   try {
     userData.phone = req.body?.phone.trim();
-  } catch {
+  } catch (error) {
+    console.log("Error extracting user data: ", error);
     return res.status(403).send({ message: "Information is not complete" });
   }
 
@@ -82,9 +85,9 @@ register.post("/", async (req, res) => {
 
   try {
     const insertQuery = `
-    INSERT INTO gym_pos_system.Users (firstName, lastName, gender, email, phone, password, accType)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `;
+  INSERT INTO gym_pos_system.Users (firstName, lastName, gender, email, phone, password, accType, dob)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+`;
 
     const [result] = await db.query(insertQuery, [
       capitalize(userData.firstName),
@@ -94,6 +97,7 @@ register.post("/", async (req, res) => {
       userData.phone === "" ? null : userData.phone,
       userData.password,
       userData.accType,
+      userData.dob,
     ]);
 
     const insertedData = {

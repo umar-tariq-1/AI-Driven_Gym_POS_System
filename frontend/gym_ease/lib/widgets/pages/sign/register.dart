@@ -15,6 +15,7 @@ import 'dart:convert';
 import './verify_email.dart';
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 import '../../../theme/theme.dart';
 
@@ -34,6 +35,7 @@ class _RegisterState extends State<Register> {
     'password': TextEditingController(),
     'confirmPassword': TextEditingController()
   };
+  DateTime? _dob;
   bool _agreePersonalData = false;
   bool isLoading = false;
   String? _gender = '';
@@ -295,6 +297,64 @@ class _RegisterState extends State<Register> {
                   ],
                 ),
                 const SizedBox(height: 15.0),
+                FormField<DateTime>(
+                  validator: (value) {
+                    if (_dob == null) return 'Date of Birth is required';
+                    return null;
+                  },
+                  builder: (FormFieldState<DateTime> state) {
+                    return GestureDetector(
+                      onTap: () async {
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: _dob ?? DateTime.now(),
+                          firstDate: DateTime(1900),
+                          lastDate: DateTime.now(),
+                        );
+                        if (picked != null) {
+                          setState(() {
+                            _dob = picked;
+                          });
+                          state.didChange(picked);
+                        }
+                      },
+                      child: InputDecorator(
+                        decoration: InputDecoration(
+                          label: const Text('Date of Birth'),
+                          labelStyle:
+                              const TextStyle(overflow: TextOverflow.ellipsis),
+                          hintText: 'Date of Birth',
+                          hintStyle: const TextStyle(color: Colors.black26),
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.black12),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.black12),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          prefixIcon: const Icon(Icons.calendar_month,
+                              color: Colors.black54),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 16, horizontal: 16),
+                          errorText: state.errorText,
+                        ),
+                        child: Text(
+                          _dob != null
+                              ? DateFormat('MMMM d, y').format(_dob!)
+                              : 'Date of Birth',
+                          style: TextStyle(
+                            color: _dob != null
+                                ? const Color.fromARGB(225, 0, 0, 0)
+                                : const Color.fromARGB(255, 88, 88, 88),
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 15.0),
                 TextFormField(
                   keyboardType: TextInputType.emailAddress,
                   controller: controllers['email'],
@@ -338,7 +398,6 @@ class _RegisterState extends State<Register> {
                     return null;
                   },
                 ),
-
                 const SizedBox(height: 15.0),
                 TextFormField(
                   autofillHints: const [AutofillHints.telephoneNumber],
@@ -393,8 +452,9 @@ class _RegisterState extends State<Register> {
                                   margin: const EdgeInsets.only(left: 12),
                                   child: Text(
                                     "${_countryCode.dialCode} | ",
-                                    style: const TextStyle(
-                                        color: Colors.black54, fontSize: 18),
+                                    style: TextStyle(
+                                        color: colorScheme.primary,
+                                        fontSize: 18),
                                   ),
                                 ),
                               ],
@@ -618,6 +678,8 @@ class _RegisterState extends State<Register> {
                                                             .trim(),
                                                     'gender': _gender,
                                                     'accType': _accType,
+                                                    'dob':
+                                                        _dob!.toIso8601String(),
                                                     'password':
                                                         controllers['password']
                                                             .text,
@@ -664,6 +726,9 @@ class _RegisterState extends State<Register> {
                                                     controllers[
                                                             'confirmPassword']
                                                         .clear();
+                                                    setState(() {
+                                                      _dob = null;
+                                                    });
                                                     Navigator.of(context)
                                                         .pushNamedAndRemoveUntil(
                                                             responseBody["data"]
@@ -705,6 +770,7 @@ class _RegisterState extends State<Register> {
                                                 }
                                               }
                                             } catch (e) {
+                                              print(e);
                                               CustomSnackbar.showFailureSnackbar(
                                                   context,
                                                   "Oops!",

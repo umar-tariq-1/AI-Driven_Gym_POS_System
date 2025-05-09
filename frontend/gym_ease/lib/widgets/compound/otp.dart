@@ -126,6 +126,7 @@ class _OTPState extends State<OTP> {
             context, "Oops!", jsonDecode(response.body)["message"]);
       }
     } catch (e) {
+      print(e);
       CustomSnackbar.showFailureSnackbar(
           context, "Oops!", "Sorry, couldn't request to server");
     }
@@ -199,6 +200,7 @@ class _OTPState extends State<OTP> {
           }
         }
       } catch (e) {
+        print(e);
         setState(() {
           _enabled = true;
         });
@@ -621,6 +623,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                     }
                   }
                 } catch (e) {
+                  print(e);
                   CustomSnackbar.showFailureSnackbar(
                       context, "Oops!", "Sorry, couldn't request to server");
                 }
