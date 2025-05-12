@@ -7,10 +7,13 @@ const register = require("./routes/User/register");
 const signin = require("./routes/User/signin");
 const deleteUser = require("./routes/User/delete");
 const editUser = require("./routes/User/edit");
+const users = require("./routes/User/users");
 const OTP = require("./routes/User/otp");
 const trainerClasses = require("./routes/trainer/classes");
+const trainerRegisterGym = require("./routes/trainer/register_gym");
 const clientClasses = require("./routes/client/classes");
 const ownerPOSProducts = require("./routes/owner/pos");
+const ownerRegisterGym = require("./routes/owner/register_gym");
 const clientShopProducts = require("./routes/client/shop_products");
 const trainerShopProducts = require("./routes/trainer/shop_products");
 const clientRetention = require("./routes/client/client_retention");
@@ -42,10 +45,12 @@ app.use(express.urlencoded({ extended: true }));
     app.use("/delete-user", deleteUser);
     app.use("/edit-user", editUser);
     app.use("/otp", OTP);
+    app.use("/users", users);
 
     // Trainer routes
     app.use("/trainer/classes", trainerClasses);
     app.use("/trainer/shop-products", trainerShopProducts);
+    app.use("/trainer/register-gym", trainerRegisterGym);
 
     // Client routes
     app.use("/client/classes", clientClasses);
@@ -54,6 +59,7 @@ app.use(express.urlencoded({ extended: true }));
 
     //Owner routes
     app.use("/owner/pos", ownerPOSProducts);
+    app.use("/owner/register-gym", ownerRegisterGym);
 
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {

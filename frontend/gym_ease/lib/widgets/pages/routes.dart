@@ -9,6 +9,7 @@ import 'package:gym_ease/widgets/pages/landing_page.dart';
 import 'package:gym_ease/widgets/pages/manager/home_page.dart';
 import 'package:gym_ease/widgets/pages/manager/point_of_sales/point_of_sales_page.dart';
 import 'package:gym_ease/widgets/pages/owner/home_page.dart';
+import 'package:gym_ease/widgets/pages/owner/register_gym/register_gym.dart';
 import 'package:gym_ease/widgets/pages/owner/point_of_sales/create_product.dart';
 import 'package:gym_ease/widgets/pages/owner/point_of_sales/point_of_sales_page.dart';
 import 'package:gym_ease/widgets/pages/sign/forget_passsword_page.dart';
@@ -47,6 +48,7 @@ final Map<String, Widget Function(BuildContext)> appRoutes = {
   OwnerHomePage.routePath: (context) => const OwnerHomePage(),
   OwnerPointOfSalesPage.routePath: (context) => const OwnerPointOfSalesPage(),
   CreatePOSProductPage.routePath: (context) => const CreatePOSProductPage(),
+  OwnerRegisterGymPage.routePath: (context) => const OwnerRegisterGymPage(),
 
   // Manager Routes
   ManagerHomePage.routePath: (context) => const ManagerHomePage(),

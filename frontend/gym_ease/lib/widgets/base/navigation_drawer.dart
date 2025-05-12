@@ -14,7 +14,7 @@ import 'package:gym_ease/widgets/pages/manager/point_of_sales/point_of_sales_pag
 import 'package:gym_ease/widgets/pages/owner/home_page.dart';
 import 'package:gym_ease/widgets/pages/owner/point_of_sales/point_of_sales_page.dart';
 import 'package:gym_ease/widgets/pages/trainer/live_classes/live_classes.dart';
-import 'package:gym_ease/widgets/pages/trainer/manage%20classes/create_class.dart';
+import 'package:gym_ease/widgets/pages/owner/register_gym/register_gym.dart';
 import 'package:gym_ease/widgets/pages/trainer/dashboard_page.dart';
 import 'package:gym_ease/widgets/pages/trainer/manage%20classes/manage_classes_page.dart';
 import 'package:gym_ease/widgets/pages/welcome_page.dart';
@@ -413,15 +413,16 @@ Widget buildOwnerMenuItems(BuildContext context, active) => Column(
               }
             }),
         CustomListTile(
-            active: active == "Live Classes",
-            text: "Live Classes",
-            iconData: Icons.live_tv_rounded,
+            active: active == "Manage Gym",
+            text: "Manage Gym",
+            iconData: Icons.manage_accounts_rounded,
             iconSize: 26.75,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name !=
-                  OwnerHomePage.routePath) {
+                  OwnerRegisterGymPage.routePath) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
                     OwnerHomePage.routePath, (route) => false);
+                Navigator.of(context).pushNamed(OwnerRegisterGymPage.routePath);
               }
             }),
         CustomListTile(

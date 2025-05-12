@@ -57,16 +57,33 @@ def predict():
         return jsonify({"error": "Model not loaded"}), 500
 
     data = request.get_json()
-    if not data:
-        return jsonify({"error": "No JSON body found"}), 400
+    if not data or not isinstance(data, dict):
+        return jsonify({"error": "Invalid or empty JSON object"}), 400
 
-    validated_data, errors = validate_input(data)
+    response = {}
+    errors = {}
+
+    for gym_name, features in data.items():
+        if not isinstance(features, dict):
+            errors[gym_name] = "Each gym must contain a dictionary of features"
+            continue
+
+        validated_data, validation_errors = validate_input(features)
+        if validation_errors:
+            errors[gym_name] = validation_errors
+            continue
+
+        input_df = pd.DataFrame([validated_data])
+        prediction = int(model.predict(input_df)[0])
+        response[gym_name] = {**features, "churn": prediction}
+
+    result = {}
+    if response:
+        result["predictions"] = response
     if errors:
-        return jsonify({"error": "Invalid input", "details": errors}), 400
+        result["errors"] = errors
 
-    input_df = pd.DataFrame([validated_data])
-    prediction = model.predict(input_df)
-    return jsonify({"prediction": int(prediction[0])})  # Cast to int to ensure JSON serializability
+    return jsonify(result), (400 if errors and not response else 200)
 
 if __name__ == '__main__':
     app.run(debug=True)

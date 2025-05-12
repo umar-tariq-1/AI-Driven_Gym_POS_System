@@ -6,10 +6,8 @@ const clientRetention = express.Router();
 
 clientRetention.post("/update-data", authorize, async (req, res) => {
   const db = req.db;
-  console.log(req.body);
   try {
     const userId = req.userData.id;
-    const { nearLocation, partner } = req.body;
 
     // 1. Get gender, age & phone from users table
     const [userResult] = await db.execute(
@@ -34,7 +32,7 @@ clientRetention.post("/update-data", authorize, async (req, res) => {
       [userId]
     );
 
-    const results = [];
+    const data = {};
 
     for (let classInfo of classes) {
       const { gymName, startDate, endDate, selectedDays } = classInfo;
@@ -80,8 +78,8 @@ clientRetention.post("/update-data", authorize, async (req, res) => {
 
       const payload = {
         gender: gender == "Male" ? 1 : 0,
-        Near_Location: nearLocation,
-        Partner: partner,
+        Near_Location: req.body[gymName].nearLocation,
+        Partner: req.body[gymName].partner,
         Phone: phone,
         Contract_period: contract_period,
         Age,
@@ -89,39 +87,40 @@ clientRetention.post("/update-data", authorize, async (req, res) => {
         Avg_class_frequency_total: avg_class_frequency_total,
         Avg_class_frequency_current_month: avg_class_frequency_current_month,
       };
-      console.log("\n\nPayload for prediction:", payload);
-      const pythonResponse = await axios.post(
-        "http://localhost:5000/predict",
-        payload
-      );
-      console.log("\n\nPython response:", pythonResponse.data);
-      const churn = pythonResponse.data.churn;
 
-      // Save to DB
-      await db.execute(
-        `INSERT INTO gym_churn_predictions 
-        (userId, gymName, gender, nearLocation, partner, phone, contractPeriod, age, monthToEndContract, avgClassFrequencyTotal, avgClassFrequencyCurrent_month, churnResult)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          userId,
-          gymName,
-          gender,
-          Near_Location,
-          Partner,
-          phone,
-          contract_period,
-          Age,
-          month_to_end_contract,
-          avg_class_frequency_total,
-          avg_class_frequency_current_month,
-          churn,
-        ]
-      );
-
-      results.push({ gym: gymName, churn });
+      data[gymName] = payload;
     }
 
-    res.status(200).json({ success: true, data: results });
+    const pythonResponse = await axios.post(
+      "http://127.0.0.1:5000/predict",
+      data
+    );
+    console.log("\n\nPython response:", pythonResponse.data);
+
+    // Save to DB
+    // await db.execute(
+    //   `INSERT INTO gym_churn_predictions
+    //     (userId, gymName, gender, nearLocation, partner, phone, contractPeriod, age, monthToEndContract, avgClassFrequencyTotal, avgClassFrequencyCurrent_month, churnResult)
+    //     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    //   [
+    //     userId,
+    //     gymName,
+    //     gender,
+    //     Near_Location,
+    //     Partner,
+    //     phone,
+    //     contract_period,
+    //     Age,
+    //     month_to_end_contract,
+    //     avg_class_frequency_total,
+    //     avg_class_frequency_current_month,
+    //     churn,
+    //   ]
+    // );
+
+    // results.push({ gym: gymName, churn });
+
+    res.status(200).json({ success: true });
   } catch (err) {
     console.log(err);
     res.status(500).json({ success: false, message: "Server error" });

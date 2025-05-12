@@ -6,6 +6,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Color foregroundColor;
   final bool showBackButton;
   final List<Widget>? actions;
+  final bool isFixedPage;
 
   const CustomAppBar(
       {super.key,
@@ -13,6 +14,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       required this.backgroundColor,
       required this.foregroundColor,
       this.showBackButton = false,
+      this.isFixedPage = false,
       this.actions});
 
   @override
@@ -38,23 +40,25 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             builder: (context) {
               return Container(
                 margin: const EdgeInsets.only(left: 5),
-                child: showBackButton
-                    ? IconButton(
-                        icon: const Icon(Icons.arrow_back_rounded),
-                        color: foregroundColor,
-                        iconSize: 29,
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      )
-                    : IconButton(
-                        icon: const Icon(Icons.menu_rounded),
-                        color: foregroundColor,
-                        iconSize: 29,
-                        onPressed: () {
-                          Scaffold.of(context).openDrawer();
-                        },
-                      ),
+                child: isFixedPage
+                    ? null
+                    : showBackButton
+                        ? IconButton(
+                            icon: const Icon(Icons.arrow_back_rounded),
+                            color: foregroundColor,
+                            iconSize: 29,
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          )
+                        : IconButton(
+                            icon: const Icon(Icons.menu_rounded),
+                            color: foregroundColor,
+                            iconSize: 29,
+                            onPressed: () {
+                              Scaffold.of(context).openDrawer();
+                            },
+                          ),
               );
             },
           ),

@@ -7,6 +7,7 @@ import 'package:gym_ease/widgets/base/snackbar.dart';
 import 'package:gym_ease/widgets/pages/client/home_page.dart';
 import 'package:gym_ease/widgets/pages/manager/home_page.dart';
 import 'package:gym_ease/widgets/pages/owner/home_page.dart';
+import 'package:gym_ease/widgets/pages/owner/register_gym/register_gym.dart';
 import 'package:gym_ease/widgets/pages/sign/signin_page.dart';
 import 'package:gym_ease/widgets/pages/trainer/dashboard_page.dart';
 import 'package:get/get.dart';
@@ -729,29 +730,41 @@ class _RegisterState extends State<Register> {
                                                     setState(() {
                                                       _dob = null;
                                                     });
-                                                    Navigator.of(context)
-                                                        .pushNamedAndRemoveUntil(
-                                                            responseBody["data"]
-                                                                        [
-                                                                        'accType'] ==
-                                                                    'Trainer'
-                                                                ? TrainerDashboardPage
-                                                                    .routePath
-                                                                : responseBody["data"]
-                                                                            [
-                                                                            'accType'] ==
-                                                                        'Client'
-                                                                    ? ClientHomePage
-                                                                        .routePath
-                                                                    : responseBody["data"]['accType'] ==
-                                                                            'Owner'
-                                                                        ? OwnerHomePage
-                                                                            .routePath
-                                                                        : responseBody["data"]['accType'] ==
-                                                                                'Manager'
-                                                                            ? ManagerHomePage.routePath
-                                                                            : '',
-                                                            (route) => false);
+                                                    if (responseBody["data"]
+                                                            ['accType'] ==
+                                                        'Owner') {
+                                                      Navigator.of(context)
+                                                          .pushAndRemoveUntil(
+                                                              MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          const OwnerRegisterGymPage(
+                                                                            redirectedAfterRegistration:
+                                                                                true,
+                                                                          )),
+                                                              (route) => false);
+                                                    } else {
+                                                      Navigator.of(context)
+                                                          .pushNamedAndRemoveUntil(
+                                                              responseBody["data"]
+                                                                          [
+                                                                          'accType'] ==
+                                                                      'Trainer'
+                                                                  ? TrainerDashboardPage
+                                                                      .routePath
+                                                                  : responseBody["data"]
+                                                                              [
+                                                                              'accType'] ==
+                                                                          'Client'
+                                                                      ? ClientHomePage
+                                                                          .routePath
+                                                                      : responseBody["data"]['accType'] ==
+                                                                              'Manager'
+                                                                          ? ManagerHomePage
+                                                                              .routePath
+                                                                          : '',
+                                                              (route) => false);
+                                                    }
                                                   } else {
                                                     CustomSnackbar
                                                         .showFailureSnackbar(
