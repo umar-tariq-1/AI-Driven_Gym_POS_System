@@ -124,7 +124,6 @@ class _OwnerPointOfSalesPageState extends State<OwnerPointOfSalesPage> {
               fetchData();
             },
             backgroundColor: Colors.white,
-            // child: const SizedBox()
             child: !showRedacted
                 ? ListView.builder(
                     itemCount: controller.posProductsData.length,
