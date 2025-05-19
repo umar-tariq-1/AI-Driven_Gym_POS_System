@@ -19,6 +19,7 @@ import 'package:pinput/pinput.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:intl/intl.dart';
 
 class CreateClassPage extends StatefulWidget {
@@ -53,6 +54,8 @@ class _CreateClassPageState extends State<CreateClassPage> {
   DateTime? endDate;
   XFile? _selectedImage;
   bool isLoading = false;
+  List gymData = [];
+  int? _selectedGymId;
 
   final ImagePicker _picker = ImagePicker();
   final serverAddressController = Get.find<ServerAddressController>();
@@ -191,12 +194,37 @@ class _CreateClassPageState extends State<CreateClassPage> {
   void initState() {
     super.initState();
     getUserData();
+    fetchData();
   }
 
   void getUserData() async {
     Map userData = await SecureStorage().getItem("userData");
     controllers['trainerName']!
         .setText("${userData['firstName']} ${userData['lastName']}");
+  }
+
+  Future<void> fetchData() async {
+    try {
+      String authToken = await SecureStorage().getItem('authToken');
+      final response = await http.get(
+          Uri.parse(
+              'http://${serverAddressController.IP}:3001/trainer/register-gym/gyms'),
+          headers: {
+            'auth-token': authToken,
+          });
+      if (response.statusCode == 200) {
+        setState(() {
+          gymData = jsonDecode(response.body)['gyms'];
+        });
+      } else {
+        CustomSnackbar.showFailureSnackbar(
+            context, "Oops!", json.decode(response.body)['message']);
+      }
+    } catch (e) {
+      CustomSnackbar.showFailureSnackbar(
+          context, "Oops!", "Sorry, couldn't request to server");
+      print(e);
+    }
   }
 
   Future<void> _pickImageFromGallery() async {
@@ -267,16 +295,108 @@ class _CreateClassPageState extends State<CreateClassPage> {
                       hint: 'Enter trainer\'s name',
                     ),
                     const SizedBox(height: 15),
-                    CustomTextFormField(
-                      controller: controllers['gymName']!,
-                      label: 'Gym Name',
-                      hint: 'Enter gym name',
+                    DropdownSearch<Map<String, dynamic>>(
+                      items: gymData.cast<Map<String, dynamic>>(),
+                      itemAsString: (gym) => gym['gymName'],
+                      selectedItem: _selectedGymId == null
+                          ? null
+                          : gymData
+                              .cast<Map<String, dynamic>>()
+                              .firstWhere((gym) => gym['id'] == _selectedGymId),
+                      onChanged: (selectedGym) {
+                        setState(() {
+                          _selectedGymId = selectedGym?['id'];
+                          controllers['gymLocation']!
+                              .setText(selectedGym?['gymLocation'] ?? '');
+                        });
+                      },
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          label: const Text('Select Gym'),
+                          labelStyle:
+                              const TextStyle(overflow: TextOverflow.ellipsis),
+                          hintText: 'Select Gym',
+                          hintStyle: const TextStyle(color: Colors.black26),
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.black12),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.black12),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          // prefixIcon: const Icon(Icons.fitness_center,
+                          //     color: Colors.black54),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 16, horizontal: 16),
+                        ),
+                      ),
+                      popupProps: const PopupProps.menu(
+                        showSearchBox: true,
+                        searchFieldProps: TextFieldProps(
+                          decoration: InputDecoration(
+                            hintText: 'Search gym...',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
                     ),
+                    // CustomTextFormField(
+                    //   controller: controllers['gymName']!,
+                    //   label: 'Gym Name',
+                    //   hint: 'Enter gym name',
+                    // ),
                     const SizedBox(height: 15),
-                    CustomTextFormField(
-                      controller: controllers['gymLocation']!,
-                      label: 'Gym Location',
-                      hint: 'Enter gym location',
+                    // CustomTextFormField(
+                    //     controller: controllers['gymLocation']!,
+                    //     label: 'Gym Location',
+                    //     hint: 'Enter gym location',
+                    //     readOnly: true),
+                    DropdownSearch<Map<String, dynamic>>(
+                      items: gymData.cast<Map<String, dynamic>>(),
+                      itemAsString: (gym) => gym['gymLocation'],
+                      selectedItem: _selectedGymId == null
+                          ? null
+                          : gymData
+                              .cast<Map<String, dynamic>>()
+                              .firstWhere((gym) => gym['id'] == _selectedGymId),
+                      onChanged: (selectedGym) {
+                        setState(() {
+                          _selectedGymId = selectedGym?['id'];
+                          controllers['gymLocation']!
+                              .setText(selectedGym?['gymLocation'] ?? '');
+                        });
+                      },
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          label: const Text('Select Gym Location'),
+                          labelStyle:
+                              const TextStyle(overflow: TextOverflow.ellipsis),
+                          hintText: 'Select Gym Location',
+                          hintStyle: const TextStyle(color: Colors.black26),
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.black12),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.black12),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          // prefixIcon: const Icon(Icons.fitness_center,
+                          //     color: Colors.black54),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 16, horizontal: 16),
+                        ),
+                      ),
+                      popupProps: const PopupProps.menu(
+                        showSearchBox: true,
+                        searchFieldProps: TextFieldProps(
+                          decoration: InputDecoration(
+                            hintText: 'Search gym location...',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 15),
                     CustomTextFormField(
