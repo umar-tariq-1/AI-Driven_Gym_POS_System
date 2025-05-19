@@ -415,8 +415,8 @@ class _OTPState extends State<OTP> {
 }
 
 class ChangePasswordDialog extends StatefulWidget {
-  String id;
-  ChangePasswordDialog({super.key, required this.id});
+  final String id;
+  const ChangePasswordDialog({super.key, required this.id});
 
   @override
   State<ChangePasswordDialog> createState() => _ChangePasswordDialogState();

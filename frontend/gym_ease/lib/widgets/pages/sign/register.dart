@@ -730,41 +730,30 @@ class _RegisterState extends State<Register> {
                                                     setState(() {
                                                       _dob = null;
                                                     });
-                                                    if (responseBody["data"]
-                                                            ['accType'] ==
-                                                        'Owner') {
-                                                      Navigator.of(context)
-                                                          .pushAndRemoveUntil(
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          const OwnerRegisterGymPage(
-                                                                            redirectedAfterRegistration:
-                                                                                true,
-                                                                          )),
-                                                              (route) => false);
-                                                    } else {
-                                                      Navigator.of(context)
-                                                          .pushNamedAndRemoveUntil(
-                                                              responseBody["data"]
-                                                                          [
-                                                                          'accType'] ==
-                                                                      'Trainer'
-                                                                  ? TrainerDashboardPage
-                                                                      .routePath
-                                                                  : responseBody["data"]
-                                                                              [
-                                                                              'accType'] ==
-                                                                          'Client'
-                                                                      ? ClientHomePage
-                                                                          .routePath
-                                                                      : responseBody["data"]['accType'] ==
-                                                                              'Manager'
-                                                                          ? ManagerHomePage
-                                                                              .routePath
-                                                                          : '',
-                                                              (route) => false);
-                                                    }
+
+                                                    Navigator.of(context)
+                                                        .pushNamedAndRemoveUntil(
+                                                            responseBody["data"]
+                                                                        [
+                                                                        'accType'] ==
+                                                                    'Trainer'
+                                                                ? TrainerDashboardPage
+                                                                    .routePath
+                                                                : responseBody["data"]
+                                                                            [
+                                                                            'accType'] ==
+                                                                        'Client'
+                                                                    ? ClientHomePage
+                                                                        .routePath
+                                                                    : responseBody["data"]['accType'] ==
+                                                                            'Manager'
+                                                                        ? ManagerHomePage
+                                                                            .routePath
+                                                                        : responseBody["data"]['accType'] ==
+                                                                                'Owner'
+                                                                            ? OwnerRegisterGymPage.routePath
+                                                                            : '',
+                                                            (route) => false);
                                                   } else {
                                                     CustomSnackbar
                                                         .showFailureSnackbar(

@@ -400,21 +400,21 @@ Widget buildOwnerMenuItems(BuildContext context, active) => Column(
                     .pushNamed(OwnerPointOfSalesPage.routePath);
               }
             }),
+        // CustomListTile(
+        //     active: active == "Fitness Plans",
+        //     text: "Fitness Plans",
+        //     iconData: Icons.settings_accessibility_rounded,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           OwnerHomePage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             OwnerHomePage.routePath, (route) => false);
+        //       }
+        //     }),
         CustomListTile(
-            active: active == "Fitness Plans",
-            text: "Fitness Plans",
-            iconData: Icons.settings_accessibility_rounded,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  OwnerHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    OwnerHomePage.routePath, (route) => false);
-              }
-            }),
-        CustomListTile(
-            active: active == "Manage Gym",
-            text: "Manage Gym",
+            active: active == "Manage Gyms",
+            text: "Manage Gyms",
             iconData: Icons.manage_accounts_rounded,
             iconSize: 26.75,
             onTap: () {

@@ -100,9 +100,9 @@ class CustomDataDisplayTextField extends StatelessWidget {
   final String value;
   final String label;
   final TextEditingController? controller;
-  bool multiline;
+  final bool multiline;
 
-  CustomDataDisplayTextField(
+  const CustomDataDisplayTextField(
       {super.key,
       required this.value,
       required this.label,
