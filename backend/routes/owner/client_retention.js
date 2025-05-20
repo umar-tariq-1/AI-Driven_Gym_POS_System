@@ -7,68 +7,87 @@ const clientRetention = express.Router();
 clientRetention.get("/", authorize, async (req, res) => {
   const db = req.db;
   try {
-    const ownerId = req.userData.id;
+    const userId = req.userData.id;
 
-    // Get gyms with their classes for this owner
-    const [gymsWithClasses] = await db.execute(
-      `SELECT g.id AS gymId, g.gymName, c.id AS classId, c.classFee
-         FROM gyms g
-         JOIN TrainerClasses c ON g.id = c.gymId
-         WHERE g.ownerId = ?`,
-      [ownerId]
+    const [results] = await db.execute(
+      `
+        SELECT 
+          g.id AS gymId,
+          g.gymName,
+          tc.id AS classId,
+          tc.className,
+          tc.classFee AS classFee,
+          COUNT(DISTINCT rc.clientId) AS totalStudents,
+          cr.churn,
+          COUNT(cr.id) AS churnCount
+        FROM gyms g
+        LEFT JOIN trainerclasses tc ON tc.gymId = g.id
+        LEFT JOIN registeredclasses rc ON rc.classId = tc.id
+        LEFT JOIN clientretention cr ON cr.classId = tc.id AND cr.gymId = g.id
+        WHERE g.ownerId = ?
+        GROUP BY g.id, tc.id, cr.churn
+        `,
+      [userId]
     );
 
-    // Get student counts for all classes
-    const [studentCounts] = await db.execute(
-      `SELECT classId, COUNT(*) AS totalStudents
-         FROM registeredClasses
-         GROUP BY classId`
-    );
+    let totalGyms = new Set();
+    let totalClasses = new Set();
+    let totalClients = new Set();
+    let totalRevenue = 0;
+    let churnStats = {};
 
-    // Get churn results for all classes
-    const [churnCounts] = await db.execute(
-      `SELECT classId, churn, COUNT(*) AS count
-         FROM clientRetention
-         GROUP BY classId, churn`
-    );
+    const studentMap = {};
 
-    // Create lookup maps
-    const studentCountMap = {};
-    studentCounts.forEach((row) => {
-      studentCountMap[row.classId] = row.totalStudents;
-    });
+    for (let row of results) {
+      const {
+        gymId,
+        gymName,
+        classId,
+        className,
+        classFee,
+        churn,
+        churnCount,
+      } = row;
 
-    const churnMap = {};
-    churnCounts.forEach((row) => {
-      if (!churnMap[row.classId])
-        churnMap[row.classId] = { churn0: 0, churn1: 0 };
-      if (row.churn === 0) churnMap[row.classId].churn0 = row.count;
-      if (row.churn === 1) churnMap[row.classId].churn1 = row.count;
-    });
+      if (!classId) continue;
 
-    // Build response
-    const gymMap = {};
-    gymsWithClasses.forEach((row) => {
-      if (!gymMap[row.gymId]) {
-        gymMap[row.gymId] = {
-          gymId: row.gymId,
-          gymName: row.gymName,
-          classesData: [],
+      totalGyms.add(gymId);
+      totalClasses.add(classId);
+
+      if (!studentMap[classId]) studentMap[classId] = new Set();
+      if (row.totalStudents) {
+        studentMap[classId].add(row.totalStudents);
+        totalClients.add(`${gymId}_${classId}`);
+      }
+
+      totalRevenue += (classFee || 0) * (row.totalStudents || 0);
+
+      if (!churnStats[gymId])
+        churnStats[gymId] = {
+          gymName,
+          classes: {},
+        };
+
+      if (!churnStats[gymId].classes[classId]) {
+        churnStats[gymId].classes[classId] = {
+          className,
+          churn0: 0,
+          churn1: 0,
         };
       }
 
-      gymMap[row.gymId].classesData.push({
-        classId: row.classId,
-        classFee: row.classFee,
-        totalStudents: studentCountMap[row.classId] || 0,
-        churn0: churnMap[row.classId]?.churn0 || 0,
-        churn1: churnMap[row.classId]?.churn1 || 0,
-      });
-    });
+      if (churn === 0) churnStats[gymId].classes[classId].churn0 += churnCount;
+      else if (churn === 1)
+        churnStats[gymId].classes[classId].churn1 += churnCount;
+    }
 
     res.status(200).json({
       success: true,
-      gymData: Object.values(gymMap),
+      totalGyms: totalGyms.size,
+      totalClasses: totalClasses.size,
+      totalClients: totalClients.size,
+      totalRevenue,
+      churnStats,
     });
   } catch (err) {
     console.log(err);

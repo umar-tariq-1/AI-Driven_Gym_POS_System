@@ -11,6 +11,7 @@ import 'package:gym_ease/widgets/base/app_bar.dart';
 import 'package:gym_ease/widgets/base/data_box.dart';
 import 'package:gym_ease/widgets/base/navigation_drawer.dart';
 import 'package:gym_ease/widgets/base/snackbar.dart';
+import 'package:gym_ease/widgets/compound/checkout.dart';
 import 'package:http/http.dart' as http;
 
 class OwnerHomePage extends StatefulWidget {
@@ -62,6 +63,7 @@ class _OwnerHomePageState extends State<OwnerHomePage> {
       if (response.statusCode == 200) {
         setState(() {
           responseData = json.decode(response.body);
+          print(responseData);
         });
       } else {
         CustomSnackbar.showFailureSnackbar(
@@ -88,7 +90,11 @@ class _OwnerHomePageState extends State<OwnerHomePage> {
           accType: "Owner",
         ),
         backgroundColor: colorScheme.surface,
-        body: RefreshIndicator(
+        body: const SingleProductCheckout(
+            name: "Ball",
+            quantity: 3,
+            priceCents:
+                2300) /* RefreshIndicator(
             triggerMode: RefreshIndicatorTriggerMode.onEdge,
             displacement: 60,
             onRefresh: () async {
@@ -125,40 +131,36 @@ class _OwnerHomePageState extends State<OwnerHomePage> {
                                     onTap: () {
                                       HapticFeedback.lightImpact();
                                     },
-                                    child: const DataBox(
+                                    child: DataBox(
                                       color: const Color.fromARGB(
                                           255, 23, 100, 163),
                                       title: 'My Gyms',
-                                      subtitle: '2',
+                                      subtitle: responseData.isNotEmpty
+                                          ? responseData['totalGyms'].toString()
+                                          : '0',
                                     ),
                                   ),
                                   const SizedBox(height: 17.5),
                                   DataBox(
                                       color: Colors.brown,
                                       title: 'Total Clients',
-                                      subtitle:
-                                          '3' /* responseData.isNotEmpty
-                                          ? responseData['gymData']
-                                              .fold<int>(
-                                                0,
-                                                (sum, item) =>
-                                                    sum +
-                                                    (item["totalStudents"]
-                                                        as int),
-                                              )
+                                      subtitle: responseData.isNotEmpty
+                                          ? responseData['totalClients']
                                               .toString()
-                                          : '0'*/
-                                      ),
+                                          : '0'),
                                   const SizedBox(height: 17.5),
                                   GestureDetector(
                                     onTap: () {
                                       HapticFeedback.lightImpact();
                                     },
-                                    child: const DataBox(
+                                    child: DataBox(
                                       color: const Color.fromARGB(
                                           255, 51, 131, 54),
                                       title: 'Total Classes',
-                                      subtitle: '12',
+                                      subtitle: responseData.isNotEmpty
+                                          ? responseData['totalClasses']
+                                              .toString()
+                                          : '0',
                                     ),
                                   ),
                                   const SizedBox(height: 17.5),
@@ -168,10 +170,13 @@ class _OwnerHomePageState extends State<OwnerHomePage> {
                                       // Navigator.of(context)
                                       //     .pushNamed(TrainerLiveClassesPage.routePath);
                                     },
-                                    child: const DataBox(
+                                    child: DataBox(
                                       color: Colors.purple,
                                       title: 'Classes Revenue',
-                                      subtitle: '\$4321.5',
+                                      subtitle: responseData.isNotEmpty
+                                          ? responseData['totalRevenue']
+                                              .toString()
+                                          : '0',
                                     ),
                                   )
                                 ],
@@ -179,6 +184,7 @@ class _OwnerHomePageState extends State<OwnerHomePage> {
                             ),
                           ),
                           const SizedBox(height: 10),
-                        ])))));
+                        ])))) */
+        );
   }
 }
