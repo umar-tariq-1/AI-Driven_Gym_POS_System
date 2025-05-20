@@ -9,6 +9,7 @@ const deleteUser = require("./routes/User/delete");
 const editUser = require("./routes/User/edit");
 const users = require("./routes/User/users");
 const OTP = require("./routes/User/otp");
+const payment = require("./routes/payment/payment");
 const trainerClasses = require("./routes/trainer/classes");
 const trainerRegisterGym = require("./routes/trainer/register_gym");
 const clientClasses = require("./routes/client/classes");
@@ -62,6 +63,9 @@ app.use(express.urlencoded({ extended: true }));
     app.use("/owner/pos", ownerPOSProducts);
     app.use("/owner/register-gym", ownerRegisterGym);
     app.use("/owner/client-retention", ownerClientRetention);
+
+    //Payment routes
+    app.use("/payment", payment);
 
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {

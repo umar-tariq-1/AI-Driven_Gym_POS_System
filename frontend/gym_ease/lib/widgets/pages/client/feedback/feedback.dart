@@ -176,7 +176,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               clientClassesData.isNotEmpty
                   ? Center(
                       child: CustomElevatedButton(
-                        // minWidth: MediaQuery.of(context).size.width - 28,
+                        minWidth: MediaQuery.of(context).size.width - 28,
                         buttonText: 'Submit',
                         onClick: questionnaireResponses.values.every((resp) =>
                                 resp['nearLocation'] != null &&

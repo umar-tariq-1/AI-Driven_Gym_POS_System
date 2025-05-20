@@ -13,6 +13,7 @@ import 'package:gym_ease/widgets/base/custom_elevated_button.dart';
 import 'package:gym_ease/widgets/base/custom_outlined_button.dart';
 import 'package:gym_ease/widgets/base/form_elements.dart';
 import 'package:gym_ease/widgets/base/snackbar.dart';
+import 'package:gym_ease/widgets/compound/checkout.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -503,45 +504,67 @@ class _ShowClassPageState extends State<ShowClassPage> {
                                   return;
                                 }
                                 try {
-                                  String authToken = await SecureStorage()
-                                      .getItem('authToken');
-                                  final response = await http.post(
-                                    Uri.parse(
-                                        'http://${serverAddressController.IP}:3001/client/classes/register'),
-                                    headers: {
-                                      'Content-Type': 'application/json',
-                                      'auth-token': authToken
-                                    },
-                                    body: jsonEncode({
-                                      'classId': widget.classData['id'],
-                                    }),
-                                  );
-                                  if (response.statusCode == 200) {
-                                    CustomSnackbar.showSuccessSnackbar(
-                                        context,
-                                        "Success!",
-                                        "You registered for this class, successfully");
-                                    controller.setClassesData(
-                                        controller.classesData.map((map) {
-                                      if (map['id'] == widget.classData['id']) {
-                                        map['isAlreadyRegistered'] = 1;
-                                        map['remainingSeats'] =
-                                            map['remainingSeats'] - 1;
-                                      }
-                                      return map;
-                                    }).toList());
-                                  } else {
-                                    CustomSnackbar.showFailureSnackbar(
-                                        context,
-                                        "Oops!",
-                                        jsonDecode(response.body)['message']);
-                                  }
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => Checkout(
+                                            name: widget.classData['className'],
+                                            quantity: 1,
+                                            priceCents: (double.parse(
+                                                        widget.classData[
+                                                            'classFee']) *
+                                                    100)
+                                                .round(),
+                                            classId: widget.classData['id'],
+                                            onSuccess: () async {
+                                              String authToken =
+                                                  await SecureStorage()
+                                                      .getItem('authToken');
+                                              final response = await http.post(
+                                                Uri.parse(
+                                                    'http://${serverAddressController.IP}:3001/client/classes/register'),
+                                                headers: {
+                                                  'Content-Type':
+                                                      'application/json',
+                                                  'auth-token': authToken
+                                                },
+                                                body: jsonEncode({
+                                                  'classId':
+                                                      widget.classData['id'],
+                                                }),
+                                              );
+                                              if (response.statusCode == 200) {
+                                                // CustomSnackbar.showSuccessSnackbar(
+                                                //     context,
+                                                //     "Success!",
+                                                //     "You registered for this class, successfully");
+                                                controller.setClassesData(
+                                                    controller.classesData
+                                                        .map((map) {
+                                                  if (map['id'] ==
+                                                      widget.classData['id']) {
+                                                    map['isAlreadyRegistered'] =
+                                                        1;
+                                                    map['remainingSeats'] =
+                                                        map['remainingSeats'] -
+                                                            1;
+                                                  }
+                                                  return map;
+                                                }).toList());
+                                              } else {
+                                                // CustomSnackbar
+                                                //     .showFailureSnackbar(
+                                                //         context,
+                                                //         "Oops!",
+                                                //         jsonDecode(response
+                                                //             .body)['message']);
+                                              }
+                                            },
+                                          )));
                                 } catch (e) {
                                   print(e);
-                                  CustomSnackbar.showFailureSnackbar(
-                                      context,
-                                      "Oops!",
-                                      "Sorry, couldn't request to server");
+                                  // CustomSnackbar.showFailureSnackbar(
+                                  //     context,
+                                  //     "Oops!",
+                                  //     "Sorry, couldn't request to server");
                                 }
                               },
                               minWidth: MediaQuery.of(context).size.width - 32,

@@ -147,18 +147,18 @@ Widget buildClientMenuItems(BuildContext context, active) => Column(
                 Navigator.of(context).pushNamed(AIBuddyPage.routePath);
               }
             }),
-        CustomListTile(
-            active: active == "Fitness Plans",
-            text: "Fitness Plans",
-            iconData: Icons.local_play_outlined,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
-              }
-            }),
+        // CustomListTile(
+        //     active: active == "Fitness Plans",
+        //     text: "Fitness Plans",
+        //     iconData: Icons.local_play_outlined,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           ClientHomePage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             ClientHomePage.routePath, (route) => false);
+        //       }
+        //     }),
         CustomListTile(
             active: active == "Live Classes",
             text: "Live Classes",
@@ -195,33 +195,33 @@ Widget buildClientMenuItems(BuildContext context, active) => Column(
                 Navigator.of(context).pushNamed(FeedbackPage.routePath);
               }
             }),
-        CustomListTile(
-            active: active == "Profile",
-            text: "Profile",
-            iconData: Icons.account_circle_outlined,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
-              }
-            }),
+        // CustomListTile(
+        //     active: active == "Profile",
+        //     text: "Profile",
+        //     iconData: Icons.account_circle_outlined,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           ClientHomePage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             ClientHomePage.routePath, (route) => false);
+        //       }
+        //     }),
         Divider(
           color: Colors.grey.shade700,
         ),
-        CustomListTile(
-            active: active == "Settings",
-            text: "Settings",
-            iconData: Icons.settings_sharp,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  ClientHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    ClientHomePage.routePath, (route) => false);
-              }
-            }),
+        // CustomListTile(
+        //     active: active == "Settings",
+        //     text: "Settings",
+        //     iconData: Icons.settings_sharp,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           ClientHomePage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             ClientHomePage.routePath, (route) => false);
+        //       }
+        //     }),
         CustomListTile(
             active: active == "Logout",
             text: "Logout",
@@ -280,81 +280,81 @@ Widget buildTrainerMenuItems(BuildContext context, active) => Column(
                     .pushNamed(TrainerLiveClassesPage.routePath);
               }
             }),
-        CustomListTile(
-            active: active == "Schedule",
-            text: "Schedule",
-            iconData: Icons.schedule_rounded,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  TrainerDashboardPage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    TrainerDashboardPage.routePath, (route) => false);
-              }
-            }),
-        CustomListTile(
-            active: active == "Task Manager",
-            text: "Task Manager",
-            iconData: Icons.task_alt_rounded,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  TrainerDashboardPage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    TrainerDashboardPage.routePath, (route) => false);
-              }
-            }),
-        CustomListTile(
-            active: active == "Client Progress",
-            text: "Client Progress",
-            iconData: Icons.settings_accessibility_rounded,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  TrainerDashboardPage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    TrainerDashboardPage.routePath, (route) => false);
-              }
-            }),
-        CustomListTile(
-            active: active == "Messaging",
-            text: "Messaging",
-            iconData: Icons.message_rounded,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  TrainerDashboardPage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    TrainerDashboardPage.routePath, (route) => false);
-              }
-            }),
-        CustomListTile(
-            active: active == "Profile",
-            text: "Profile",
-            iconData: Icons.account_circle_outlined,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  TrainerDashboardPage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    TrainerDashboardPage.routePath, (route) => false);
-              }
-            }),
+        // CustomListTile(
+        //     active: active == "Schedule",
+        //     text: "Schedule",
+        //     iconData: Icons.schedule_rounded,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           TrainerDashboardPage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             TrainerDashboardPage.routePath, (route) => false);
+        //       }
+        //     }),
+        // CustomListTile(
+        //     active: active == "Task Manager",
+        //     text: "Task Manager",
+        //     iconData: Icons.task_alt_rounded,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           TrainerDashboardPage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             TrainerDashboardPage.routePath, (route) => false);
+        //       }
+        //     }),
+        // CustomListTile(
+        //     active: active == "Client Progress",
+        //     text: "Client Progress",
+        //     iconData: Icons.settings_accessibility_rounded,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           TrainerDashboardPage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             TrainerDashboardPage.routePath, (route) => false);
+        //       }
+        //     }),
+        // CustomListTile(
+        //     active: active == "Messaging",
+        //     text: "Messaging",
+        //     iconData: Icons.message_rounded,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           TrainerDashboardPage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             TrainerDashboardPage.routePath, (route) => false);
+        //       }
+        //     }),
+        // CustomListTile(
+        //     active: active == "Profile",
+        //     text: "Profile",
+        //     iconData: Icons.account_circle_outlined,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           TrainerDashboardPage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             TrainerDashboardPage.routePath, (route) => false);
+        //       }
+        //     }),
         Divider(
           color: Colors.grey.shade700,
         ),
-        CustomListTile(
-            active: active == "Settings",
-            text: "Settings",
-            iconData: Icons.settings_sharp,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  TrainerDashboardPage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    TrainerDashboardPage.routePath, (route) => false);
-              }
-            }),
+        // CustomListTile(
+        //     active: active == "Settings",
+        //     text: "Settings",
+        //     iconData: Icons.settings_sharp,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           TrainerDashboardPage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             TrainerDashboardPage.routePath, (route) => false);
+        //       }
+        //     }),
         CustomListTile(
             active: active == "Logout",
             text: "Logout",
@@ -425,57 +425,57 @@ Widget buildOwnerMenuItems(BuildContext context, active) => Column(
                 Navigator.of(context).pushNamed(OwnerRegisterGymPage.routePath);
               }
             }),
-        CustomListTile(
-            active: active == "Payment History",
-            text: "Payment History",
-            iconData: Icons.payments_outlined,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  OwnerHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    OwnerHomePage.routePath, (route) => false);
-              }
-            }),
-        CustomListTile(
-            active: active == "Notifications",
-            text: "Notifications",
-            iconData: Icons.notifications_rounded,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  OwnerHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    OwnerHomePage.routePath, (route) => false);
-              }
-            }),
-        CustomListTile(
-            active: active == "Profile",
-            text: "Profile",
-            iconData: Icons.account_circle_outlined,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  OwnerHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    OwnerHomePage.routePath, (route) => false);
-              }
-            }),
+        // CustomListTile(
+        //     active: active == "Payment History",
+        //     text: "Payment History",
+        //     iconData: Icons.payments_outlined,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           OwnerHomePage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             OwnerHomePage.routePath, (route) => false);
+        //       }
+        //     }),
+        // CustomListTile(
+        //     active: active == "Notifications",
+        //     text: "Notifications",
+        //     iconData: Icons.notifications_rounded,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           OwnerHomePage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             OwnerHomePage.routePath, (route) => false);
+        //       }
+        //     }),
+        // CustomListTile(
+        //     active: active == "Profile",
+        //     text: "Profile",
+        //     iconData: Icons.account_circle_outlined,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           OwnerHomePage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             OwnerHomePage.routePath, (route) => false);
+        //       }
+        //     }),
         Divider(
           color: Colors.grey.shade700,
         ),
-        CustomListTile(
-            active: active == "Settings",
-            text: "Settings",
-            iconData: Icons.settings_sharp,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  OwnerHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    OwnerHomePage.routePath, (route) => false);
-              }
-            }),
+        // CustomListTile(
+        //     active: active == "Settings",
+        //     text: "Settings",
+        //     iconData: Icons.settings_sharp,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           OwnerHomePage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             OwnerHomePage.routePath, (route) => false);
+        //       }
+        //     }),
         CustomListTile(
             active: active == "Logout",
             text: "Logout",
@@ -521,81 +521,81 @@ Widget buildManagerMenuItems(BuildContext context, active) => Column(
                     .pushNamed(ManagerPointOfSalesPage.routePath);
               }
             }),
-        CustomListTile(
-            active: active == "Fitness Plans",
-            text: "Fitness Plans",
-            iconData: Icons.settings_accessibility_rounded,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  ManagerHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    ManagerHomePage.routePath, (route) => false);
-              }
-            }),
-        CustomListTile(
-            active: active == "Live Classes",
-            text: "Live Classes",
-            iconData: Icons.live_tv_rounded,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  ManagerHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    ManagerHomePage.routePath, (route) => false);
-              }
-            }),
-        CustomListTile(
-            active: active == "Payment History",
-            text: "Payment History",
-            iconData: Icons.payments_outlined,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  ManagerHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    ManagerHomePage.routePath, (route) => false);
-              }
-            }),
-        CustomListTile(
-            active: active == "Notifications",
-            text: "Notifications",
-            iconData: Icons.notifications_rounded,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  ManagerHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    ManagerHomePage.routePath, (route) => false);
-              }
-            }),
-        CustomListTile(
-            active: active == "Profile",
-            text: "Profile",
-            iconData: Icons.account_circle_outlined,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  ManagerHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    ManagerHomePage.routePath, (route) => false);
-              }
-            }),
+        // CustomListTile(
+        //     active: active == "Fitness Plans",
+        //     text: "Fitness Plans",
+        //     iconData: Icons.settings_accessibility_rounded,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           ManagerHomePage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             ManagerHomePage.routePath, (route) => false);
+        //       }
+        //     }),
+        // CustomListTile(
+        //     active: active == "Live Classes",
+        //     text: "Live Classes",
+        //     iconData: Icons.live_tv_rounded,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           ManagerHomePage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             ManagerHomePage.routePath, (route) => false);
+        //       }
+        //     }),
+        // CustomListTile(
+        //     active: active == "Payment History",
+        //     text: "Payment History",
+        //     iconData: Icons.payments_outlined,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           ManagerHomePage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             ManagerHomePage.routePath, (route) => false);
+        //       }
+        //     }),
+        // CustomListTile(
+        //     active: active == "Notifications",
+        //     text: "Notifications",
+        //     iconData: Icons.notifications_rounded,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           ManagerHomePage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             ManagerHomePage.routePath, (route) => false);
+        //       }
+        //     }),
+        // CustomListTile(
+        //     active: active == "Profile",
+        //     text: "Profile",
+        //     iconData: Icons.account_circle_outlined,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           ManagerHomePage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             ManagerHomePage.routePath, (route) => false);
+        //       }
+        //     }),
         Divider(
           color: Colors.grey.shade700,
         ),
-        CustomListTile(
-            active: active == "Settings",
-            text: "Settings",
-            iconData: Icons.settings_sharp,
-            iconSize: 26.75,
-            onTap: () {
-              if (ModalRoute.of(context)?.settings.name !=
-                  ManagerHomePage.routePath) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    ManagerHomePage.routePath, (route) => false);
-              }
-            }),
+        // CustomListTile(
+        //     active: active == "Settings",
+        //     text: "Settings",
+        //     iconData: Icons.settings_sharp,
+        //     iconSize: 26.75,
+        //     onTap: () {
+        //       if (ModalRoute.of(context)?.settings.name !=
+        //           ManagerHomePage.routePath) {
+        //         Navigator.of(context).pushNamedAndRemoveUntil(
+        //             ManagerHomePage.routePath, (route) => false);
+        //       }
+        //     }),
         CustomListTile(
             active: active == "Logout",
             text: "Logout",

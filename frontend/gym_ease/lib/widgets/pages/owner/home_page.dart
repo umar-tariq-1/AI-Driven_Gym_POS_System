@@ -90,101 +90,91 @@ class _OwnerHomePageState extends State<OwnerHomePage> {
           accType: "Owner",
         ),
         backgroundColor: colorScheme.surface,
-        body: const SingleProductCheckout(
-            name: "Ball",
-            quantity: 3,
-            priceCents:
-                2300) /* RefreshIndicator(
-            triggerMode: RefreshIndicatorTriggerMode.onEdge,
-            displacement: 60,
-            onRefresh: () async {
-              HapticFeedback.mediumImpact();
-              fetchData();
-            },
-            backgroundColor: Colors.white,
-            // child: const SizedBox()
-            child: SingleChildScrollView(
+        body: RefreshIndicator(
+          triggerMode: RefreshIndicatorTriggerMode.onEdge,
+          displacement: 60,
+          onRefresh: () async {
+            HapticFeedback.mediumImpact();
+            fetchData();
+          },
+          backgroundColor: Colors.white,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(8, 10, 8, 15),
+            children: [
+              Container(
+                margin: const EdgeInsets.fromLTRB(0, 15, 0, 22),
+                child: Text(
+                  "Hi 👋, ${userData.isNotEmpty ? userData['firstName'] : ''} ${userData.isNotEmpty ? userData['lastName'] : ''}!",
+                  style: TextStyle(
+                    color: Colors.grey.shade800,
+                    fontSize: 22.5,
+                    fontFamily: 'RalewaySemiBold',
+                  ),
+                ),
+              ),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 4,
                 child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 10, 8, 15),
-                    child: Column(
-                        // crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                              margin: const EdgeInsets.fromLTRB(0, 15, 0, 22),
-                              child: Text(
-                                "Hi 👋, ${userData.isNotEmpty ? userData['firstName'] : ''} ${userData.isNotEmpty ? userData['lastName'] : ''}!",
-                                style: TextStyle(
-                                    color: Colors.grey.shade800,
-                                    fontSize: 22.5,
-                                    fontFamily: 'RalewaySemiBold'),
-                              )),
-                          Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16)),
-                            elevation: 4,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 17, horizontal: 10),
-                              child: Column(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      HapticFeedback.lightImpact();
-                                    },
-                                    child: DataBox(
-                                      color: const Color.fromARGB(
-                                          255, 23, 100, 163),
-                                      title: 'My Gyms',
-                                      subtitle: responseData.isNotEmpty
-                                          ? responseData['totalGyms'].toString()
-                                          : '0',
-                                    ),
-                                  ),
-                                  const SizedBox(height: 17.5),
-                                  DataBox(
-                                      color: Colors.brown,
-                                      title: 'Total Clients',
-                                      subtitle: responseData.isNotEmpty
-                                          ? responseData['totalClients']
-                                              .toString()
-                                          : '0'),
-                                  const SizedBox(height: 17.5),
-                                  GestureDetector(
-                                    onTap: () {
-                                      HapticFeedback.lightImpact();
-                                    },
-                                    child: DataBox(
-                                      color: const Color.fromARGB(
-                                          255, 51, 131, 54),
-                                      title: 'Total Classes',
-                                      subtitle: responseData.isNotEmpty
-                                          ? responseData['totalClasses']
-                                              .toString()
-                                          : '0',
-                                    ),
-                                  ),
-                                  const SizedBox(height: 17.5),
-                                  GestureDetector(
-                                    onTap: () {
-                                      HapticFeedback.lightImpact();
-                                      // Navigator.of(context)
-                                      //     .pushNamed(TrainerLiveClassesPage.routePath);
-                                    },
-                                    child: DataBox(
-                                      color: Colors.purple,
-                                      title: 'Classes Revenue',
-                                      subtitle: responseData.isNotEmpty
-                                          ? responseData['totalRevenue']
-                                              .toString()
-                                          : '0',
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                        ])))) */
-        );
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 17, horizontal: 10),
+                  child: Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+                        },
+                        child: DataBox(
+                          color: const Color.fromARGB(255, 23, 100, 163),
+                          title: 'My Gyms',
+                          subtitle: responseData.isNotEmpty
+                              ? responseData['totalGyms'].toString()
+                              : '0',
+                        ),
+                      ),
+                      const SizedBox(height: 17.5),
+                      DataBox(
+                        color: Colors.brown,
+                        title: 'Total Clients',
+                        subtitle: responseData.isNotEmpty
+                            ? responseData['totalClients'].toString()
+                            : '0',
+                      ),
+                      const SizedBox(height: 17.5),
+                      GestureDetector(
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+                        },
+                        child: DataBox(
+                          color: const Color.fromARGB(255, 51, 131, 54),
+                          title: 'Total Classes',
+                          subtitle: responseData.isNotEmpty
+                              ? responseData['totalClasses'].toString()
+                              : '0',
+                        ),
+                      ),
+                      const SizedBox(height: 17.5),
+                      GestureDetector(
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+                        },
+                        child: DataBox(
+                          color: Colors.purple,
+                          title: 'Classes Revenue',
+                          subtitle: responseData.isNotEmpty
+                              ? responseData['totalRevenue'].toString()
+                              : '0',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        ));
   }
 }

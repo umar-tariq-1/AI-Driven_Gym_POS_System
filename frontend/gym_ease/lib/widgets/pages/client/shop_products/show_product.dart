@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:gym_ease/data/secure_storage.dart';
 import 'package:gym_ease/main.dart';
+import 'package:gym_ease/widgets/compound/checkout.dart';
 import 'package:intl/intl.dart';
 import 'package:gym_ease/states/owner.dart';
 import 'package:gym_ease/states/server_address.dart';
@@ -331,6 +332,9 @@ class _ShowShopProductPageState extends State<ShowShopProductPage> {
                             builder: (BuildContext context) {
                               return QuantityDialog(
                                 maxQuantity: widget.productData['quantity'],
+                                productName: widget.productData['productName'],
+                                priceCents: widget.productData['price'] * 100,
+                                posProductId: widget.productData['id'],
                               );
                             },
                           );
@@ -353,9 +357,17 @@ class _ShowShopProductPageState extends State<ShowShopProductPage> {
 }
 
 class QuantityDialog extends StatelessWidget {
-  int maxQuantity;
+  final int maxQuantity;
+  final String productName;
+  final int priceCents;
+  final int posProductId;
   String requiredQuantity = '1';
-  QuantityDialog({super.key, required this.maxQuantity});
+  QuantityDialog(
+      {super.key,
+      required this.maxQuantity,
+      required this.productName,
+      required this.priceCents,
+      required this.posProductId});
 
   @override
   Widget build(BuildContext context) {
@@ -408,7 +420,7 @@ class QuantityDialog extends StatelessWidget {
                     title: "Confirm Purchase?",
                     message:
                         "Are you sure you want to purchase $requiredQuantity item(s)?",
-                    yesText: "Purchase",
+                    yesText: "Checkout",
                     noText: "Cancel",
                     noCallback: () {
                       Navigator.of(context).pop();
@@ -417,6 +429,16 @@ class QuantityDialog extends StatelessWidget {
                     yesCallback: () async {
                       Navigator.of(context).pop();
                       Navigator.of(context).pop();
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => Checkout(
+                                name: productName,
+                                quantity: int.parse(requiredQuantity),
+                                priceCents: priceCents,
+                                posProductId: posProductId,
+                                onSuccess: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )));
                     },
                   );
                 }),
