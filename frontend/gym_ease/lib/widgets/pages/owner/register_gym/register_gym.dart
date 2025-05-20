@@ -17,8 +17,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:http/http.dart' as http;
 
 class OwnerRegisterGymPage extends StatefulWidget {
-  const OwnerRegisterGymPage(
-      {super.key});
+  const OwnerRegisterGymPage({super.key});
   static const String routePath = '/owner/register-gym';
 
   @override

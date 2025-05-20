@@ -35,8 +35,7 @@ trainerClasses.post("/create", authorize, upload, async (req, res) => {
 
     const {
       className,
-      gymName,
-      gymLocation,
+      gymId,
       trainerName,
       classDescription,
       maxParticipants,
@@ -55,8 +54,7 @@ trainerClasses.post("/create", authorize, upload, async (req, res) => {
     const query = `
       INSERT INTO TrainerClasses (
         className,
-        gymName,
-        gymLocation,
+        gymId,
         trainerName,
         classDescription,
         maxParticipants,
@@ -74,13 +72,12 @@ trainerClasses.post("/create", authorize, upload, async (req, res) => {
         imageId,
         imageName
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
       className.trim(),
-      gymName.trim(),
-      gymLocation.trim(),
+      parseInt(gymId),
       trainerName.trim(),
       classDescription.trim(),
       maxParticipants.trim(),
@@ -104,14 +101,17 @@ trainerClasses.post("/create", authorize, upload, async (req, res) => {
     const query2 = `
       SELECT 
         TrainerClasses.*, 
+        gyms.gymName, 
+        gyms.gymLocation,
         (TrainerClasses.maxParticipants - 
           (SELECT COUNT(*) 
-           FROM registeredclasses 
-           WHERE registeredclasses.classId = TrainerClasses.id)
+          FROM registeredclasses 
+          WHERE registeredclasses.classId = TrainerClasses.id)
         ) AS remainingSeats
       FROM TrainerClasses
-      WHERE trainerId = ? AND id = ?;
-    `;
+      JOIN gyms ON TrainerClasses.gymId = gyms.id
+      WHERE TrainerClasses.trainerId = ? AND TrainerClasses.id = ?;
+`;
 
     const classes = await db.query(query2, [
       userData.id,
@@ -149,17 +149,22 @@ trainerClasses.get("/", authorize, async (req, res) => {
 
   try {
     const query = `
-      SELECT 
-        TrainerClasses.*, 
-        (TrainerClasses.maxParticipants - 
-          (SELECT COUNT(*) 
-           FROM registeredclasses 
-           WHERE registeredclasses.classId = TrainerClasses.id)
-        ) AS remainingSeats
-      FROM TrainerClasses
-      WHERE trainerId = ?;
-    `;
+  SELECT 
+    TrainerClasses.*, 
+    gyms.gymName, 
+    gyms.gymLocation,
+    (TrainerClasses.maxParticipants - 
+      (SELECT COUNT(*) 
+       FROM registeredclasses 
+       WHERE registeredclasses.classId = TrainerClasses.id)
+    ) AS remainingSeats
+  FROM TrainerClasses
+  JOIN gyms ON TrainerClasses.gymId = gyms.id
+  WHERE TrainerClasses.trainerId = ?;
+`;
+
     const classes = await db.query(query, [userData.id]);
+
     var data = classes[0];
     data.forEach((obj) => {
       obj.imageData = { id: obj.imageId, name: obj.imageName };

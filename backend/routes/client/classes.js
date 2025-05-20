@@ -14,27 +14,31 @@ clientClasses.get("/", authorize, async (req, res) => {
     const userId = userData.id;
 
     const query = `
-    SELECT 
-      TrainerClasses.*, 
-      JSON_OBJECT(
-        'firstName', Users.firstName,
-        'lastName', Users.lastName
-      ) AS trainer,
-      EXISTS (
-        SELECT 1 
-        FROM registeredclasses 
-        WHERE registeredclasses.clientId = ? 
-          AND registeredclasses.classId = TrainerClasses.id
-      ) AS isAlreadyRegistered,
-      (TrainerClasses.maxParticipants - 
-        (SELECT COUNT(*) 
-         FROM registeredclasses 
-         WHERE registeredclasses.classId = TrainerClasses.id)
-      ) AS remainingSeats
-    FROM TrainerClasses
-    JOIN gym_pos_system.users AS Users
-    ON TrainerClasses.trainerId = Users.id;
-  `;
+      SELECT 
+        TrainerClasses.*, 
+        gyms.gymName,
+        gyms.gymLocation,
+        JSON_OBJECT(
+          'firstName', Users.firstName,
+          'lastName', Users.lastName
+        ) AS trainer,
+        EXISTS (
+          SELECT 1 
+          FROM registeredclasses 
+          WHERE registeredclasses.clientId = ? 
+            AND registeredclasses.classId = TrainerClasses.id
+        ) AS isAlreadyRegistered,
+        (TrainerClasses.maxParticipants - 
+          (SELECT COUNT(*) 
+          FROM registeredclasses 
+          WHERE registeredclasses.classId = TrainerClasses.id)
+        ) AS remainingSeats
+      FROM TrainerClasses
+      JOIN gym_pos_system.users AS Users
+        ON TrainerClasses.trainerId = Users.id
+      JOIN gyms
+        ON TrainerClasses.gymId = gyms.id;
+    `;
 
     const classes = await db.query(query, [userId]);
     var data = classes[0];
@@ -89,10 +93,14 @@ clientClasses.get("/registered-classes", authorize, async (req, res) => {
 
     const query = `
       SELECT
-        *
+        TrainerClasses.*,
+        gyms.gymName,
+        gyms.gymLocation
       FROM TrainerClasses
       JOIN registeredclasses
         ON TrainerClasses.id = registeredclasses.classId
+      JOIN gyms
+        ON TrainerClasses.gymId = gyms.id
       WHERE registeredclasses.clientId = ?;
     `;
 

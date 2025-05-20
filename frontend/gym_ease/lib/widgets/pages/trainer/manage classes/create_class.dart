@@ -35,8 +35,6 @@ class _CreateClassPageState extends State<CreateClassPage> {
 
   final Map<String, TextEditingController> controllers = {
     'className': TextEditingController(),
-    'gymName': TextEditingController(),
-    'gymLocation': TextEditingController(),
     'trainerName': TextEditingController(),
     'classDescription': TextEditingController(),
     'maxParticipants': TextEditingController(),
@@ -156,6 +154,13 @@ class _CreateClassPageState extends State<CreateClassPage> {
     } else {
       CustomSnackbar.showFailureSnackbar(
           context, "Oops!", "Please select an end time");
+      return;
+    }
+    if (_selectedGymId != null) {
+      request.fields['gymId'] = _selectedGymId.toString();
+    } else {
+      CustomSnackbar.showFailureSnackbar(
+          context, "Oops!", "Please select a gym");
       return;
     }
 

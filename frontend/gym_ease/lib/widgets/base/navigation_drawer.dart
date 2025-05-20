@@ -7,7 +7,7 @@ import 'package:gym_ease/widgets/base/snackbar.dart';
 import 'package:gym_ease/widgets/pages/client/book%20classes/book_classes.dart';
 import 'package:gym_ease/widgets/pages/client/ai_buddy/ai_buddy_page.dart';
 import 'package:gym_ease/widgets/pages/client/live_classes/live_classes.dart';
-import 'package:gym_ease/widgets/pages/client/notifications/notifications.dart';
+import 'package:gym_ease/widgets/pages/client/feedback/feedback.dart';
 import 'package:gym_ease/widgets/pages/client/shop_products/shop_products_page.dart';
 import 'package:gym_ease/widgets/pages/manager/home_page.dart';
 import 'package:gym_ease/widgets/pages/manager/point_of_sales/point_of_sales_page.dart';
@@ -183,16 +183,16 @@ Widget buildClientMenuItems(BuildContext context, active) => Column(
               }
             }),
         CustomListTile(
-            active: active == "Notifications",
-            text: "Notifications",
-            iconData: Icons.notifications_rounded,
+            active: active == "Feedback",
+            text: "Feedback",
+            iconData: Icons.feedback_rounded,
             iconSize: 26.75,
             onTap: () {
               if (ModalRoute.of(context)?.settings.name !=
-                  NotificationsPage.routePath) {
+                  FeedbackPage.routePath) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
                     ClientHomePage.routePath, (route) => false);
-                Navigator.of(context).pushNamed(NotificationsPage.routePath);
+                Navigator.of(context).pushNamed(FeedbackPage.routePath);
               }
             }),
         CustomListTile(

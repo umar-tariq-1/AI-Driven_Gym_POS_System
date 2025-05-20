@@ -3,7 +3,7 @@ import 'package:gym_ease/widgets/pages/client/ai_buddy/ai_buddy_page.dart';
 import 'package:gym_ease/widgets/pages/client/book%20classes/book_classes.dart';
 import 'package:gym_ease/widgets/pages/client/home_page.dart';
 import 'package:gym_ease/widgets/pages/client/live_classes/live_classes.dart';
-import 'package:gym_ease/widgets/pages/client/notifications/notifications.dart';
+import 'package:gym_ease/widgets/pages/client/feedback/feedback.dart';
 import 'package:gym_ease/widgets/pages/client/shop_products/shop_products_page.dart';
 import 'package:gym_ease/widgets/pages/landing_page.dart';
 import 'package:gym_ease/widgets/pages/manager/home_page.dart';
@@ -36,7 +36,7 @@ final Map<String, Widget Function(BuildContext)> appRoutes = {
   ClientLiveClassesPage.routePath: (context) => const ClientLiveClassesPage(),
   AIBuddyPage.routePath: (context) => const AIBuddyPage(),
   ShopProductsPage.routePath: (context) => const ShopProductsPage(),
-  NotificationsPage.routePath: (context) => const NotificationsPage(),
+  FeedbackPage.routePath: (context) => const FeedbackPage(),
 
   // Trainer Routes
   TrainerDashboardPage.routePath: (context) => const TrainerDashboardPage(),

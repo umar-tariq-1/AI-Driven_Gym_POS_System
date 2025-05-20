@@ -15,16 +15,16 @@ import 'package:gym_ease/widgets/base/question_card.dart';
 import 'package:gym_ease/widgets/base/snackbar.dart';
 import 'package:http/http.dart' as http;
 
-class NotificationsPage extends StatefulWidget {
-  const NotificationsPage({super.key});
+class FeedbackPage extends StatefulWidget {
+  const FeedbackPage({super.key});
 
   static const String routePath = '/client/notifications';
 
   @override
-  State<NotificationsPage> createState() => _NotificationsPageState();
+  State<FeedbackPage> createState() => _FeedbackPageState();
 }
 
-class _NotificationsPageState extends State<NotificationsPage> {
+class _FeedbackPageState extends State<FeedbackPage> {
   Map userData = {};
   final serverAddressController = Get.find<ServerAddressController>();
   final clientClassesController = Get.find<ClientController>();
@@ -85,17 +85,17 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-          title: "Notifications",
+          title: "Feedback",
           backgroundColor: appBarColor,
           foregroundColor: appBarTextColor),
       drawer: const CustomNavigationDrawer(
-        active: 'Notifications',
+        active: 'Feedback',
         accType: "Client",
       ),
       backgroundColor: Colors.grey.shade200,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 14),
+          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -124,37 +124,42 @@ class _NotificationsPageState extends State<NotificationsPage> {
               ...List.generate(clientClassesData.length, (index) {
                 final classData = clientClassesData[index];
                 final gymName = classData['gymName'];
+                final gymId = classData['gymId'];
+                final classId = classData['id'];
+                final className = classData['className'];
+                final key = '${gymId}_$classId';
 
                 questionnaireResponses.putIfAbsent(
-                    gymName,
-                    () => {
-                          'nearLocation': null,
-                          'partner': null,
-                        });
+                  key,
+                  () => {
+                    'nearLocation': null,
+                    'partner': null,
+                  },
+                );
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     QuestionCard(
-                      question: '1. Do you find this gym, $gymName near?',
+                      question:
+                          '1. Do you find the gym: $gymName, for class: $className, near?',
                       options: const ['Yes', 'No'],
-                      groupValue:
-                          questionnaireResponses[gymName]!['nearLocation'],
+                      groupValue: questionnaireResponses[key]!['nearLocation'],
                       onChanged: (val) {
                         setState(() {
-                          questionnaireResponses[gymName]!['nearLocation'] =
-                              val;
+                          questionnaireResponses[key]!['nearLocation'] = val;
                         });
                       },
                     ),
                     const SizedBox(height: 10),
                     QuestionCard(
-                      question: '2. Do you have a gym partner for $gymName?',
+                      question:
+                          '2. Do you have a gym partner for class: $className, at gym: $gymName?',
                       options: const ['Yes', 'No'],
-                      groupValue: questionnaireResponses[gymName]!['partner'],
+                      groupValue: questionnaireResponses[key]!['partner'],
                       onChanged: (val) {
                         setState(() {
-                          questionnaireResponses[gymName]!['partner'] = val;
+                          questionnaireResponses[key]!['partner'] = val;
                         });
                       },
                     ),
@@ -164,46 +169,56 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   ],
                 );
               }),
-              const SizedBox(height: 5),
-              CustomElevatedButton(
-                minWidth: MediaQuery.of(context).size.width - 28,
-                buttonText: 'Submit',
-                onClick: questionnaireResponses.values.every((resp) =>
-                        resp['nearLocation'] != null && resp['partner'] != null)
-                    ? () async {
-                        final updatedResponses =
-                            questionnaireResponses.map((key, value) {
-                          return MapEntry(
-                            key,
-                            value.map((k, v) => MapEntry(
-                                k,
-                                v == 'Yes'
-                                    ? 1
-                                    : v == 'No'
-                                        ? 0
-                                        : v)),
-                          );
-                        });
-                        HapticFeedback.lightImpact();
-                        String authToken =
-                            await SecureStorage().getItem('authToken');
-                        final response = await http.post(
-                          Uri.parse(
-                              'http://${serverAddressController.IP}:3001/client/client-retention/update-data'),
-                          headers: {
-                            'auth-token': authToken,
-                            'Content-Type': 'application/json',
-                          },
-                          body: jsonEncode(updatedResponses),
-                        );
+              SizedBox(height: isLoading ? 30 : 5),
+              isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : const SizedBox(),
+              clientClassesData.isNotEmpty
+                  ? Center(
+                      child: CustomElevatedButton(
+                        // minWidth: MediaQuery.of(context).size.width - 28,
+                        buttonText: 'Submit',
+                        onClick: questionnaireResponses.values.every((resp) =>
+                                resp['nearLocation'] != null &&
+                                resp['partner'] != null)
+                            ? () async {
+                                final updatedResponses =
+                                    questionnaireResponses.map((key, value) {
+                                  return MapEntry(
+                                    key,
+                                    value.map((k, v) => MapEntry(
+                                        k,
+                                        v == 'Yes'
+                                            ? 1
+                                            : v == 'No'
+                                                ? 0
+                                                : v)),
+                                  );
+                                });
+                                HapticFeedback.lightImpact();
+                                String authToken =
+                                    await SecureStorage().getItem('authToken');
+                                final response = await http.post(
+                                  Uri.parse(
+                                      'http://${serverAddressController.IP}:3001/client/client-retention/update-data'),
+                                  headers: {
+                                    'auth-token': authToken,
+                                    'Content-Type': 'application/json',
+                                  },
+                                  body: jsonEncode(updatedResponses),
+                                );
 
-                        print(response.body);
-                      }
-                    : () {
-                        CustomSnackbar.showFailureSnackbar(context, "Oops!",
-                            "Couldn't submit. All answers are required.");
-                      },
-              ),
+                                print(response.body);
+                              }
+                            : () {
+                                CustomSnackbar.showFailureSnackbar(
+                                    context,
+                                    "Oops!",
+                                    "Couldn't submit. All answers are required.");
+                              },
+                      ),
+                    )
+                  : const SizedBox(),
               const SizedBox(height: 5),
             ],
           ),

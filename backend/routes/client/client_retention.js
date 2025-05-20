@@ -9,7 +9,6 @@ clientRetention.post("/update-data", authorize, async (req, res) => {
   try {
     const userId = req.userData.id;
 
-    // 1. Get gender, age & phone from users table
     const [userResult] = await db.execute(
       "SELECT gender, phone, dob FROM users WHERE id = ?",
       [userId]
@@ -21,33 +20,45 @@ clientRetention.post("/update-data", authorize, async (req, res) => {
     const ageDate = new Date(ageDifMs);
     const Age = Math.abs(ageDate.getUTCFullYear() - 1970);
 
-    // 2. Get all classes of this client
     const [classes] = await db.execute(
       `SELECT
-        *
-      FROM TrainerClasses
-      JOIN registeredclasses
-        ON TrainerClasses.id = registeredclasses.classId
-      WHERE registeredclasses.clientId = ?`,
+         TrainerClasses.*,
+         gyms.gymName,
+         gyms.gymLocation,
+         gyms.id AS gymId
+       FROM TrainerClasses
+       JOIN registeredclasses
+         ON TrainerClasses.id = registeredclasses.classId
+       JOIN gyms
+         ON TrainerClasses.gymId = gyms.id
+       WHERE registeredclasses.clientId = ?`,
       [userId]
     );
 
     const data = {};
 
     for (let classInfo of classes) {
-      const { gymName, startDate, endDate, selectedDays } = classInfo;
+      const {
+        gymId,
+        id: classId,
+        gymName,
+        startDate,
+        endDate,
+        selectedDays,
+      } = classInfo;
+
+      const key = `${gymId}_${classId}`;
+      if (!req.body[key]) continue;
 
       const start = new Date(startDate);
       const end = new Date(endDate);
       const now = new Date();
 
-      // Contract period in months
       const contract_period = Math.round(
         (end.getFullYear() - start.getFullYear()) * 12 +
           (end.getMonth() - start.getMonth())
       );
 
-      // Months to end contract
       const month_to_end_contract = Math.max(
         0,
         Math.round(
@@ -56,21 +67,16 @@ clientRetention.post("/update-data", authorize, async (req, res) => {
         )
       );
 
-      // Calculate total class days per week from JSON schedule
       const weeklyFrequency = JSON.parse(selectedDays).filter(Boolean).length;
-
-      // Avg total frequency = (weeks in full contract) * days per week
       const totalWeeks = Math.floor((end - start) / (1000 * 60 * 60 * 24 * 7));
       const avg_class_frequency_total = +(weeklyFrequency * totalWeeks).toFixed(
         2
       );
 
-      // Avg frequency current month
       const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
       const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
       const daysInMonth =
         (endOfMonth - startOfMonth) / (1000 * 60 * 60 * 24) + 1;
-
       const weeksInMonth = daysInMonth / 7;
       const avg_class_frequency_current_month = +(
         weeklyFrequency * weeksInMonth
@@ -78,8 +84,8 @@ clientRetention.post("/update-data", authorize, async (req, res) => {
 
       const payload = {
         gender: gender == "Male" ? 1 : 0,
-        Near_Location: req.body[gymName].nearLocation,
-        Partner: req.body[gymName].partner,
+        Near_Location: req.body[key].nearLocation,
+        Partner: req.body[key].partner,
         Phone: phone,
         Contract_period: contract_period,
         Age,
@@ -88,37 +94,54 @@ clientRetention.post("/update-data", authorize, async (req, res) => {
         Avg_class_frequency_current_month: avg_class_frequency_current_month,
       };
 
-      data[gymName] = payload;
+      data[key] = payload;
     }
 
     const pythonResponse = await axios.post(
       "http://127.0.0.1:5000/predict",
       data
     );
-    console.log("\n\nPython response:", pythonResponse.data);
+    const predictions = pythonResponse.data.predictions;
 
-    // Save to DB
-    // await db.execute(
-    //   `INSERT INTO gym_churn_predictions
-    //     (userId, gymName, gender, nearLocation, partner, phone, contractPeriod, age, monthToEndContract, avgClassFrequencyTotal, avgClassFrequencyCurrent_month, churnResult)
-    //     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    //   [
-    //     userId,
-    //     gymName,
-    //     gender,
-    //     Near_Location,
-    //     Partner,
-    //     phone,
-    //     contract_period,
-    //     Age,
-    //     month_to_end_contract,
-    //     avg_class_frequency_total,
-    //     avg_class_frequency_current_month,
-    //     churn,
-    //   ]
-    // );
+    for (const key in predictions) {
+      const [gymId, classId] = key.split("_").map(Number);
+      const {
+        gender,
+        Near_Location,
+        Partner,
+        Phone,
+        Contract_period,
+        Age,
+        Month_to_end_contract,
+        Avg_class_frequency_total,
+        Avg_class_frequency_current_month,
+        churn,
+      } = predictions[key];
 
-    // results.push({ gym: gymName, churn });
+      await db.execute(
+        `INSERT INTO clientretention (
+      userId, gymId, classId, gender, nearLocation, partner, phone,
+      contractPeriod, age, monthToEndContract,
+      avgClassFrequencyTotal, avgClassFrequencyCurrentMonth, churn
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          userId,
+          gymId,
+          classId,
+          gender,
+          Near_Location,
+          Partner,
+          Phone,
+          Contract_period,
+          Age,
+          Month_to_end_contract,
+          Avg_class_frequency_total,
+          Avg_class_frequency_current_month,
+          churn,
+        ]
+      );
+    }
 
     res.status(200).json({ success: true });
   } catch (err) {

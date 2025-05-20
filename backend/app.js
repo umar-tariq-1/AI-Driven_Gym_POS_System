@@ -16,7 +16,8 @@ const ownerPOSProducts = require("./routes/owner/pos");
 const ownerRegisterGym = require("./routes/owner/register_gym");
 const clientShopProducts = require("./routes/client/shop_products");
 const trainerShopProducts = require("./routes/trainer/shop_products");
-const clientRetention = require("./routes/client/client_retention");
+const clientClientRetention = require("./routes/client/client_retention");
+const ownerClientRetention = require("./routes/owner/client_retention");
 
 const app = express();
 
@@ -55,11 +56,12 @@ app.use(express.urlencoded({ extended: true }));
     // Client routes
     app.use("/client/classes", clientClasses);
     app.use("/client/shop-products", clientShopProducts);
-    app.use("/client/client-retention", clientRetention);
+    app.use("/client/client-retention", clientClientRetention);
 
     //Owner routes
     app.use("/owner/pos", ownerPOSProducts);
     app.use("/owner/register-gym", ownerRegisterGym);
+    app.use("/owner/client-retention", ownerClientRetention);
 
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {
