@@ -49,6 +49,13 @@ clientRetention.get("/", authorize, async (req, res) => {
         churnCount,
       } = row;
 
+      if (!churnStats[gymId]) {
+        churnStats[gymId] = {
+          gymName,
+          classes: {},
+        };
+      }
+
       if (!classId) continue;
 
       totalGyms.add(gymId);
@@ -80,10 +87,9 @@ clientRetention.get("/", authorize, async (req, res) => {
       else if (churn === 1)
         churnStats[gymId].classes[classId].churn1 += churnCount;
     }
-
     res.status(200).json({
       success: true,
-      totalGyms: totalGyms.size,
+      totalGyms: Object.keys(churnStats).length,
       totalClasses: totalClasses.size,
       totalClients: totalClients.size,
       totalRevenue,

@@ -176,6 +176,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               clientClassesData.isNotEmpty
                   ? Center(
                       child: CustomElevatedButton(
+                        disabled: isLoading,
                         minWidth: MediaQuery.of(context).size.width - 28,
                         buttonText: 'Submit',
                         onClick: questionnaireResponses.values.every((resp) =>
@@ -196,19 +197,44 @@ class _FeedbackPageState extends State<FeedbackPage> {
                                   );
                                 });
                                 HapticFeedback.lightImpact();
+                                setState(() {
+                                  isLoading = true;
+                                });
                                 String authToken =
                                     await SecureStorage().getItem('authToken');
-                                final response = await http.post(
-                                  Uri.parse(
-                                      'http://${serverAddressController.IP}:3001/client/client-retention/update-data'),
-                                  headers: {
-                                    'auth-token': authToken,
-                                    'Content-Type': 'application/json',
-                                  },
-                                  body: jsonEncode(updatedResponses),
-                                );
+                                try {
+                                  final response = await http.post(
+                                    Uri.parse(
+                                        'http://${serverAddressController.IP}:3001/client/client-retention/update-data'),
+                                    headers: {
+                                      'auth-token': authToken,
+                                      'Content-Type': 'application/json',
+                                    },
+                                    body: jsonEncode(updatedResponses),
+                                  );
+                                  if (response.statusCode == 200) {
+                                    Navigator.of(context).pop();
+                                    CustomSnackbar.showSuccessSnackbar(
+                                        context,
+                                        "Success",
+                                        "Feedback recorded successfully.");
+                                  } else {
+                                    CustomSnackbar.showFailureSnackbar(
+                                        context,
+                                        "Oops!",
+                                        json.decode(response.body)['message']);
+                                  }
+                                } catch (e) {
+                                  print(e);
+                                  CustomSnackbar.showFailureSnackbar(
+                                      context,
+                                      "Oops!",
+                                      "Sorry, couldn't request to server");
+                                }
 
-                                print(response.body);
+                                setState(() {
+                                  isLoading = false;
+                                });
                               }
                             : () {
                                 CustomSnackbar.showFailureSnackbar(
