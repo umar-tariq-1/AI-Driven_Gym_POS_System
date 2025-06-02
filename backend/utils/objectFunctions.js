@@ -48,7 +48,7 @@ function reorderKeys(obj, order) {
     }
   });
 
-  // Add any remaining properties not in the order array
+  // Add the remaining properties not in the order array
   for (const key in obj) {
     if (!orderedObj.hasOwnProperty(key)) {
       orderedObj[key] = obj[key];
